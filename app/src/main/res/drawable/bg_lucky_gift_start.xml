@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nút START (Figma 2:668): đế xanh đậm + mặt trên gradient, path lấy từ SVG của Figma (bỏ bóng 1dp) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="120dp"
+    android:height="57dp"
+    android:viewportWidth="120"
+    android:viewportHeight="57">
+    <path
+        android:fillColor="@color/lucky_gift_start_shadow"
+        android:pathData="M120,34.2C119.997,33.2918 119.84,32.3654 119.51,31.4351L111.445,8.63509C109.65,3.56019 103.198,0 95.7967,0H24.2033C16.8017,0 10.3499,3.56019 8.55469,8.63509L0.48956,31.4351C0.16049,32.3654 0.00265,33.2918 0,34.2V45.6C0,51.896 6.71573,57 15,57H105C113.284,57 120,51.896 120,45.6V34.2Z" />
+    <group
+        android:translateX="1.22"
+        android:translateY="1">
+        <path
+            android:pathData="M23.7998,2H94.2002C101.044,2.00005 106.344,5.23287 107.706,9.01074L115.637,31.0107C116.545,33.53 115.722,36.1271 113.305,38.2744C110.858,40.4473 106.884,42 102.131,42H15.8691C11.1165,42 7.14168,40.4473 4.69531,38.2744C2.27777,36.1271 1.45522,33.53 2.36328,31.0107L10.2939,9.01074C11.6558,5.23287 16.9558,2.00005 23.7998,2Z"
+            android:strokeWidth="4">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:endColor="@color/lucky_gift_start_bottom"
+                    android:endX="59"
+                    android:endY="44"
+                    android:startColor="@color/lucky_gift_start_top"
+                    android:startX="59"
+                    android:startY="0"
+                    android:type="linear" />
+            </aapt:attr>
+            <aapt:attr name="android:strokeColor">
+                <gradient
+                    android:endColor="@color/lucky_gift_start_stroke_bottom"
+                    android:endX="59"
+                    android:endY="44"
+                    android:startColor="@color/lucky_gift_start_stroke_top"
+                    android:startX="59"
+                    android:startY="0"
+                    android:type="linear" />
+            </aapt:attr>
+        </path>
+    </group>
+</vector>

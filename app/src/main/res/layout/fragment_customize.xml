@@ -85,6 +85,50 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Lucky Gift: nút quà dưới Next (Figma 2:628) + chấm đỏ khi quay được + đếm ngược (2:886) -->
+        <FrameLayout
+            android:id="@+id/lucky_gift"
+            android:layout_width="@dimen/lucky_gift_button"
+            android:layout_height="@dimen/lucky_gift_button"
+            android:layout_marginTop="@dimen/lucky_gift_button_top"
+            android:layout_marginEnd="@dimen/screen_padding"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/btn_lucky_gift"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_lucky_gift_button"
+                android:contentDescription="@string/cd_lucky_gift"
+                android:padding="@dimen/lucky_gift_button_padding"
+                android:scaleType="fitCenter"
+                android:src="@drawable/img_lucky_gift"
+                android:stateListAnimator="@animator/press_scale" />
+
+            <View
+                android:id="@+id/lucky_gift_badge"
+                android:layout_width="@dimen/lucky_gift_badge"
+                android:layout_height="@dimen/lucky_gift_badge"
+                android:layout_gravity="top|end"
+                android:layout_margin="@dimen/lucky_gift_badge_margin"
+                android:background="@drawable/bg_lucky_gift_badge" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_lucky_gift_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Text.LuckyGiftTimer"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/lucky_gift"
+            app:layout_constraintStart_toStartOf="@id/lucky_gift"
+            app:layout_constraintTop_toBottomOf="@id/lucky_gift"
+            tools:text="30:00"
+            tools:visibility="visible" />
+
         <!-- COSPLAY: thanh thời gian giữa top bar (Figma 3:134) -->
         <LinearLayout
             android:id="@+id/timer_bar"

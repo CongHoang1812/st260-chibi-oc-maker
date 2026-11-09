@@ -1,5 +1,6 @@
 package com.conght.chibiocmaker.core.widget
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.ColorFilter
@@ -10,115 +11,102 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.withClip
 import com.conght.chibiocmaker.R
 
 /**
- * Nền nút gỗ (Figma 69:43): viền nâu viên thuốc + đổ bóng trong (inset 0 -1 0 2),
- * lõi "Subtract" 134×32 có các vết mẻ gỗ + highlight 1dp phía trên.
- * Hai đầu bo tròn và vết mẻ sát đầu giữ nguyên kích thước; khi nút rộng/hẹp hơn
- * 142dp chỉ phần thân giữa giãn ra, 2 vết mẻ giữa dời theo tỉ lệ.
+ * Nền nút chung (Figma "icon" 2:582, 35:116, 2:628...): khung trắng bo 16 viền nâu 1dp, bên trong
+ * (cách 4dp) là lõi bo 12 viền đậm 1dp, bóng trong 3dp ở đáy lõi và đốm sáng nhỏ góc trên trái.
+ * [ringWidth] = 0 bỏ khung trắng (tab tiêu đề dialog, Figma 2:453).
+ * Bo góc không vượt quá nửa chiều cao nên nút thấp (tab 34dp) thành viên thuốc.
  */
 class WoodButtonDrawable(
     res: Resources,
-    @ColorInt private val shadowColor: Int,
-    @ColorInt private val outerColor: Int,
+    @ColorInt private val borderColor: Int,
+    @ColorInt private val ringColor: Int,
     @ColorInt private val coreColor: Int,
+    @ColorInt private val coreStrokeColor: Int,
+    @ColorInt shadeColor: Int,
     @ColorInt private val highlightColor: Int,
+    private val ringWidth: Float = res.getDimension(R.dimen.wood_button_ring),
 ) : Drawable() {
 
-    private val density = res.displayMetrics.density
-    private val coreInsetH = res.getDimension(R.dimen.wood_button_inset_h)
-    private val coreInsetTop = res.getDimension(R.dimen.wood_button_inset_top)
-    private val coreInsetBottom = res.getDimension(R.dimen.wood_button_inset_bottom)
+    private val outerRadius = res.getDimension(R.dimen.wood_button_radius)
+    private val coreRadius = res.getDimension(R.dimen.wood_button_core_radius)
+    private val stroke = res.getDimension(R.dimen.stroke_thin)
+    private val shade = res.getDimension(R.dimen.wood_button_shade)
+    private val drop = res.getDimension(R.dimen.wood_button_drop)
+    private val highlightX = res.getDimension(R.dimen.wood_button_highlight_x)
+    private val highlightY = res.getDimension(R.dimen.wood_button_highlight_y)
+    private val highlightW = res.getDimension(R.dimen.wood_button_highlight_w)
+    private val highlightH = res.getDimension(R.dimen.wood_button_highlight_h)
+
+    /** Lõi đã phủ bóng trong (đen 25% trên màu lõi): tô cả lõi màu này rồi phủ lõi gốc lệch lên [shade]. */
+    @ColorInt
+    private val shadedCore = ColorUtils.compositeColors(shadeColor, coreColor)
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val rect = RectF()
+    private val outer = RectF()
+    private val core = RectF()
+    private val tmp = RectF()
+    private val outerPath = Path()
     private val corePath = Path()
+    private var outerR = 0f
+    private var coreR = 0f
 
     override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
-        buildCorePath(
-            bounds.left + coreInsetH,
-            bounds.top + coreInsetTop,
-            bounds.right - coreInsetH,
-            bounds.bottom - coreInsetBottom,
-        )
+        outer.set(bounds)
+        outerR = minOf(if (ringWidth > 0f) outerRadius else coreRadius, outer.height() / 2f)
+        outerPath.reset()
+        outerPath.addRoundRect(outer, outerR, outerR, Path.Direction.CW)
+        core.set(outer)
+        core.inset(ringWidth, ringWidth)
+        coreR = if (ringWidth > 0f) (outerR - ringWidth).coerceAtLeast(0f) else outerR
+        corePath.reset()
+        corePath.addRoundRect(core, coreR, coreR, Path.Direction.CW)
     }
 
     override fun draw(canvas: Canvas) {
-        val b = bounds
-        // Viền ngoài: lớp bóng tối, rồi vòng nâu (bóng dày 2dp hai bên, 1dp trên, 3dp dưới)
-        rect.set(b)
-        fillPill(canvas, shadowColor)
-        rect.set(
-            b.left + SHADOW_SIDE * density,
-            b.top + SHADOW_TOP * density,
-            b.right - SHADOW_SIDE * density,
-            b.bottom - SHADOW_BOTTOM * density,
-        )
-        fillPill(canvas, outerColor)
-        // Lõi: tô highlight, rồi phủ lõi lệch xuống 1dp -> còn lại dải sáng mép trên.
-        // Tính ngoài withClip: bên trong, `density` sẽ là Canvas.getDensity() (= 0)
-        val highlightOffset = HIGHLIGHT * density
+        paint.style = Paint.Style.FILL
+        if (ringWidth > 0f) {
+            // Khung trắng + bóng đổ nhẹ của lõi xuống khung (Figma: drop shadow 0 4 4, bị khung cắt)
+            paint.color = ringColor
+            canvas.drawPath(outerPath, paint)
+            canvas.withClip(outerPath) {
+                paint.color = DROP_COLOR
+                tmp.set(core)
+                tmp.offset(0f, drop)
+                drawRoundRect(tmp, coreR, coreR, paint)
+            }
+        }
+        // Lõi + bóng trong ở đáy
         canvas.withClip(corePath) {
-            paint.color = highlightColor
+            paint.color = shadedCore
             drawPath(corePath, paint)
-            translate(0f, highlightOffset)
             paint.color = coreColor
-            drawPath(corePath, paint)
+            tmp.set(core)
+            tmp.offset(0f, -shade)
+            drawRoundRect(tmp, coreR, coreR, paint)
+            // Đốm sáng góc trên trái
+            paint.color = highlightColor
+            tmp.set(core.left + highlightX, core.top + highlightY, core.left + highlightX + highlightW, core.top + highlightY + highlightH)
+            drawOval(tmp, paint)
         }
-    }
-
-    private fun fillPill(canvas: Canvas, @ColorInt color: Int) {
-        paint.color = color
-        val r = rect.height() / 2f
-        canvas.drawRoundRect(rect, r, r, paint)
-    }
-
-    /** Dựng lại path "Subtract" của Figma (toạ độ gốc 134×32) cho khung lõi thực tế. */
-    private fun buildCorePath(left: Float, top: Float, right: Float, bottom: Float) {
-        corePath.reset()
-        val s = (bottom - top) / CORE_H
-        val extra = (right - left) - CORE_W * s
-        if (right - left <= bottom - top) {
-            rect.set(left, top, right, bottom)
-            corePath.addRoundRect(rect, rect.height() / 2f, rect.height() / 2f, Path.Direction.CW)
-            return
-        }
-        fun lx(x: Float) = left + x * s
-        fun rx(x: Float) = left + x * s + extra
-        fun mx(x: Float, f: Float) = left + x * s + extra * f
-        fun y(v: Float) = top + v * s
-        val middleNotches = extra > -MIDDLE_NOTCH_MIN_EXTRA * s
-
-        corePath.apply {
-            moveTo(rx(118f), y(0f))
-            cubicTo(rx(119.36f), y(0f), rx(120.681f), y(0.17f), rx(121.941f), y(0.489f))
-            lineTo(rx(122.099f), y(5.154f))
-            lineTo(rx(124.895f), y(1.558f))
-            cubicTo(rx(130.28f), y(4.133f), rx(134f), y(9.632f), rx(134f), y(16f))
-            cubicTo(rx(134f), y(24.837f), rx(126.837f), y(32f), rx(118f), y(32f))
-            if (middleNotches) {
-                lineTo(mx(94.7f, NOTCH_BOTTOM_F), y(32f))
-                lineTo(mx(92.565f, NOTCH_BOTTOM_F), y(28.515f))
-                lineTo(mx(92.831f, NOTCH_BOTTOM_F), y(32f))
-            }
-            lineTo(lx(29.435f), y(32f))
-            lineTo(lx(29.092f), y(28.515f))
-            lineTo(lx(25.104f), y(32f))
-            lineTo(lx(16f), y(32f))
-            cubicTo(lx(7.163f), y(32f), lx(0f), y(24.837f), lx(0f), y(16f))
-            cubicTo(lx(0f), y(10.698f), lx(2.579f), y(5.999f), lx(6.551f), y(3.088f))
-            lineTo(lx(11.706f), y(6.474f))
-            lineTo(lx(9.179f), y(1.523f))
-            cubicTo(lx(11.248f), y(0.547f), lx(13.56f), y(0f), lx(16f), y(0f))
-            if (middleNotches) {
-                lineTo(mx(56.592f, NOTCH_TOP_F), y(0f))
-                lineTo(mx(58.185f, NOTCH_TOP_F), y(3.436f))
-                lineTo(mx(59.045f, NOTCH_TOP_F), y(0f))
-            }
-            close()
+        // Viền lõi và viền ngoài (nét nằm trong mép hình)
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = stroke
+        paint.color = coreStrokeColor
+        tmp.set(core)
+        tmp.inset(stroke / 2f, stroke / 2f)
+        canvas.drawRoundRect(tmp, coreR, coreR, paint)
+        if (ringWidth > 0f) {
+            paint.color = borderColor
+            tmp.set(outer)
+            tmp.inset(stroke / 2f, stroke / 2f)
+            canvas.drawRoundRect(tmp, outerR, outerR, paint)
         }
     }
 
@@ -135,19 +123,33 @@ class WoodButtonDrawable(
     @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
-    private companion object {
-        const val CORE_W = 134f
-        const val CORE_H = 32f
-        const val SHADOW_SIDE = 2f
-        const val SHADOW_TOP = 1f
-        const val SHADOW_BOTTOM = 3f
-        const val HIGHLIGHT = 1f
+    companion object {
+        private const val DROP_COLOR = 0x26000000
 
-        // Vị trí tương đối của 2 vết mẻ giữa trên thân thẳng (x 16..118 của Figma)
-        const val NOTCH_TOP_F = 0.41f
-        const val NOTCH_BOTTOM_F = 0.76f
+        /** Nút cam (nút chính, nút icon, tab đang chọn). */
+        fun orange(context: Context, ringWidth: Float = context.resources.getDimension(R.dimen.wood_button_ring)) =
+            create(context, R.color.orange_button, R.color.button_inner_stroke, ringWidth)
 
-        // Nút quá hẹp thì bỏ 2 vết mẻ giữa để không đè lên vết mẻ sát đầu
-        const val MIDDLE_NOTCH_MIN_EXTRA = 60f
+        /** Nút / tab không chọn (Figma 2:1558): lõi xám. */
+        fun gray(context: Context) = create(context, R.color.tab_off_inner, R.color.tab_off_shadow)
+
+        private fun create(
+            context: Context,
+            coreRes: Int,
+            coreStrokeRes: Int,
+            ringWidth: Float = context.resources.getDimension(R.dimen.wood_button_ring),
+        ): WoodButtonDrawable {
+            fun color(id: Int) = ContextCompat.getColor(context, id)
+            return WoodButtonDrawable(
+                context.resources,
+                borderColor = color(R.color.brown_dark),
+                ringColor = color(R.color.white),
+                coreColor = color(coreRes),
+                coreStrokeColor = color(coreStrokeRes),
+                shadeColor = color(R.color.button_shade),
+                highlightColor = color(R.color.button_highlight),
+                ringWidth = ringWidth,
+            )
+        }
     }
 }

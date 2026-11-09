@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Nội dung của PaperDialogContainer (Figma 69:34) -->
+<!-- Nội dung của PaperDialogContainer (Figma 11:429): thẻ kem + tab tiêu đề cam đè nửa lên mép trên.
+     Nền tab tiêu đề vẽ bằng WoodButtonDrawable (không khung trắng) trong PaperDialogContainer. -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,30 +12,20 @@
         android:id="@+id/panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialog_title_tab_overlap"
+        android:background="@drawable/bg_dialog_card"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingTop="@dimen/radius_medium"
+        android:paddingTop="@dimen/dialog_card_padding_top"
         android:paddingBottom="@dimen/dialog_padding_bottom">
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dialog_title_top"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:textAppearance="@style/Text.DialogTitle"
-            tools:text="@string/dialog_exit_title" />
 
         <TextView
             android:id="@+id/tv_message"
             android:layout_width="@dimen/dialog_message_width"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dialog_title_message_gap"
-            android:layout_marginBottom="@dimen/dialog_message_button_gap"
+            android:layout_marginBottom="@dimen/dialog_content_gap"
             android:gravity="center"
-            android:includeFontPadding="false"
-            android:textAppearance="@style/Text.Caption"
+            android:textAppearance="@style/Text.DialogMessage"
             tools:text="@string/dialog_exit_message" />
 
         <!-- Vùng tuỳ biến: nhận các view con khai báo trong <PaperDialogContainer> -->
@@ -42,7 +33,6 @@
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dialog_title_content_gap"
             android:layout_marginBottom="@dimen/dialog_content_gap"
             android:visibility="gone" />
 
@@ -65,4 +55,17 @@
                 app:buttonWidth="@dimen/dialog_button_w" />
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dialog_title_tab_h"
+        android:layout_gravity="top|center_horizontal"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:minWidth="@dimen/dialog_title_tab_w"
+        android:paddingHorizontal="@dimen/dialog_padding"
+        android:textAppearance="@style/Text.DialogTitle.Tab"
+        tools:text="@string/dialog_exit_title" />
 </merge>

@@ -6,7 +6,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -47,7 +49,23 @@ class SettingsDataStore @Inject constructor(
     suspend fun incrementHomeBackCount(): Int =
         dataStore.edit { it[KEY_HOME_BACK_COUNT] = (it[KEY_HOME_BACK_COUNT] ?: 0) + 1 }[KEY_HOME_BACK_COUNT] ?: 0
 
+    fun luckyGiftUnlocked(templateId: String): Flow<Set<String>> =
+        dataStore.data.map { it[keyLuckyGiftUnlocked(templateId)].orEmpty() }
+
+    val luckyGiftNextSpinAt: Flow<Long> = dataStore.data.map { it[KEY_LUCKY_GIFT_NEXT_SPIN] ?: 0L }
+
+    suspend fun recordLuckyGiftSpin(templateId: String, parts: Set<String>, nextSpinAtMs: Long) {
+        dataStore.edit {
+            val key = keyLuckyGiftUnlocked(templateId)
+            it[key] = it[key].orEmpty() + parts
+            it[KEY_LUCKY_GIFT_NEXT_SPIN] = nextSpinAtMs
+        }
+    }
+
+    private fun keyLuckyGiftUnlocked(templateId: String) = stringSetPreferencesKey("lucky_gift_unlocked_$templateId")
+
     private companion object {
+        val KEY_LUCKY_GIFT_NEXT_SPIN = longPreferencesKey("lucky_gift_next_spin_at")
         val KEY_LANGUAGE = stringPreferencesKey("language_code")
         val KEY_ONBOARDING_DONE = booleanPreferencesKey("onboarding_done")
         val KEY_COSPLAY_INSTRUCTION = booleanPreferencesKey("cosplay_instruction_shown")

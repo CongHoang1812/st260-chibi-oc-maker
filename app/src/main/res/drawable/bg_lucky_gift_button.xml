@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nút quà (Figma 2:628): viền trắng 4dp + lõi xanh viền đậm -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/white" />
+            <stroke android:width="@dimen/stroke_thin" android:color="@color/lucky_gift_button_border" />
+            <corners android:radius="@dimen/lucky_gift_button_radius" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/lucky_gift_button_inset"
+        android:left="@dimen/lucky_gift_button_inset"
+        android:right="@dimen/lucky_gift_button_inset"
+        android:top="@dimen/lucky_gift_button_inset">
+        <shape>
+            <solid android:color="@color/lucky_gift_button_fill" />
+            <stroke android:width="@dimen/stroke_thin" android:color="@color/lucky_gift_button_stroke" />
+            <corners android:radius="@dimen/lucky_gift_button_inner_radius" />
+        </shape>
+    </item>
+</layer-list>

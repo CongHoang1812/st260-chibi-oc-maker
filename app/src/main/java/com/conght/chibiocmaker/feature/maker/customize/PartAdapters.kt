@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.graphics.toColorInt
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -18,8 +19,8 @@ import com.conght.chibiocmaker.databinding.ItemCategoryTabBinding
 import com.conght.chibiocmaker.databinding.ItemColorDotBinding
 import com.conght.chibiocmaker.databinding.ItemPartBinding
 
-/** Một phần tử list kèm cờ đang chọn (để DiffUtil vẽ lại đúng ô). */
-data class Selectable<T>(val value: T, val selected: Boolean)
+/** Một phần tử list kèm cờ đang chọn / đang khoá (để DiffUtil vẽ lại đúng ô). */
+data class Selectable<T>(val value: T, val selected: Boolean, val locked: Boolean = false)
 
 private fun <T> diff(id: (T) -> String) = object : DiffUtil.ItemCallback<Selectable<T>>() {
     override fun areItemsTheSame(old: Selectable<T>, new: Selectable<T>) = id(old.value) == id(new.value)
@@ -40,7 +41,16 @@ class PartItemAdapter(
         fun bind(item: Selectable<PartItem>) {
             binding.ivThumbnail.loadImage(item.value.thumbnailUrl, R.color.cell_tan)
             binding.root.isSelected = item.selected
-            binding.root.setOnSingleClickListener(intervalMs = CLICK_DEBOUNCE_MS, haptic = true) { onClick(item.value) }
+            // Ô khoá (Lucky Gift): mờ + icon khoá, bấm không có phản hồi gì; ô khoá đang mặc sẵn vẫn hiện chọn
+            val locked = item.locked && !item.selected
+            binding.ivThumbnail.alpha = if (locked) LOCKED_ALPHA else 1f
+            binding.ivLock.isVisible = item.locked
+            if (locked) {
+                binding.root.setOnClickListener(null)
+                binding.root.isClickable = false
+            } else {
+                binding.root.setOnSingleClickListener(intervalMs = CLICK_DEBOUNCE_MS, haptic = true) { onClick(item.value) }
+            }
         }
     }
 }
@@ -94,3 +104,4 @@ class CategoryTabAdapter(
 
 /** Chọn item/màu/tab cần phản hồi nhanh hơn debounce mặc định của điều hướng. */
 private const val CLICK_DEBOUNCE_MS = 150L
+private const val LOCKED_ALPHA = 0.4f

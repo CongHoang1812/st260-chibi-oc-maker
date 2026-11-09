@@ -67,6 +67,7 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
     private var listsDetail: TemplateDetail? = null
     private var listsCategoryId: String? = null
     private var listsSelections: Map<String, PartSelection>? = null
+    private var listsLocked: Set<String>? = null
 
     /** Lựa chọn vừa random, chờ 2 danh sách cập nhật xong (DiffUtil chạy nền) rồi mới cuộn tới. */
     private var pendingScroll: PartSelection? = null
@@ -191,6 +192,9 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
         binding.btnFlip.setOnSingleClickListener { viewModel.flip() }
         binding.btnMove.setOnSingleClickListener { viewModel.setPanel(PanelMode.MOVE) }
         binding.btnRandomAll.setOnSingleClickListener { viewModel.runWhenOnline { requestRandomAll() } }
+        binding.btnLuckyGift.setOnSingleClickListener {
+            if (viewModel.state.value.luckyGift != null) LuckyGiftDialogFragment.showOnce(childFragmentManager)
+        }
         binding.errorState.setOnRetryClickListener { viewModel.retry() }
 
         binding.movePanel.listener = object : MovePanelView.Listener {
@@ -265,6 +269,7 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
         binding.btnMove.isVisible = !moving && !isCosplay && state.canMovePart
         binding.movePanel.setLimits(state.moveLimits)
         renderCosplay(state.cosplay)
+        renderLuckyGift(state.luckyGift, moving)
 
         if (!ready) {
             noneAdapter.isSelected = false
@@ -283,17 +288,25 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
 
     /** Tab / lưới item / chấm màu: chỉ dựng lại khi template, tab đang chọn hoặc lựa chọn đổi. */
     private fun renderLists(state: CustomizeUiState, detail: TemplateDetail, config: CharacterConfig) {
-        if (detail === listsDetail && state.selectedCategoryId == listsCategoryId && config.selections == listsSelections) return
+        if (detail === listsDetail && state.selectedCategoryId == listsCategoryId &&
+            config.selections == listsSelections && state.lockedParts == listsLocked
+        ) return
         listsDetail = detail
         listsCategoryId = state.selectedCategoryId
         listsSelections = config.selections
+        listsLocked = state.lockedParts
 
         val selection = state.selection
         // Layer đầu tiên (tab đầu) không có ô None
         noneAdapter.isVisible = state.selectedCategoryId != detail.categories.firstOrNull()?.id
         noneAdapter.isSelected = selection?.itemId == null
         tabAdapter.submitList(detail.categories.map { Selectable(it, it.id == state.selectedCategoryId) })
-        partAdapter.submitList(state.selectedCategory?.items.orEmpty().map { Selectable(it, it.id == selection?.itemId) }) {
+        val categoryId = state.selectedCategoryId.orEmpty()
+        partAdapter.submitList(
+            state.selectedCategory?.items.orEmpty().map {
+                Selectable(it, it.id == selection?.itemId, locked = state.isLocked(categoryId, it.id))
+            },
+        ) {
             scrollToPendingSelection()
         }
 
@@ -335,6 +348,21 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
         ImagePrefetcher.prefetch(requireContext(), categories[index].items.map { it.thumbnailUrl })
         ImagePrefetcher.prefetch(requireContext(), categories.map { it.iconUrl })
         ImagePrefetcher.prefetch(requireContext(), nearby.flatMap { c -> c.items.map { it.thumbnailUrl } })
+    }
+
+    /**
+     * Nút quà: ẩn khi không có Lucky Gift (Cosplay), đã mở hết part hoặc đang Move.
+     * Quay được thì có chấm đỏ, đang chờ thì hiện đếm ngược bên dưới.
+     */
+    private fun renderLuckyGift(gift: LuckyGiftState?, moving: Boolean) {
+        val visible = gift != null && gift.hasLocked && !moving
+        binding.luckyGift.isVisible = visible
+        val left = gift?.remainingSeconds ?: 0
+        binding.luckyGiftBadge.isVisible = visible && left == 0
+        binding.tvLuckyGiftTimer.isVisible = visible && left > 0
+        if (left > 0) {
+            binding.tvLuckyGiftTimer.text = getString(R.string.timer_format, left / SECONDS_PER_MINUTE, left % SECONDS_PER_MINUTE)
+        }
     }
 
     /** Thanh thời gian + thumbnail ảnh tham chiếu (chỉ COSPLAY). */

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Font chính của app (Figma: Rammetto One, SIL OFL, xem docs/licenses/OFL-rammetto_one.txt).
+     Chỉ có bản Regular; chữ Hindi không có trong font nên Android tự dùng font hệ thống. -->
+<font-family xmlns:app="http://schemas.android.com/apk/res-auto">
+    <font
+        app:font="@font/rammetto_one"
+        app:fontStyle="normal"
+        app:fontWeight="400" />
+</font-family>

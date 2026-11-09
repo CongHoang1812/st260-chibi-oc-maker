@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import com.conght.chibiocmaker.R
 import com.conght.chibiocmaker.databinding.ViewPaperDialogBinding
 
 /**
- * Khung dialog "giấy rách": tiêu đề + nội dung + vùng tuỳ biến + 2 WoodButton (trái / phải).
- * View con khai báo trong XML được đưa vào vùng tuỳ biến (giữa nội dung và hàng nút).
+ * Khung dialog chung (Figma 11:429): tab tiêu đề cam đè lên mép trên thẻ kem, nội dung, vùng tuỳ biến
+ * và 2 WoodButton (trái / phải). View con khai báo trong XML được đưa vào vùng tuỳ biến (giữa nội dung và hàng nút).
  * attr: `app:dialogTitle`, `app:dialogMessage`, `app:startText`, `app:endText`.
  */
 class PaperDialogContainer @JvmOverloads constructor(
@@ -22,14 +24,14 @@ class PaperDialogContainer @JvmOverloads constructor(
 
     private val binding = ViewPaperDialogBinding.inflate(LayoutInflater.from(context), this)
 
-    /** Nút bên trái (Figma: Yes / Cancel). */
+    /** Nút bên trái (Yes / Cancel). */
     val startButton: WoodButton get() = binding.btnStart
 
-    /** Nút bên phải (Figma: No / Watch Ad / Done). */
+    /** Nút bên phải (No / Watch Ad / Done). */
     val endButton: WoodButton get() = binding.btnEnd
 
     init {
-        setBackgroundResource(R.drawable.bg_dialog_paper)
+        binding.tvTitle.background = WoodButtonDrawable.orange(context, ringWidth = 0f)
         context.withStyledAttributes(attrs, R.styleable.PaperDialogContainer, defStyleAttr) {
             title = getString(R.styleable.PaperDialogContainer_dialogTitle)
             message = getString(R.styleable.PaperDialogContainer_dialogMessage)
@@ -40,7 +42,7 @@ class PaperDialogContainer @JvmOverloads constructor(
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        val extra = (0 until childCount).map(::getChildAt).filter { it !== binding.panel }
+        val extra = (0 until childCount).map(::getChildAt).filter { it !== binding.panel && it !== binding.tvTitle }
         extra.forEach {
             removeView(it)
             binding.content.addView(it)
@@ -52,7 +54,15 @@ class PaperDialogContainer @JvmOverloads constructor(
         get() = binding.tvTitle.text
         set(value) {
             binding.tvTitle.text = value
-            binding.tvTitle.isVisible = !value.isNullOrEmpty()
+            val hasTitle = !value.isNullOrEmpty()
+            binding.tvTitle.isVisible = hasTitle
+            // Không có tab tiêu đề thì thẻ không cần chừa chỗ cho phần tab đè lên
+            binding.panel.updateLayoutParams<FrameLayout.LayoutParams> {
+                topMargin = if (hasTitle) resources.getDimensionPixelSize(R.dimen.dialog_title_tab_overlap) else 0
+            }
+            binding.panel.updatePadding(
+                top = resources.getDimensionPixelSize(if (hasTitle) R.dimen.dialog_card_padding_top else R.dimen.dialog_padding),
+            )
         }
 
     var message: CharSequence?

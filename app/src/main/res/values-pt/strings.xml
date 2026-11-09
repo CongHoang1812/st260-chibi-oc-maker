@@ -133,4 +133,12 @@
     <string name="cd_reference_image">Imagem de referência</string>
     <string name="create_pack_name_title">Criar nome do pacote</string>
     <string name="pack_name_hint">Digite o nome do seu pacote</string>
+
+    <string name="lucky_gift_title">Presente da sorte</string>
+    <string name="lucky_gift_start">Começar</string>
+    <string name="lucky_gift_congrats">Parabéns</string>
+    <string name="lucky_gift_unlocked_message">Você desbloqueou mais acessórios\ncolete-os e crie seu próprio personagem!</string>
+    <string name="lucky_gift_collect">Coletar</string>
+    <string name="cd_lucky_gift">Presente da sorte</string>
+    <string name="cd_locked">Bloqueado</string>
 </resources>

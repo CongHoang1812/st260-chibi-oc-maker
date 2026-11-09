@@ -131,4 +131,12 @@
     <string name="cd_reference_image">Gambar referensi</string>
     <string name="create_pack_name_title">Buat Nama Paket</string>
     <string name="pack_name_hint">Masukkan nama paket Anda</string>
+
+    <string name="lucky_gift_title">Hadiah Keberuntungan</string>
+    <string name="lucky_gift_start">Mulai</string>
+    <string name="lucky_gift_congrats">Selamat</string>
+    <string name="lucky_gift_unlocked_message">Kamu membuka lebih banyak aksesori\nkumpulkan dan buat karaktermu sendiri!</string>
+    <string name="lucky_gift_collect">Ambil</string>
+    <string name="cd_lucky_gift">Hadiah keberuntungan</string>
+    <string name="cd_locked">Terkunci</string>
 </resources>

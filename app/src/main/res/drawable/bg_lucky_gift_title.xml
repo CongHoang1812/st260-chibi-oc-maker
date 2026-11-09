@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tab tiêu đề LUCKY GIFT / CONGRATULATIONS (Figma 2:673, 10:403). Viền trong chỉ có trái/trên/phải:
+     đẩy cạnh dưới ra ngoài để giấu nét viền dưới. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:angle="270"
+                android:endColor="@color/lucky_gift_orange"
+                android:startColor="@color/lucky_gift_title_top" />
+            <corners
+                android:topLeftRadius="@dimen/lucky_gift_title_radius"
+                android:topRightRadius="@dimen/lucky_gift_title_radius" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/lucky_gift_title_hide_bottom"
+        android:left="@dimen/lucky_gift_title_inset"
+        android:right="@dimen/lucky_gift_title_inset"
+        android:top="@dimen/lucky_gift_title_inset">
+        <shape>
+            <gradient
+                android:centerColor="@color/lucky_gift_window_mid"
+                android:endColor="@color/lucky_gift_orange"
+                android:gradientRadius="@dimen/lucky_gift_title_h"
+                android:startColor="@color/lucky_gift_title_center"
+                android:type="radial" />
+            <stroke android:width="@dimen/lucky_gift_title_stroke" android:color="@color/lucky_gift_title_stroke" />
+            <corners
+                android:topLeftRadius="@dimen/lucky_gift_title_inner_radius"
+                android:topRightRadius="@dimen/lucky_gift_title_inner_radius" />
+        </shape>
+    </item>
+</layer-list>

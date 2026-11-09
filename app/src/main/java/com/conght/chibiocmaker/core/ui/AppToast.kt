@@ -42,7 +42,7 @@ fun View.showAppToast(message: CharSequence) {
         }
         findViewById<TextView>(com.google.android.material.R.id.snackbar_text)?.apply {
             setTextColor(ContextCompat.getColor(context, R.color.white))
-            typeface = ResourcesCompat.getFont(context, R.font.londrina_solid_family)
+            typeface = ResourcesCompat.getFont(context, R.font.app_font)
             textAlignment = View.TEXT_ALIGNMENT_CENTER
         }
     }

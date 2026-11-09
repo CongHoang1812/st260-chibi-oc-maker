@@ -6,6 +6,8 @@ import com.conght.chibiocmaker.data.repository.CreationRepository
 import com.conght.chibiocmaker.data.repository.CreationRepositoryImpl
 import com.conght.chibiocmaker.data.repository.DecorRepository
 import com.conght.chibiocmaker.data.repository.DecorRepositoryImpl
+import com.conght.chibiocmaker.data.repository.LuckyGiftRepository
+import com.conght.chibiocmaker.data.repository.LuckyGiftRepositoryImpl
 import com.conght.chibiocmaker.data.repository.LuckyRollRepository
 import com.conght.chibiocmaker.data.repository.LuckyRollRepositoryImpl
 import com.conght.chibiocmaker.data.repository.MakerRepository
@@ -35,6 +37,9 @@ abstract class RepositoryModule {
 
     @Binds @Singleton
     abstract fun bindLuckyRollRepository(impl: LuckyRollRepositoryImpl): LuckyRollRepository
+
+    @Binds @Singleton
+    abstract fun bindLuckyGiftRepository(impl: LuckyGiftRepositoryImpl): LuckyGiftRepository
 
     @Binds @Singleton
     abstract fun bindCreationRepository(impl: CreationRepositoryImpl): CreationRepository

@@ -47,23 +47,40 @@
     <dimen name="permission_image">300dp</dimen>
     <dimen name="permission_continue_gap">72dp</dimen>
 
-    <!-- Nút tròn -->
-    <dimen name="icon_button">36dp</dimen>
-    <dimen name="icon_button_large">40dp</dimen>
-    <dimen name="icon_button_glyph">16dp</dimen>
-    <dimen name="icon_button_glyph_large">20dp</dimen>
+    <!-- Nút icon (Figma "icon" 44×44, glyph 24) -->
+    <dimen name="icon_button">44dp</dimen>
+    <dimen name="icon_button_large">44dp</dimen>
+    <dimen name="icon_button_glyph">20dp</dimen>
+    <dimen name="icon_button_glyph_large">24dp</dimen>
 
-    <!-- Nút gỗ -->
-    <dimen name="wood_button_height">40dp</dimen>
+    <!-- Nút chữ (WoodButton, Figma 35:116): cao 44, khung trắng 4dp bo 16, lõi bo 12 -->
+    <dimen name="wood_button_height">44dp</dimen>
     <dimen name="wood_button_tab_radius">16dp</dimen>
     <dimen name="wood_button_inset_h">4dp</dimen>
-    <dimen name="wood_button_inset_top">3dp</dimen>
-    <dimen name="wood_button_inset_bottom">5dp</dimen>
+    <dimen name="wood_button_inset_top">4dp</dimen>
+    <dimen name="wood_button_inset_bottom">4dp</dimen>
     <dimen name="wood_button_medium_width">112dp</dimen>
     <dimen name="wood_button_large_width">160dp</dimen>
-    <dimen name="wood_button_tab_width">104dp</dimen>
+    <!-- Tab Character / Design (Figma 2:1556) -->
+    <dimen name="wood_button_tab_width">124dp</dimen>
     <dimen name="wood_button_tab_height">34dp</dimen>
-    <dimen name="wood_button_text_stroke">2dp</dimen>
+    <!-- Figma ST260 không viền chữ trên nút -->
+    <dimen name="wood_button_text_stroke">0dp</dimen>
+    <dimen name="wood_button_ring">4dp</dimen>
+    <dimen name="wood_button_radius">16dp</dimen>
+    <dimen name="wood_button_core_radius">12dp</dimen>
+    <dimen name="wood_button_shade">3dp</dimen>
+    <dimen name="wood_button_drop">2dp</dimen>
+    <dimen name="wood_button_highlight_x">3dp</dimen>
+    <dimen name="wood_button_highlight_y">2dp</dimen>
+    <dimen name="wood_button_highlight_w">6dp</dimen>
+    <dimen name="wood_button_highlight_h">5dp</dimen>
+    <!-- Dialog chung (Figma 11:429): tab tiêu đề 156×40 đè nửa lên mép trên thẻ -->
+    <dimen name="dialog_title_tab_w">156dp</dimen>
+    <dimen name="dialog_title_tab_h">40dp</dimen>
+    <dimen name="dialog_title_tab_overlap">20dp</dimen>
+    <dimen name="dialog_card_radius">16dp</dimen>
+    <dimen name="dialog_card_padding_top">27dp</dimen>
 
     <!-- Nhân vật & panel -->
     <dimen name="character_size">328dp</dimen>
@@ -259,6 +276,57 @@
     <dimen name="color_picker_cursor">16dp</dimen>
     <dimen name="color_picker_hue_cursor">24dp</dimen>
     <dimen name="color_picker_cursor_stroke">2dp</dimen>
+
+    <!-- Lucky Gift: nút quà dưới Next (Figma 2:628, y 120 - status bar 44) -->
+    <dimen name="lucky_gift_button">44dp</dimen>
+    <dimen name="lucky_gift_button_top">76dp</dimen>
+    <dimen name="lucky_gift_button_inset">4dp</dimen>
+    <dimen name="lucky_gift_button_padding">10dp</dimen>
+    <dimen name="lucky_gift_button_radius">16dp</dimen>
+    <dimen name="lucky_gift_button_inner_radius">12dp</dimen>
+    <dimen name="lucky_gift_badge">10dp</dimen>
+    <dimen name="lucky_gift_badge_margin">1dp</dimen>
+    <dimen name="part_lock_icon">16dp</dimen>
+    <dimen name="part_lock_margin">2dp</dimen>
+    <!-- Overlay vòng quay (Figma 2:634): tiêu đề 42 đè lên khung 320×260 từ y 38 -->
+    <dimen name="lucky_gift_frame_w">320dp</dimen>
+    <dimen name="lucky_gift_frame_h">260dp</dimen>
+    <dimen name="lucky_gift_frame_top">38dp</dimen>
+    <dimen name="lucky_gift_title_w">128dp</dimen>
+    <dimen name="lucky_gift_title_result_w">196dp</dimen>
+    <dimen name="lucky_gift_title_h">42dp</dimen>
+    <dimen name="lucky_gift_title_radius">30dp</dimen>
+    <dimen name="lucky_gift_title_inner_radius">24dp</dimen>
+    <dimen name="lucky_gift_title_inset">6dp</dimen>
+    <dimen name="lucky_gift_title_stroke">2dp</dimen>
+    <dimen name="lucky_gift_title_text_top">12dp</dimen>
+    <!-- Tiêu đề dài (vd. "Félicitations") tự thu nhỏ tới cỡ này -->
+    <dimen name="lucky_gift_title_min_text">8sp</dimen>
+    <!-- Âm: đẩy viền dưới của lớp trong ra khỏi tab -->
+    <dimen name="lucky_gift_title_hide_bottom">-4dp</dimen>
+    <dimen name="lucky_gift_window_w">256dp</dimen>
+    <dimen name="lucky_gift_window_h">156dp</dimen>
+    <dimen name="lucky_gift_window_start">32dp</dimen>
+    <dimen name="lucky_gift_window_top">24dp</dimen>
+    <dimen name="lucky_gift_window_radius">16dp</dimen>
+    <dimen name="lucky_gift_window_glow">128dp</dimen>
+    <dimen name="lucky_gift_cell">44dp</dimen>
+    <dimen name="lucky_gift_cell_gap">4dp</dimen>
+    <dimen name="lucky_gift_row_gap">12dp</dimen>
+    <dimen name="lucky_gift_cell_padding">4dp</dimen>
+    <dimen name="lucky_gift_cell_radius">8dp</dimen>
+    <dimen name="lucky_gift_cell_stroke">2dp</dimen>
+    <dimen name="lucky_gift_start_w">120dp</dimen>
+    <dimen name="lucky_gift_start_h">57dp</dimen>
+    <dimen name="lucky_gift_start_top">191dp</dimen>
+    <!-- Phần trên của nút START cao 44 / 57: chữ canh giữa phần trên -->
+    <dimen name="lucky_gift_start_text_bottom">13dp</dimen>
+    <!-- Congratulations (Figma 10:414) -->
+    <dimen name="lucky_gift_result_w">344dp</dimen>
+    <dimen name="lucky_gift_result_h">104dp</dimen>
+    <dimen name="lucky_gift_result_cell">56dp</dimen>
+    <dimen name="lucky_gift_message_top">16dp</dimen>
+    <dimen name="lucky_gift_collect_w">160dp</dimen>
 
     <!-- Intro / splash -->
     <dimen name="indicator_dot">8dp</dimen>

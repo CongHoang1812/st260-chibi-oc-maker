@@ -8,6 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.conght.chibiocmaker.core.common.CosplayScorer
 import com.conght.chibiocmaker.core.common.NetworkMonitor
+import com.conght.chibiocmaker.core.common.PartLocks
+import com.conght.chibiocmaker.data.repository.LuckyGiftRepository
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
 import com.conght.chibiocmaker.core.common.retryWhenBackOnline
 import com.conght.chibiocmaker.core.common.Resource
 import com.conght.chibiocmaker.core.common.StarRating
@@ -65,7 +69,13 @@ data class CustomizeUiState(
     val isDirty: Boolean = false,
     /** Chỉ có ở mode COSPLAY. */
     val cosplay: CosplayState? = null,
+    /** Key [PartLocks.key] các part đang khoá của template; rỗng khi không khoá (Cosplay). */
+    val lockedParts: Set<String> = emptySet(),
+    /** null = mode không có Lucky Gift (Cosplay) hoặc chưa tải xong template. */
+    val luckyGift: LuckyGiftState? = null,
 ) {
+    fun isLocked(categoryId: String, itemId: String): Boolean = PartLocks.key(categoryId, itemId) in lockedParts
+
     val templateDetail: TemplateDetail? get() = (detail as? Resource.Success)?.data
     val selectedCategory: PartCategory? get() = templateDetail?.categories?.firstOrNull { it.id == selectedCategoryId }
     val selection: PartSelection? get() = selectedCategoryId?.let { config?.selections?.get(it) }
@@ -109,6 +119,22 @@ data class CosplayState(
     val isFinished: Boolean get() = scorePercent != null
 }
 
+/** Một ô trong vòng quay Lucky Gift. */
+data class GiftCell(val key: String, val thumbnailUrl: String)
+
+/** Trạng thái nút quà + overlay Lucky Gift. */
+data class LuckyGiftState(
+    /** Giây còn lại tới lượt quay kế tiếp; 0 = quay được. */
+    val remainingSeconds: Int,
+    val hasLocked: Boolean,
+    /** Các ô của vòng quay (giữ nguyên tới khi Collect). */
+    val grid: List<GiftCell> = emptyList(),
+    /** Part vừa trúng; khác null = đang hiện Congratulations. */
+    val result: List<GiftCell>? = null,
+) {
+    val canSpin: Boolean get() = remainingSeconds == 0 && hasLocked && result == null
+}
+
 sealed interface CustomizeEvent {
     data class OpenEditor(val characterPath: String, val configJson: String) : CustomizeEvent
     data class OpenCosplaySuccess(val creationId: Long, val stars: Int) : CustomizeEvent
@@ -133,6 +159,7 @@ class CustomizeViewModel @Inject constructor(
     private val gson: Gson,
     private val savedStateHandle: SavedStateHandle,
     private val networkMonitor: NetworkMonitor,
+    private val luckyGiftRepository: LuckyGiftRepository = LuckyGiftRepository.Disabled,
 ) : ViewModel() {
 
     private val mode: CustomizeMode =
@@ -188,6 +215,38 @@ class CustomizeViewModel @Inject constructor(
         challenge?.let { CosplayState(it.referenceImageUrl, left, COSPLAY_SECONDS, score, path) }
     }
 
+    /** Khoá part chỉ áp dụng khi tự tạo nhân vật (MAKER), Cosplay luôn mở hết. */
+    private val locksEnabled = mode == CustomizeMode.MAKER && luckyGiftRepository.locksEnabled
+
+    private val giftGrid = savedStateHandle.getStateFlow(KEY_GIFT_GRID, arrayListOf<String>())
+    private val giftResult = savedStateHandle.getStateFlow<ArrayList<String>?>(KEY_GIFT_RESULT, null)
+
+    /** Giây còn lại tới lượt quay kế tiếp, đếm từ mốc giờ đã lưu nên vẫn đúng sau khi thoát app. */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val giftRemaining: Flow<Int> = luckyGiftRepository.nextSpinAtMs.flatMapLatest { nextSpinAt ->
+        flow {
+            while (true) {
+                val left = secondsUntil(nextSpinAt)
+                emit(left)
+                if (left == 0) break
+                delay(TICK_MS)
+            }
+        }
+    }.distinctUntilChanged()
+
+    private data class GiftInputs(
+        val unlocked: Set<String>,
+        val remaining: Int,
+        val grid: List<String>,
+        val result: List<String>?,
+    )
+
+    private val giftInputs: Flow<GiftInputs?> = if (!locksEnabled || templateId == null) {
+        flowOf(null)
+    } else {
+        combine(luckyGiftRepository.unlockedParts(templateId), giftRemaining, giftGrid, giftResult, ::GiftInputs)
+    }
+
     val state: StateFlow<CustomizeUiState> = combine(
         combine(detail, configJson, selectedCategory, panel, dirty) { detail, json, category, panel, dirty ->
             CustomizeUiState(
@@ -199,8 +258,34 @@ class CustomizeViewModel @Inject constructor(
             )
         },
         cosplayState,
-    ) { ui, cosplay -> ui.copy(cosplay = cosplay) }
+        giftInputs,
+    ) { ui, cosplay, gift -> withLuckyGift(ui.copy(cosplay = cosplay), gift) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), CustomizeUiState())
+
+    private fun withLuckyGift(ui: CustomizeUiState, gift: GiftInputs?): CustomizeUiState {
+        val detail = ui.templateDetail ?: return ui
+        gift ?: return ui
+        val locked = PartLocks.lockedKeys(detail, gift.unlocked)
+        val thumbnails = detail.categories
+            .flatMap { c -> c.items.map { PartLocks.key(c.id, it.id) to it.thumbnailUrl } }
+            .toMap()
+        fun cells(keys: List<String>) = keys.mapNotNull { key -> thumbnails[key]?.let { GiftCell(key, it) } }
+        return ui.copy(
+            lockedParts = locked,
+            luckyGift = LuckyGiftState(
+                remainingSeconds = gift.remaining,
+                hasLocked = locked.isNotEmpty(),
+                grid = cells(gift.grid),
+                result = gift.result?.let(::cells),
+            ),
+        )
+    }
+
+    private fun secondsUntil(epochMs: Long): Int {
+        val leftMs = epochMs - luckyGiftRepository.nowMs()
+        if (leftMs <= 0) return 0
+        return ((leftMs + MS_PER_SECOND - 1) / MS_PER_SECOND).toInt().coerceAtMost(PartLocks.COOLDOWN_SECONDS)
+    }
 
     private val _events = Channel<CustomizeEvent>(Channel.BUFFERED)
     val events: Flow<CustomizeEvent> = _events.receiveAsFlow()
@@ -403,6 +488,8 @@ class CustomizeViewModel @Inject constructor(
             }
         } else {
             val item = category.items.firstOrNull { it.id == itemId } ?: return
+            // Part khoá: không chọn được; riêng part đang mặc sẵn (Edit nhân vật cũ) thì giữ
+            if (current.isLocked(category.id, itemId) && current.selection?.itemId != itemId) return
             val keepColor = current.selection?.colorId?.takeIf { c -> item.colors.any { it.id == c } }
             PartSelection(itemId, keepColor ?: item.colors.firstOrNull()?.id)
         }
@@ -413,8 +500,10 @@ class CustomizeViewModel @Inject constructor(
         val categoryId = current.selectedCategoryId ?: return
         val selection = current.selection
         if (selection?.itemId == null) {
-            // Đang None: chọn màu = chọn item đầu tiên có màu đó
-            val item = current.selectedCategory?.items?.firstOrNull { i -> i.colors.any { it.id == colorId } } ?: return
+            // Đang None: chọn màu = chọn item đã mở đầu tiên có màu đó
+            val item = current.selectedCategory?.items?.firstOrNull { i ->
+                !current.isLocked(categoryId, i.id) && i.colors.any { it.id == colorId }
+            } ?: return
             updateConfig { it.copy(selections = it.selections + (categoryId to PartSelection(item.id, colorId))) }
             return
         }
@@ -460,7 +549,9 @@ class CustomizeViewModel @Inject constructor(
         val prepared = nextRandomCategory?.takeIf { it.first == categoryId }?.second
         nextRandomCategory = null
         viewModelScope.launch {
-            val selection = prepared ?: randomOrNull { makerRepository.randomizeCategory(id, categoryId) } ?: return@launch
+            val random = prepared ?: randomOrNull { makerRepository.randomizeCategory(id, categoryId) } ?: return@launch
+            val category = current.templateDetail?.categories?.firstOrNull { it.id == categoryId } ?: return@launch
+            val selection = PartLocks.openSelection(category, random, current.lockedParts)
             updateConfig { it.copy(selections = it.selections + (categoryId to selection)) }
             _events.send(CustomizeEvent.ScrollToSelection(selection))
             prepareRandomCategory(categoryId)
@@ -480,10 +571,53 @@ class CustomizeViewModel @Inject constructor(
         nextRandomAll = null
         viewModelScope.launch {
             val random = prepared ?: randomOrNull { makerRepository.randomizeCharacter(id) } ?: return@launch
-            updateConfig { it.copy(selections = random.selections) }
-            random.selections[current.selectedCategoryId]?.let { _events.send(CustomizeEvent.ScrollToSelection(it)) }
+            val categories = current.templateDetail?.categories.orEmpty().associateBy { it.id }
+            val locked = current.lockedParts
+            val selections = random.selections.mapValues { (categoryId, selection) ->
+                categories[categoryId]?.let { PartLocks.openSelection(it, selection, locked) } ?: selection
+            }
+            updateConfig { it.copy(selections = selections) }
+            selections[current.selectedCategoryId]?.let { _events.send(CustomizeEvent.ScrollToSelection(it)) }
             current.templateDetail?.let(::prepareRandomAll)
         }
+    }
+
+    /** Mở overlay Lucky Gift: lần đầu (hoặc sau Collect) chọn sẵn các ô của vòng quay từ part đang khoá. */
+    fun prepareLuckyGift() {
+        val gift = current.luckyGift ?: return
+        if (gift.grid.isNotEmpty() || !gift.hasLocked) return
+        savedStateHandle[KEY_GIFT_GRID] = ArrayList(current.lockedParts.shuffled().take(PartLocks.GRID_SIZE))
+    }
+
+    private var spinning = false
+
+    /** START: trúng [PartLocks.UNLOCK_PER_SPIN] part khoá (ưu tiên ô đang hiện), lưu cùng mốc đếm ngược 30 phút. */
+    fun spinLuckyGift() {
+        val id = templateId ?: return
+        val gift = current.luckyGift ?: return
+        if (!gift.canSpin || spinning) return
+        val locked = current.lockedParts
+        val onGrid = gift.grid.map { it.key }.filter { it in locked }
+        val won = onGrid.shuffled().take(PartLocks.UNLOCK_PER_SPIN).ifEmpty {
+            locked.shuffled().take(PartLocks.UNLOCK_PER_SPIN)
+        }
+        if (won.isEmpty()) return
+        spinning = true
+        savedStateHandle[KEY_GIFT_RESULT] = ArrayList(won)
+        viewModelScope.launch {
+            try {
+                val next = luckyGiftRepository.nowMs() + PartLocks.COOLDOWN_SECONDS * MS_PER_SECOND
+                luckyGiftRepository.recordSpin(id, won.toSet(), next)
+            } finally {
+                spinning = false
+            }
+        }
+    }
+
+    /** Collect: đóng Congratulations, lần mở sau vòng quay chọn ô mới. */
+    fun collectLuckyGift() {
+        savedStateHandle[KEY_GIFT_RESULT] = null
+        savedStateHandle[KEY_GIFT_GRID] = arrayListOf<String>()
     }
 
     private suspend fun <T> randomOrNull(block: suspend () -> T?): T? = try {
@@ -570,6 +704,9 @@ class CustomizeViewModel @Inject constructor(
         const val KEY_REMAINING = "cosplay_remaining"
         const val KEY_SCORE = "cosplay_score"
         const val KEY_RESULT_PATH = "cosplay_result_path"
+        const val KEY_GIFT_GRID = "lucky_gift_grid"
+        const val KEY_GIFT_RESULT = "lucky_gift_result"
+        const val MS_PER_SECOND = 1_000L
         const val COSPLAY_SECONDS = 10 * 60
         const val COMPLETE_PERCENT = 100
         const val TICK_MS = 1_000L

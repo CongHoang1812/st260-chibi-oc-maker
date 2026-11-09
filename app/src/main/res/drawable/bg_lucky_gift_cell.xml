@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ô quà: trắng bo 8; selected = ô đang sáng khi quay / ô trúng -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <shape>
+            <solid android:color="@color/white" />
+            <stroke android:width="@dimen/lucky_gift_cell_stroke" android:color="@color/lucky_gift_orange" />
+            <corners android:radius="@dimen/lucky_gift_cell_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="@color/white" />
+            <corners android:radius="@dimen/lucky_gift_cell_radius" />
+        </shape>
+    </item>
+</selector>

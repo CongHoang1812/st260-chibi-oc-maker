@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lucky Gift (Figma 2:551 START, 2:805 đếm ngược, 10:185 Congratulations).
+     Hai nhóm: spin_group (vòng quay 15 ô) và result_group (5 part vừa mở + Collect). -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/lucky_gift_result_w"
+    android:layout_height="wrap_content">
+
+    <!-- Vòng quay -->
+    <FrameLayout
+        android:id="@+id/spin_group"
+        android:layout_width="@dimen/lucky_gift_frame_w"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <FrameLayout
+            android:layout_width="@dimen/lucky_gift_frame_w"
+            android:layout_height="@dimen/lucky_gift_frame_h"
+            android:layout_marginTop="@dimen/lucky_gift_frame_top">
+
+            <View
+                android:layout_width="@dimen/lucky_gift_window_w"
+                android:layout_height="@dimen/lucky_gift_window_h"
+                android:layout_marginStart="@dimen/lucky_gift_window_start"
+                android:layout_marginTop="@dimen/lucky_gift_window_top"
+                android:background="@drawable/bg_lucky_gift_window" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:scaleType="fitXY"
+                android:src="@drawable/bg_lucky_gift_frame" />
+
+            <!-- 3 hàng × 5 ô, Fragment tự thêm ô -->
+            <LinearLayout
+                android:id="@+id/grid"
+                android:layout_width="@dimen/lucky_gift_window_w"
+                android:layout_height="@dimen/lucky_gift_window_h"
+                android:layout_marginStart="@dimen/lucky_gift_window_start"
+                android:layout_marginTop="@dimen/lucky_gift_window_top"
+                android:gravity="center"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/btn_spin"
+                android:layout_width="@dimen/lucky_gift_start_w"
+                android:layout_height="@dimen/lucky_gift_start_h"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/lucky_gift_start_top"
+                android:background="@drawable/bg_lucky_gift_start"
+                android:gravity="center"
+                android:paddingBottom="@dimen/lucky_gift_start_text_bottom"
+                android:stateListAnimator="@animator/press_scale"
+                android:text="@string/lucky_gift_start"
+                android:textAppearance="@style/Text.LuckyGiftStart" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="@dimen/lucky_gift_title_w"
+            android:layout_height="@dimen/lucky_gift_title_h"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_lucky_gift_title"
+            android:gravity="center_horizontal"
+            android:maxLines="1"
+            android:paddingTop="@dimen/lucky_gift_title_text_top"
+            android:text="@string/lucky_gift_title"
+            android:textAppearance="@style/Text.LuckyGiftTitle"
+            app:autoSizeMaxTextSize="@dimen/text_12"
+            app:autoSizeMinTextSize="@dimen/lucky_gift_title_min_text"
+            app:autoSizeTextType="uniform" />
+    </FrameLayout>
+
+    <!-- Congratulations -->
+    <LinearLayout
+        android:id="@+id/result_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="@dimen/lucky_gift_title_result_w"
+            android:layout_height="@dimen/lucky_gift_title_h"
+            android:background="@drawable/bg_lucky_gift_title"
+            android:gravity="center_horizontal"
+            android:maxLines="1"
+            android:paddingTop="@dimen/lucky_gift_title_text_top"
+            android:text="@string/lucky_gift_congrats"
+            android:textAppearance="@style/Text.LuckyGiftTitle"
+            app:autoSizeMaxTextSize="@dimen/text_12"
+            app:autoSizeMinTextSize="@dimen/lucky_gift_title_min_text"
+            app:autoSizeTextType="uniform" />
+
+        <LinearLayout
+            android:id="@+id/result_row"
+            android:layout_width="@dimen/lucky_gift_result_w"
+            android:layout_height="@dimen/lucky_gift_result_h"
+            android:background="@drawable/bg_lucky_gift_result"
+            android:gravity="center"
+            android:orientation="horizontal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/lucky_gift_message_top"
+            android:gravity="center"
+            android:text="@string/lucky_gift_unlocked_message"
+            android:textAppearance="@style/Text.Body.White" />
+
+        <com.conght.chibiocmaker.core.widget.WoodButton
+            android:id="@+id/btn_collect"
+            style="@style/Widget.ST260ChibiOCMaker.WoodButton"
+            android:layout_marginTop="@dimen/lucky_gift_message_top"
+            android:text="@string/lucky_gift_collect"
+            app:buttonWidth="@dimen/lucky_gift_collect_w" />
+    </LinearLayout>
+</FrameLayout>

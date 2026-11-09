@@ -9,8 +9,8 @@
         <item name="android:colorBackground">@color/cream</item>
         <item name="android:windowBackground">@color/language_bg</item>
 
-        <item name="android:fontFamily">@font/londrina_solid_family</item>
-        <item name="fontFamily">@font/londrina_solid_family</item>
+        <item name="android:fontFamily">@font/app_font</item>
+        <item name="fontFamily">@font/app_font</item>
         <item name="android:textAppearance">@style/Text.Body</item>
         <item name="android:textViewStyle">@style/Widget.ST260ChibiOCMaker.TextView</item>
 
@@ -22,24 +22,24 @@
 
     <style name="Theme.ST260ChibiOCMaker" parent="Base.Theme.ST260ChibiOCMaker" />
 
-    <!-- Dialog nền trong suốt, dim 0.6, không title (nội dung tự vẽ bằng PaperDialogContainer) -->
+    <!-- Dialog nền trong suốt, dim 0.5 (Figma 2:444), không title (nội dung tự vẽ bằng PaperDialogContainer) -->
     <style name="Theme.ST260ChibiOCMaker.Dialog" parent="Theme.Material3.Light.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.6</item>
+        <item name="android:backgroundDimAmount">0.5</item>
         <item name="android:windowMinWidthMajor">0dp</item>
         <item name="android:windowMinWidthMinor">0dp</item>
-        <item name="android:fontFamily">@font/londrina_solid_family</item>
-        <item name="fontFamily">@font/londrina_solid_family</item>
+        <item name="android:fontFamily">@font/app_font</item>
+        <item name="fontFamily">@font/app_font</item>
         <item name="android:textViewStyle">@style/Widget.ST260ChibiOCMaker.TextView</item>
     </style>
 
     <!--
         Splash hệ thống (core-splashscreen, Android 12+ luôn hiện, không tắt được), sau đó chuyển sang
-        Theme.ST260ChibiOCMaker. Không icon + màu nền trùng tông ảnh bg_tavern của SplashFragment → trông như
+        Theme.ST260ChibiOCMaker. Không icon + màu nền trùng tông đầu ảnh splash (Figma 2:1091) → trông như
         một màn splash duy nhất thay vì 2 màn nối nhau.
     -->
     <style name="Theme.ST260ChibiOCMaker.Starting" parent="Theme.SplashScreen">

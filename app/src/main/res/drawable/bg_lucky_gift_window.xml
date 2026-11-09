@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nền sáng giữa khung vòng quay (Figma 9:99 / 2:647): trắng ở giữa, cam ở mép -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:centerColor="@color/lucky_gift_window_mid"
+        android:endColor="@color/lucky_gift_window_edge"
+        android:gradientRadius="@dimen/lucky_gift_window_glow"
+        android:startColor="@color/white"
+        android:type="radial" />
+    <corners android:radius="@dimen/lucky_gift_window_radius" />
+</shape>
