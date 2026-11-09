@@ -32,6 +32,8 @@
     <dimen name="check_button">96dp</dimen>
     <dimen name="permission_image">520dp</dimen>
     <dimen name="permission_continue_gap">144dp</dimen>
+    <dimen name="cell_stroke">1dp</dimen>
+    <dimen name="cell_stroke_selected">4dp</dimen>
     <dimen name="icon_button">88dp</dimen>
     <dimen name="icon_button_large">88dp</dimen>
     <dimen name="icon_button_glyph">40dp</dimen>
@@ -65,9 +67,9 @@
     <dimen name="bottom_panel_height">550dp</dimen>
     <dimen name="tool_gap">16dp</dimen>
     <dimen name="next_button_w">140dp</dimen>
-    <dimen name="random_all_size">80dp</dimen>
+    <dimen name="random_all_size">88dp</dimen>
     <dimen name="random_all_end">8dp</dimen>
-    <dimen name="random_all_padding">8dp</dimen>
+    <dimen name="random_all_padding">12dp</dimen>
     <dimen name="category_tab_gap">5dp</dimen>
     <dimen name="move_exit_w">176dp</dimen>
     <dimen name="move_dpad_offset">96dp</dimen>
@@ -129,7 +131,7 @@
     <dimen name="editor_input_text">32sp</dimen>
     <dimen name="editor_chip_text">20sp</dimen>
     <dimen name="editor_icon_color_wheel">72dp</dimen>
-    <dimen name="editor_icon_add_image">96dp</dimen>
+    <dimen name="editor_icon_add_image">48dp</dimen>
     <dimen name="decor_sticker_w">304dp</dimen>
     <dimen name="decor_sticker_h">192dp</dimen>
     <dimen name="decor_speech_w">382dp</dimen>

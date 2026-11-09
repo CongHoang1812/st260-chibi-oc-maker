@@ -47,6 +47,10 @@
     <dimen name="permission_image">300dp</dimen>
     <dimen name="permission_continue_gap">72dp</dimen>
 
+    <!-- Viền ô item (Figma 2:1200 / 2:1219) -->
+    <dimen name="cell_stroke">0.5dp</dimen>
+    <dimen name="cell_stroke_selected">2dp</dimen>
+
     <!-- Nút icon (Figma "icon" 44×44, glyph 24) -->
     <dimen name="icon_button">44dp</dimen>
     <dimen name="icon_button_large">44dp</dimen>
@@ -90,9 +94,9 @@
     <!-- Customize (Figma 3:335): cột tool trái, nút random-all, Move panel (8:24) -->
     <dimen name="tool_gap">8dp</dimen>
     <dimen name="next_button_w">70dp</dimen>
-    <dimen name="random_all_size">40dp</dimen>
+    <dimen name="random_all_size">44dp</dimen> <!-- Figma 2:496: nút icon 44, ảnh xúc xắc 32 -->
     <dimen name="random_all_end">4dp</dimen>
-    <dimen name="random_all_padding">4dp</dimen>
+    <dimen name="random_all_padding">6dp</dimen>
     <dimen name="category_tab_gap">2dp</dimen>
     <dimen name="move_exit_w">88dp</dimen>
     <dimen name="move_dpad_offset">48dp</dimen>
@@ -166,7 +170,7 @@
     <dimen name="editor_input_text">16sp</dimen>
     <dimen name="editor_chip_text">10sp</dimen>
     <dimen name="editor_icon_color_wheel">36dp</dimen>
-    <dimen name="editor_icon_add_image">48dp</dimen>
+    <dimen name="editor_icon_add_image">24dp</dimen> <!-- Figma 2:1198: dấu + 24 -->
     <dimen name="decor_sticker_w">152dp</dimen>
     <dimen name="decor_sticker_h">96dp</dimen>
     <dimen name="decor_speech_w">191dp</dimen>

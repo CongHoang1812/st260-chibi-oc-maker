@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nền chung của các màn (Figma: gradient dọc #E7F1E5 → #95CBE5). Tên cũ giữ để layout không phải sửa. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="270"
+        android:endColor="@color/language_bg"
+        android:startColor="@color/screen_bg_top" />
+</shape>

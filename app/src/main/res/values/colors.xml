@@ -43,13 +43,23 @@
     <color name="button_inner_stroke">#803600</color>
     <!-- Bóng trong ở đáy lõi nút (inset 0 -3, đen 25%) -->
     <color name="button_shade">#40000000</color>
-    <!-- Bóng đáy tab đang chọn (Figma 2:1556) -->
+    <!-- Bóng đổ của lõi nút xuống khung trắng (Figma drop shadow 0 4 4, đen 25%) -->
+    <color name="button_drop">#26000000</color>
+    <!-- Đốm sáng góc trên trái nút icon (Figma Ellipse 1, trắng 60%) -->
+    <color name="button_highlight_dot">#99FFFFFF</color>
+    <!-- Bóng đáy tab đang chọn (Figma 2:1556); cũng là màu lõi cam đã phủ bóng đen 25% -->
+
     <color name="tab_on_shadow">#BF611D</color>
     <!-- Thanh tab category đáy Customize (Figma 2:619) -->
     <color name="tab_bar_bg">#66AACC</color>
     <!-- Thẻ dialog (Figma 2:451) -->
     <color name="dialog_paper">#FFE1CC</color>
     <color name="dialog_stroke">#803500</color>
+    <!-- Viền ô item / decor (Figma 2:1200: #CCC 0.5dp) -->
+    <color name="cell_stroke">#CCCCCC</color>
+    <!-- Đáy lớp mờ của ảnh intro (Figma 2:1148) -->
+    <color name="intro_fade">#ADD5E5</color>
+    <color name="intro_fade_transparent">#00ABD2E2</color>
     <!-- Chữ nội dung dialog (Inter #333) -->
     <color name="text_dark">#333333</color>
 

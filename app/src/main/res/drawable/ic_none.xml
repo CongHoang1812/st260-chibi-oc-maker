@@ -1,15 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh từ SVG Figma bằng svg2vd.py (none.svg) -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="23.7824"
-    android:viewportHeight="23.7824">
-    <path
-        android:pathData="M22.14 11.84C22.14 17.53 17.53 22.14 11.84 22.14C6.16 22.14 1.55 17.53 1.55 11.84C1.55 6.16 6.16 1.55 11.84 1.55C17.53 1.55 22.14 6.16 22.14 11.84Z"
-        android:strokeColor="#FF804020"
-        android:strokeWidth="2.47059"/>
-    <path
-        android:pathData="M22.55 1.24L1.24 22.55"
-        android:strokeColor="#FF804020"
-        android:strokeWidth="2.47059"
-        android:strokeLineCap="round"/>
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:pathData="M23.857 1.557L22.443 0.143L19.034 3.552C17.126 1.96 14.674 1 12 1C5.935 1 1 5.935 1 12C1 14.674 1.961 17.126 3.552 19.034L0.143 22.443L1.557 23.857L4.966 20.448C6.874 22.039 9.326 23 12 23C18.065 23 23 18.065 23 12C23 9.327 22.039 6.875 20.448 4.966L23.857 1.557ZM3 12C3 7.038 7.038 3 12 3C14.122 3 16.071 3.742 17.611 4.975L4.975 17.611C3.742 16.071 3 14.122 3 12ZM21 12C21 16.963 16.962 21 12 21C9.878 21 7.929 20.258 6.389 19.025L19.025 6.389C20.258 7.929 21 9.878 21 12Z" android:fillColor="#FFFF8127" />
 </vector>

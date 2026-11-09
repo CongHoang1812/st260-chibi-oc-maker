@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ô item phụ kiện (Figma 2:1200): trắng, viền xám 0.5dp, bo 8. Cũng là khuôn skeleton của ô part. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/white" />
+    <stroke android:width="@dimen/cell_stroke" android:color="@color/cell_stroke" />
+    <corners android:radius="@dimen/radius_medium" />
+</shape>

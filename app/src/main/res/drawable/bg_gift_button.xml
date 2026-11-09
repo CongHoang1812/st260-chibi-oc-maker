@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/orange_button" />
-    <stroke android:width="@dimen/stroke_thin" android:color="@color/white" />
-    <corners android:radius="@dimen/radius_large" />
-</shape>
+<!-- Nền nút icon Figma (khung trắng, lõi cam, bóng đáy, đốm sáng) dùng cho nút Random cả nhân vật (Figma 2:496).
+     Cùng hình với phần nền trong ic_back / ic_settings... (compose_icon.py). Khung vuông 44: view phải vuông. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="44"
+    android:viewportHeight="44">
+    <!-- Nền nút (Figma: khung trắng bo 16 viền #662A00, lõi cam bo 12 viền #803600, bóng đáy 3, đốm sáng) -->
+    <path android:fillColor="@color/white" android:pathData="M16,0H28A16,16 0 0 1 44,16V28A16,16 0 0 1 28,44H16A16,16 0 0 1 0,28V16A16,16 0 0 1 16,0Z" />
+    <group>
+        <clip-path android:pathData="M16,0H28A16,16 0 0 1 44,16V28A16,16 0 0 1 28,44H16A16,16 0 0 1 0,28V16A16,16 0 0 1 16,0Z" />
+        <path android:fillColor="@color/button_drop" android:pathData="M16,6H28A12,12 0 0 1 40,18V30A12,12 0 0 1 28,42H16A12,12 0 0 1 4,30V18A12,12 0 0 1 16,6Z" />
+    </group>
+    <path android:fillColor="@color/tab_on_shadow" android:pathData="M16,4H28A12,12 0 0 1 40,16V28A12,12 0 0 1 28,40H16A12,12 0 0 1 4,28V16A12,12 0 0 1 16,4Z" />
+    <group>
+        <clip-path android:pathData="M16,4H28A12,12 0 0 1 40,16V28A12,12 0 0 1 28,40H16A12,12 0 0 1 4,28V16A12,12 0 0 1 16,4Z" />
+        <path android:fillColor="@color/orange_button" android:pathData="M16,1H28A12,12 0 0 1 40,13V25A12,12 0 0 1 28,37H16A12,12 0 0 1 4,25V13A12,12 0 0 1 16,1Z" />
+    </group>
+    <path android:strokeColor="@color/button_inner_stroke" android:strokeWidth="1" android:pathData="M16,4.5H28A11.5,11.5 0 0 1 39.5,16V28A11.5,11.5 0 0 1 28,39.5H16A11.5,11.5 0 0 1 4.5,28V16A11.5,11.5 0 0 1 16,4.5Z" />
+    <path android:strokeColor="@color/brown_dark" android:strokeWidth="1" android:pathData="M16,0.5H28A15.5,15.5 0 0 1 43.5,16V28A15.5,15.5 0 0 1 28,43.5H16A15.5,15.5 0 0 1 0.5,28V16A15.5,15.5 0 0 1 16,0.5Z" />
+    <path android:fillColor="@color/button_highlight_dot" android:pathData="M7,8.5A3,2.5 0 1 0 13,8.5A3,2.5 0 1 0 7,8.5Z" />
+</vector>

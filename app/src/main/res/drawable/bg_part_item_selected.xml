@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ô item đang chọn (Figma 2:1219): trắng, viền cam 2dp, bo 8 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/white" />
+    <stroke android:width="@dimen/cell_stroke_selected" android:color="@color/orange_selected" />
+    <corners android:radius="@dimen/radius_medium" />
+</shape>

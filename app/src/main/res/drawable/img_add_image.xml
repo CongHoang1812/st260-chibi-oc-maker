@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh từ SVG Figma bằng svg2vd.py (plus.svg) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:pathData="M13 11H24V13H13V24H11V13H0V11H11V0H13V11Z" android:fillColor="#FFFF8127" />
+</vector>

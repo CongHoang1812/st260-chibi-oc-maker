@@ -93,7 +93,8 @@ Ghi chú khi ghép frame:
 
 - Token (2026-11-09): xong. Màu theo Figma (`colors.xml`), font Rammetto One, dim dialog 0.5. Font mặc định của chữ trong Decor editor vẫn là Londrina (id `londrina` đã lưu trong thiết kế của người dùng).
 - Component (2026-11-09): xong `WoodButtonDrawable` / `WoodButton` / `RoundIconButton` (nút Figma: khung trắng 4dp, lõi cam bo 12, bóng đáy), `PaperDialogContainer` (thẻ kem + tab tiêu đề cam, Figma 11:429). Chưa kiểm tra trên máy.
-- Chưa làm: ảnh dùng chung (`bg_tavern`, `ic_*` liền nền, khung `bg_part_item*`...), từng màn.
+- Ảnh dùng chung (2026-11-10): xong nền chung, icon nút, glyph, khung ô, ảnh Intro / Permission / trạng thái rỗng (chi tiết ở `docs/assets.md`). Ảnh Home, Splash, Move panel để làm cùng màn.
+- Chưa làm: từng màn.
 
 ## Quyết định đã chốt
 
