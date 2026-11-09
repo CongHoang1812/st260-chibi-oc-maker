@@ -90,13 +90,13 @@
     <color name="lucky_gift_button_border">#662A00</color>
     <color name="lucky_gift_badge">#FF0000</color>
 
-    <!-- Gradient đáy thẻ Home (Figma 3:439 / 3:443 / 3:441 / 3:445) -->
-    <color name="home_fade_maker">#553F35</color>
-    <color name="home_fade_maker_transparent">#00553F35</color>
-    <color name="home_fade_cosplay">#421300</color>
-    <color name="home_fade_cosplay_transparent">#00421300</color>
-    <color name="home_fade_lucky">#5A5044</color>
-    <color name="home_fade_lucky_transparent">#005A5044</color>
-    <color name="home_fade_creation">#58483C</color>
-    <color name="home_fade_creation_transparent">#0058483C</color>
+    <!-- Gradient đáy thẻ Home (Figma 2:1012 / 2:1016 / 2:1014 / 2:1018) -->
+    <color name="home_fade_maker">#EBB1B7</color>
+    <color name="home_fade_maker_transparent">#00EBB1B7</color>
+    <color name="home_fade_cosplay">#666666</color>
+    <color name="home_fade_cosplay_transparent">#00666666</color>
+    <color name="home_fade_lucky">#D46367</color>
+    <color name="home_fade_lucky_transparent">#00D46367</color>
+    <color name="home_fade_creation">#7E4637</color>
+    <color name="home_fade_creation_transparent">#007E4637</color>
 </resources>

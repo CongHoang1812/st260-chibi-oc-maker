@@ -31,10 +31,11 @@
 
     <string name="language">भाषा</string>
 
-    <string name="home_maker">D&amp;D मेकर</string>
-    <string name="home_cosplay">D&amp;D कॉसप्ले</string>
-    <string name="home_lucky_roll">D&amp;D लकी रोल</string>
+    <string name="home_maker">Chibi OC मेकर</string>
+    <string name="home_cosplay">Chibi OC कॉसप्ले</string>
+    <string name="home_lucky_roll">Chibi OC लकी रोल</string>
     <string name="my_creation">मेरी रचनाएं</string>
+    <string name="home_my_creation">मेरी\nरचनाएं</string>
     <string name="rate_us">रेटिंग दें</string>
     <string name="share_app">ऐप शेयर करें</string>
     <string name="privacy_policy">गोपनीयता नीति</string>

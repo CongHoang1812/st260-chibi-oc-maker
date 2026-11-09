@@ -195,14 +195,27 @@
         <item name="android:paddingEnd">@dimen/language_item_padding_h</item>
     </style>
 
-    <!-- Nhãn thẻ Home (Figma: 24sp trắng) -->
+    <!-- Nhãn thẻ Home (Figma 2:1013: Rammetto 16 trắng in hoa, dòng 16) -->
     <style name="Text.HomeCard">
-        <item name="android:textSize">@dimen/text_24</item>
-        <item name="android:lineHeight" tools:targetApi="28">@dimen/line_24</item>
+        <item name="android:textSize">@dimen/text_16</item>
+        <item name="android:lineHeight" tools:targetApi="28">@dimen/line_16</item>
+        <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:shadowColor">@color/brown_dark</item>
-        <item name="android:shadowDy">1</item>
-        <item name="android:shadowRadius">2</item>
+    </style>
+
+    <!-- Nhãn ở đáy thẻ Home: tự xuống dòng ở khoảng trắng như Figma (CHIBI OC / MAKER) -->
+    <style name="Widget.ST260ChibiOCMaker.HomeCardLabel" parent="Widget.ST260ChibiOCMaker.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">bottom|center_horizontal</item>
+        <item name="android:layout_marginBottom">@dimen/home_card_label_bottom</item>
+        <item name="android:layout_marginStart">@dimen/home_card_label_h</item>
+        <item name="android:layout_marginEnd">@dimen/home_card_label_h</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textAppearance">@style/Text.HomeCard</item>
     </style>
 
     <style name="Widget.ST260ChibiOCMaker.HomeCard" parent="Widget.Material3.CardView.Filled">

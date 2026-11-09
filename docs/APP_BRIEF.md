@@ -67,7 +67,7 @@ Tính năng có sẵn nhưng app này không dùng hoặc hoạt động khác. 
 | Language | `fragment_language`, `item_language` | Lần đầu `2:1094`, từ Setting `35:18` | chưa |
 | Intro | `fragment_intro`, `item_intro_page` | `2:1141`, `2:1149`, `2:1159` | chưa |
 | Permission | `fragment_permission`, `item_permission_row` | `2:1167` | chưa |
-| Home | `fragment_home` | `2:1003` | chưa |
+| Home | `fragment_home` | `2:1003` | xong layout (chưa xem trên máy) |
 | Setting | `fragment_setting` | `2:1020` | chưa |
 | Chọn template | `fragment_template_select`, `item_template` | `2:457` | chưa |
 | Customize + Move | `fragment_customize`, `view_move_panel`, `item_part`, `item_none_part`, `item_dice_part`, `item_color_dot`, `item_category_tab` | Customize `2:469`, Move `2:931` | chưa |
@@ -93,7 +93,7 @@ Ghi chú khi ghép frame:
 
 - Token (2026-11-09): xong. Màu theo Figma (`colors.xml`), font Rammetto One, dim dialog 0.5. Font mặc định của chữ trong Decor editor vẫn là Londrina (id `londrina` đã lưu trong thiết kế của người dùng).
 - Component (2026-11-09): xong `WoodButtonDrawable` / `WoodButton` / `RoundIconButton` (nút Figma: khung trắng 4dp, lõi cam bo 12, bóng đáy), `PaperDialogContainer` (thẻ kem + tab tiêu đề cam, Figma 11:429). Chưa kiểm tra trên máy.
-- Ảnh dùng chung (2026-11-10): xong nền chung, icon nút, glyph, khung ô, ảnh Intro / Permission / trạng thái rỗng (chi tiết ở `docs/assets.md`). Ảnh Home, Splash, Move panel để làm cùng màn.
+- Ảnh dùng chung (2026-11-10): xong nền chung, icon nút, glyph, khung ô, ảnh Intro / Permission / trạng thái rỗng (chi tiết ở `docs/assets.md`). Ảnh Splash, Move panel để làm cùng màn.
 - Chưa làm: từng màn.
 
 ## Quyết định đã chốt

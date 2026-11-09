@@ -31,10 +31,11 @@
 
     <string name="language">Langue</string>
 
-    <string name="home_maker">Créateur D&amp;D</string>
-    <string name="home_cosplay">Cosplay D&amp;D</string>
-    <string name="home_lucky_roll">Lancer D&amp;D</string>
+    <string name="home_maker">Créateur Chibi OC</string>
+    <string name="home_cosplay">Cosplay Chibi OC</string>
+    <string name="home_lucky_roll">Lancer Chibi OC</string>
     <string name="my_creation">Mes créations</string>
+    <string name="home_my_creation">Mes\ncréations</string>
     <string name="rate_us">Noter l\'app</string>
     <string name="share_app">Partager l\'app</string>
     <string name="privacy_policy">Confidentialité</string>

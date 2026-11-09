@@ -41,4 +41,17 @@ Icon và glyph sinh từ SVG của Figma bằng `scripts/svg2vd.py` (viền tron
 
 Vẽ bằng XML theo số đo Figma, không xuất ảnh: `bg_tavern.xml` (gradient nền chung `#E7F1E5 → #95CBE5`), `bg_intro_fade.xml` (`2:1148`), `bg_part_item.xml` / `bg_part_item_selected.xml` (`2:1200` / `2:1219`), `bg_template_item.xml` (`2:463`), `bg_creation_card.xml` (`2:1560`).
 
-Chưa làm, để cùng màn tương ứng: ảnh Home (`img_home_*`, nền biển, logo, Figma `2:1003`), ảnh Splash (`2:1091`), nút Move panel (`ic_arrow_*`, `ic_rotate_*`, `ic_zoom_*`, Figma `2:931` màu xanh), glyph `ic_flip` / `ic_move` (dùng chung với tay nắm sticker trong `DecorCanvasView`), các khung dialog (`bg_dialog_paper`, `bg_rate_dialog`, `bg_instruction_paper`, chờ Figma).
+Chưa làm, để cùng màn tương ứng: ảnh Splash (`2:1091`), nút Move panel (`ic_arrow_*`, `ic_rotate_*`, `ic_zoom_*`, Figma `2:931` màu xanh), glyph `ic_flip` / `ic_move` (dùng chung với tay nắm sticker trong `DecorCanvasView`), các khung dialog (`bg_dialog_paper`, `bg_rate_dialog`, `bg_instruction_paper`, chờ Figma).
+
+## Màn Home (2026-11-10)
+
+| File | Node | Ghi chú |
+|---|---|---|
+| `drawable-nodpi/img_home_bg.webp` | `2:1003` (ảnh nền gốc) | Nền biển, giữ kích thước gốc 736×1312 |
+| `drawable-nodpi/img_logo.webp` | `21:29` (ảnh gốc) | Logo CHIBI OC MAKER 1024×384, layout 360×135 fitCenter. Splash có thể dùng lại |
+| `drawable-nodpi/img_home_maker.webp` | `2:1012` (ảnh gốc) | Cắt theo khung Figma: ảnh 115.01%, lệch -11.25% / -7.43%, ra 480×480 (160dp @3x) |
+| `drawable-nodpi/img_home_cosplay.webp` | `2:1016` (ảnh gốc) | Rộng 100%, cao 128.51%, lấy phần trên |
+| `drawable-nodpi/img_home_lucky.webp` | `2:1014` (ảnh gốc) | object-cover cả ảnh |
+| `drawable-nodpi/img_home_creation.webp` | `2:1018` (ảnh gốc) | Ảnh 129%, lệch -18.69% / -28.81% |
+
+Đã bỏ `img_home_maker_bg.webp` (thẻ Figma chỉ có 1 ảnh). Dải màu đáy thẻ: `home_fade_*` theo Figma, bắt đầu ở 64.6%.

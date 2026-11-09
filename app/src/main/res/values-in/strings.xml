@@ -31,10 +31,11 @@
 
     <string name="language">Bahasa</string>
 
-    <string name="home_maker">Pembuat D&amp;D</string>
-    <string name="home_cosplay">Cosplay D&amp;D</string>
-    <string name="home_lucky_roll">Undian D&amp;D</string>
+    <string name="home_maker">Pembuat Chibi OC</string>
+    <string name="home_cosplay">Cosplay Chibi OC</string>
+    <string name="home_lucky_roll">Undian Chibi OC</string>
     <string name="my_creation">Kreasiku</string>
+    <string name="home_my_creation">Kreasiku</string>
     <string name="rate_us">Beri nilai</string>
     <string name="share_app">Bagikan aplikasi</string>
     <string name="privacy_policy">Kebijakan Privasi</string>

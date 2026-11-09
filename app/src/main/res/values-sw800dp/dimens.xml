@@ -174,11 +174,12 @@
     <dimen name="home_card_radius">48dp</dimen>
     <dimen name="home_card_gap">16dp</dimen>
     <dimen name="home_card_half_gap">8dp</dimen>
-    <dimen name="home_cards_top">384dp</dimen>
+    <dimen name="home_cards_top">486dp</dimen>
     <dimen name="home_card_label_bottom">18dp</dimen>
-    <dimen name="home_lucky_image_size">424dp</dimen>
-    <dimen name="home_lucky_image_offset_start">-52dp</dimen>
-    <dimen name="home_lucky_image_offset_top">-50dp</dimen>
+    <dimen name="home_card_label_h">16dp</dimen>
+    <dimen name="home_logo_w">720dp</dimen>
+    <dimen name="home_logo_h">270dp</dimen>
+    <dimen name="home_logo_top">168dp</dimen>
     <dimen name="creation_card_image">272dp</dimen>
     <dimen name="creation_tab_w">192dp</dimen>
     <dimen name="creation_tab_h">80dp</dimen>

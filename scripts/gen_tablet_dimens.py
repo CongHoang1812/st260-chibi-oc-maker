@@ -29,6 +29,8 @@ BUCKETS = {
             # Customize/Decor: nhân vật co giãn ở phần còn lại sau panel
             "bottom_panel_height": 400,
             "permission_image": 360,
+            # Home: thẻ ngay dưới logo (logo hết ở 84×1.6 + 135×1.6 = 350) để 2 hàng thẻ vừa 888
+            "home_cards_top": 360,
         },
         # Template luôn 2 cột (yêu cầu thiết kế)
         "columns": {"template_grid_columns": 2, "creation_grid_columns": 2,

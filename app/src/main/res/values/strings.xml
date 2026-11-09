@@ -41,10 +41,12 @@
     <string name="language_indonesian" translatable="false">Indonesian</string>
 
     <!-- Home / setting -->
-    <string name="home_maker">D&amp;D maker</string>
-    <string name="home_cosplay">D&amp;D cosplay</string>
-    <string name="home_lucky_roll">D&amp;D lucky roll</string>
+    <string name="home_maker">Chibi OC maker</string>
+    <string name="home_cosplay">Chibi OC cosplay</string>
+    <string name="home_lucky_roll">Chibi OC lucky roll</string>
     <string name="my_creation">My creation</string>
+    <!-- Nhãn thẻ Home (Figma 2:1019 ngắt "MY / CREATION") -->
+    <string name="home_my_creation">My\ncreation</string>
     <string name="rate_us">Rate us</string>
     <string name="share_app">Share app</string>
     <string name="privacy_policy">Privacy &amp; Policy</string>
