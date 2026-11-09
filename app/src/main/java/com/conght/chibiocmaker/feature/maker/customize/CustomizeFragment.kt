@@ -201,7 +201,7 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
             override fun onExit() = viewModel.setPanel(PanelMode.EDIT)
             override fun onMove(dxDp: Float, dyDp: Float) = viewModel.move(dxDp, dyDp)
             override fun onRotate(degrees: Float) = viewModel.rotate(degrees)
-            override fun onZoom(delta: Float) = viewModel.zoom(delta)
+            override fun onResetPart() = viewModel.resetPartTransform()
         }
         binding.canvas.onGesture = { dx, dy, scale ->
             if (dx != 0f || dy != 0f) viewModel.move(dx, dy)
@@ -259,17 +259,17 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
         binding.editPanel.isVisible = !moving
         binding.movePanel.isVisible = moving
         binding.canvas.gesturesEnabled = moving
-        binding.btnBack.isInvisible = moving
+        // Figma 2:931: đang Move vẫn hiện Home, NEXT, hàng công cụ, Random và nút quà
         // COSPLAY: không có nút Next / Done (Figma 3:132), bài tự nộp khi đạt 100% hoặc hết giờ
-        binding.btnNext.isInvisible = moving || isCosplay
-        // COSPLAY: bỏ cột tool trái + random-all (ô xúc xắc trong lưới vẫn giữ)
+        binding.btnNext.isInvisible = isCosplay
+        // COSPLAY: bỏ hàng công cụ + random-all (ô xúc xắc trong lưới vẫn giữ)
         listOf(binding.btnReset, binding.btnFlip, binding.btnRandomAll).forEach {
-            it.isVisible = !moving && !isCosplay
+            it.isVisible = !isCosplay
         }
-        binding.btnMove.isVisible = !moving && !isCosplay && state.canMovePart
+        binding.btnMove.isVisible = !isCosplay && state.canMovePart
         binding.movePanel.setLimits(state.moveLimits)
         renderCosplay(state.cosplay)
-        renderLuckyGift(state.luckyGift, moving)
+        renderLuckyGift(state.luckyGift)
 
         if (!ready) {
             noneAdapter.isSelected = false
@@ -351,11 +351,11 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
     }
 
     /**
-     * Nút quà: ẩn khi không có Lucky Gift (Cosplay), đã mở hết part hoặc đang Move.
+     * Nút quà: ẩn khi không có Lucky Gift (Cosplay) hoặc đã mở hết part.
      * Quay được thì có chấm đỏ, đang chờ thì hiện đếm ngược bên dưới.
      */
-    private fun renderLuckyGift(gift: LuckyGiftState?, moving: Boolean) {
-        val visible = gift != null && gift.hasLocked && !moving
+    private fun renderLuckyGift(gift: LuckyGiftState?) {
+        val visible = gift != null && gift.hasLocked
         binding.luckyGift.isVisible = visible
         val left = gift?.remainingSeconds ?: 0
         binding.luckyGiftBadge.isVisible = visible && left == 0

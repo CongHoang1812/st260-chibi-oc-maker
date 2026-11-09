@@ -9,6 +9,7 @@
     <string name="cancel">Cancelar</string>
     <string name="done">Listo</string>
     <string name="exit">Salir</string>
+    <string name="move_reset">Reiniciar</string>
     <string name="edit">Editar</string>
     <string name="download">Descargar</string>
     <string name="random">Aleatorio</string>

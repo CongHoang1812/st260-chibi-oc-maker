@@ -133,6 +133,20 @@ class WoodButtonDrawable(
         /** Nút / tab không chọn (Figma 2:1558): lõi xám. */
         fun gray(context: Context) = create(context, R.color.tab_off_inner, R.color.tab_off_shadow)
 
+        /** Nút xanh của panel Move (Figma 2:969, 2:950...). */
+        fun blue(context: Context) = create(context, R.color.button_blue, R.color.button_blue_stroke)
+
+        /** Nút đỏ của panel Move (EXIT, Figma 2:966). */
+        fun red(context: Context) = create(context, R.color.button_red, R.color.button_blue_stroke)
+
+        /** Nền theo [WoodButton.Variant] (dùng chung cho WoodButton và RoundIconButton). */
+        fun of(context: Context, variant: WoodButton.Variant) = when (variant) {
+            WoodButton.Variant.ORANGE -> orange(context)
+            WoodButton.Variant.GRAY -> gray(context)
+            WoodButton.Variant.BLUE -> blue(context)
+            WoodButton.Variant.RED -> red(context)
+        }
+
         private fun create(
             context: Context,
             coreRes: Int,

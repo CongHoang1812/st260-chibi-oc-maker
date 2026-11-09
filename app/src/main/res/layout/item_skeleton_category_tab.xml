@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Skeleton tab category 56×48 bo trên 8, nằm đáy hàng tab cao 56 -->
+<!-- Skeleton tab category 40×40 bo 8 (Figma 2:538) -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/category_tab_w"
@@ -10,5 +10,5 @@
         android:layout_height="@dimen/category_tab_h"
         android:layout_gravity="bottom"
         app:skeletonRadius="@dimen/category_tab_radius"
-        app:skeletonShape="topRounded" />
+        app:skeletonShape="rect" />
 </FrameLayout>

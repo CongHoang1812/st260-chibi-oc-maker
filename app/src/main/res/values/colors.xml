@@ -50,7 +50,14 @@
     <!-- Bóng đáy tab đang chọn (Figma 2:1556); cũng là màu lõi cam đã phủ bóng đen 25% -->
 
     <color name="tab_on_shadow">#BF611D</color>
-    <!-- Thanh tab category đáy Customize (Figma 2:619) -->
+    <!-- Vùng nhân vật Customize (Figma 2:470) -->
+    <color name="customize_canvas_bg">#B8DDE5</color>
+    <color name="black">#000000</color>
+    <!-- Nút xanh / đỏ của panel Move (Figma 2:969, 2:966) -->
+    <color name="button_blue">#80D4FF</color>
+    <color name="button_blue_stroke">#005680</color>
+    <color name="button_red">#FF8080</color>
+    <!-- Thanh tab category đáy Customize (Figma 2:537) -->
     <color name="tab_bar_bg">#66AACC</color>
     <!-- Thẻ dialog (Figma 2:451) -->
     <color name="dialog_paper">#FFE1CC</color>

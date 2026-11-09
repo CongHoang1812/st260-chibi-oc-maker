@@ -9,6 +9,7 @@
     <string name="cancel">Annuler</string>
     <string name="done">Terminé</string>
     <string name="exit">Quitter</string>
+    <string name="move_reset">Rétablir</string>
     <string name="edit">Modifier</string>
     <string name="download">Télécharger</string>
     <string name="random">Aléatoire</string>

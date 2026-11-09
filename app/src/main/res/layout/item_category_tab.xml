@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Tab category: 56×48 nền cell_tan; đang chọn nền trắng, cao 56 (nhô lên 8).
-     FrameLayout cha cao 56 cần để tab bám đáy. -->
+<!-- Tab category (Figma 2:538): ô trắng 40 bo 8, đang chọn viền cam 2dp. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/category_tab_w"

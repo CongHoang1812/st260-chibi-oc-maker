@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Tab category đáy màn customize -->
+<!-- Tab category đáy Customize (Figma 2:538): trắng bo 8, viền xám 0.5dp; đang chọn viền cam 2dp -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
         <shape>
             <solid android:color="@color/white" />
-            <stroke android:width="@dimen/stroke_thin" android:color="@color/brown_dark" />
-            <corners android:topLeftRadius="8dp" android:topRightRadius="8dp" android:bottomRightRadius="0dp" android:bottomLeftRadius="0dp" />
+            <stroke android:width="@dimen/cell_stroke_selected" android:color="@color/orange_selected" />
+            <corners android:radius="@dimen/category_tab_radius" />
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@color/cell_tan" />
-            <stroke android:width="@dimen/stroke_thin" android:color="@color/brown_dark" />
-            <corners android:topLeftRadius="8dp" android:topRightRadius="8dp" android:bottomRightRadius="0dp" android:bottomLeftRadius="0dp" />
+            <solid android:color="@color/white" />
+            <stroke android:width="@dimen/cell_stroke" android:color="@color/cell_stroke" />
+            <corners android:radius="@dimen/category_tab_radius" />
         </shape>
     </item>
 </selector>

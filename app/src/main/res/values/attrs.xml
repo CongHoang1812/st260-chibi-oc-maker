@@ -11,10 +11,12 @@
 
     <declare-styleable name="WoodButton">
         <attr name="android:text" />
-        <!-- orange (mặc định) | gray (tab không chọn) -->
+        <!-- orange (mặc định) | gray (tab không chọn) | blue / red (panel Move, Figma 2:945) -->
         <attr name="variant" format="enum">
             <enum name="orange" value="0" />
             <enum name="gray" value="1" />
+            <enum name="blue" value="2" />
+            <enum name="red" value="3" />
         </attr>
         <!-- Chiều rộng cố định của nút (bỏ trống = wrap_content theo chữ) -->
         <attr name="buttonWidth" format="dimension" />
@@ -23,8 +25,12 @@
     </declare-styleable>
 
     <declare-styleable name="RoundIconButton">
-        <!-- Glyph đặt giữa nút (16dp với nút 36dp, 20dp với nút 40dp) -->
+        <!-- Glyph đặt giữa nút (icon_button_glyph_large với nút ≥ icon_button_large, nhỏ hơn thì icon_button_glyph) -->
         <attr name="icon" />
+        <!-- Màu nền nút, cùng bộ với WoodButton (mặc định orange) -->
+        <attr name="variant" />
+        <!-- Cỡ glyph cố định (vd. mũi tên panel Move 48dp); bỏ trống = theo cỡ nút như trên -->
+        <attr name="iconSize" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="ShimmerFrameLayout">

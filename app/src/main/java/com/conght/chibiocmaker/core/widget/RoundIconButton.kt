@@ -17,18 +17,24 @@ class RoundIconButton @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : AppCompatImageButton(context, attrs, defStyleAttr) {
 
+    /** Cỡ glyph cố định từ `app:iconSize`; 0 = theo cỡ nút. */
+    private var iconSize = 0
+
     init {
-        background = WoodButtonDrawable.orange(context)
         scaleType = ScaleType.FIT_CENTER
+        var variant = WoodButton.Variant.ORANGE
         context.withStyledAttributes(attrs, R.styleable.RoundIconButton, defStyleAttr) {
             getDrawable(R.styleable.RoundIconButton_icon)?.let(::setImageDrawable)
+            variant = WoodButton.Variant.entries[getInt(R.styleable.RoundIconButton_variant, 0)]
+            iconSize = getDimensionPixelSize(R.styleable.RoundIconButton_iconSize, 0)
         }
+        background = WoodButtonDrawable.of(context, variant)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         val large = w >= resources.getDimensionPixelSize(R.dimen.icon_button_large)
-        val glyph = resources.getDimensionPixelSize(
+        val glyph = iconSize.takeIf { it > 0 } ?: resources.getDimensionPixelSize(
             if (large) R.dimen.icon_button_glyph_large else R.dimen.icon_button_glyph,
         )
         val horizontal = (w - glyph) / 2

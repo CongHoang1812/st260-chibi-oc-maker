@@ -96,10 +96,13 @@
         <item name="android:textColor">@color/lucky_gift_start_text</item>
     </style>
 
-    <style name="Text.LuckyGiftTimer">
-        <item name="android:textSize">@dimen/text_12</item>
+    <!-- Đếm ngược dưới nút quà (Figma 21:34: Inter Medium 14 đen) -->
+    <style name="Text.LuckyGiftTimer" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/text_14</item>
         <item name="android:lineHeight" tools:targetApi="28">@dimen/line_16</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <!-- Rate us dùng Roboto (font hệ thống) -->
@@ -164,6 +167,24 @@
     <style name="Widget.ST260ChibiOCMaker.WoodButton" parent="">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">@dimen/wood_button_height</item>
+    </style>
+
+    <!-- Nút chữ panel Move (RESET / EXIT, Figma 2:969): 120×56, chữ in hoa tự co khi bản dịch dài -->
+    <style name="Widget.ST260ChibiOCMaker.MoveTextButton" parent="Widget.ST260ChibiOCMaker.WoodButton">
+        <item name="android:layout_height">@dimen/move_button</item>
+        <item name="buttonWidth">@dimen/move_text_button_w</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">@dimen/move_text_min</item>
+        <item name="autoSizeMaxTextSize">@dimen/text_16</item>
+    </style>
+
+    <!-- Nút icon xanh panel Move (Figma 2:950): 56, cách nút trước 8 -->
+    <style name="Widget.ST260ChibiOCMaker.MoveIconButton" parent="">
+        <item name="android:layout_width">@dimen/move_button</item>
+        <item name="android:layout_height">@dimen/move_button</item>
+        <item name="android:layout_marginStart">@dimen/move_button_gap</item>
+        <item name="variant">blue</item>
     </style>
 
     <!-- Chữ nhỏ ở splash (Figma dùng Inter -> font hệ thống) -->

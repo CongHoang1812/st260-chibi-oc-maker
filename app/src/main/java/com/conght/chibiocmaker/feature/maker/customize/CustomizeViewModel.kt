@@ -534,6 +534,15 @@ class CustomizeViewModel @Inject constructor(
     /** Cộng [delta] vào scale bộ phận đang chọn (nút +/−), giới hạn [MIN_SCALE]..[MAX_SCALE]. */
     fun zoom(delta: Float) = updatePartTransform { it.copy(scale = (it.scale + delta).coerceIn(MIN_SCALE, MAX_SCALE)) }
 
+    /** RESET ở panel Move: bỏ vị trí / góc xoay / cỡ riêng của bộ phận đang chọn (về mặc định). */
+    fun resetPartTransform() {
+        val categoryId = current.selectedCategoryId ?: return
+        updateConfig { config ->
+            val transforms = config.partTransforms ?: return@updateConfig config
+            config.copy(partTransforms = (transforms - categoryId).ifEmpty { null })
+        }
+    }
+
     /** Nhân scale bộ phận đang chọn với [factor] (pinch). */
     fun zoomBy(factor: Float) = updatePartTransform { it.copy(scale = (it.scale * factor).coerceIn(MIN_SCALE, MAX_SCALE)) }
 

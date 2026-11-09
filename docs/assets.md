@@ -41,7 +41,7 @@ Icon và glyph sinh từ SVG của Figma bằng `scripts/svg2vd.py` (viền tron
 
 Vẽ bằng XML theo số đo Figma, không xuất ảnh: `bg_tavern.xml` (gradient nền chung `#E7F1E5 → #95CBE5`), `bg_intro_fade.xml` (`2:1148`), `bg_part_item.xml` / `bg_part_item_selected.xml` (`2:1200` / `2:1219`), `bg_template_item.xml` (`2:463`), `bg_creation_card.xml` (`2:1560`).
 
-Chưa làm, để cùng màn tương ứng: ảnh Splash (`2:1091`), nút Move panel (`ic_arrow_*`, `ic_rotate_*`, `ic_zoom_*`, Figma `2:931` màu xanh), glyph `ic_flip` / `ic_move` (dùng chung với tay nắm sticker trong `DecorCanvasView`), các khung dialog (`bg_dialog_paper`, `bg_rate_dialog`, `bg_instruction_paper`, chờ Figma).
+Chưa làm, để cùng màn tương ứng: ảnh Splash (`2:1091`), glyph `ic_flip` / `ic_move` (tay nắm sticker trong `DecorCanvasView`, làm cùng Decor editor), các khung dialog (`bg_dialog_paper`, `bg_rate_dialog`, `bg_instruction_paper`, chờ Figma).
 
 ## Màn Home (2026-11-10)
 
@@ -55,3 +55,14 @@ Chưa làm, để cùng màn tương ứng: ảnh Splash (`2:1091`), nút Move p
 | `drawable-nodpi/img_home_creation.webp` | `2:1018` (ảnh gốc) | Ảnh 129%, lệch -18.69% / -28.81% |
 
 Đã bỏ `img_home_maker_bg.webp` (thẻ Figma chỉ có 1 ảnh). Dải màu đáy thẻ: `home_fade_*` theo Figma, bắt đầu ở 64.6%.
+
+## Màn Customize + Move (2026-11-10)
+
+| File | Node | Ghi chú |
+|---|---|---|
+| `drawable/ic_home_button.xml` | glyph `2:474`, nền `2:471` | Nút Back của Customize (glyph Home như Figma) |
+| `drawable/ic_flip_tool.xml`, `drawable/ic_move_tool.xml` | `2:488`, `2:494` | Glyph hàng công cụ; tên riêng để không đổi tay nắm sticker (`ic_flip` / `ic_move`) |
+| `drawable/ic_arrow_up/down/left/right.xml` | `2:952`, `2:960`, `2:956`, `2:948` | Chỉ phần mũi tên trắng của SVG, khung 48 = lõi nút 56; nền xanh do `WoodButtonDrawable.blue` vẽ |
+| `drawable/ic_rotate_left.xml`, `drawable/ic_rotate_right_button.xml` | `10:421`, `10:427` | Glyph 24 trắng |
+
+Đã bỏ `ic_zoom_in.webp`, `ic_zoom_out.webp` (Figma không có nút zoom) và `bg_color_bar.xml` (hàng chấm màu không có nền).

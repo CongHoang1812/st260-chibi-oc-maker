@@ -70,7 +70,7 @@ Tính năng có sẵn nhưng app này không dùng hoặc hoạt động khác. 
 | Home | `fragment_home` | `2:1003` | xong layout (chưa xem trên máy) |
 | Setting | `fragment_setting` | `2:1020` | chưa |
 | Chọn template | `fragment_template_select`, `item_template` | `2:457` | chưa |
-| Customize + Move | `fragment_customize`, `view_move_panel`, `item_part`, `item_none_part`, `item_dice_part`, `item_color_dot`, `item_category_tab` | Customize `2:469`, Move `2:931` | chưa |
+| Customize + Move | `fragment_customize`, `view_move_panel`, `item_part`, `item_none_part`, `item_dice_part`, `item_color_dot`, `item_category_tab` | Customize `2:469`, Move `2:931` | xong layout (chưa xem trên máy) |
 | Decor editor | `fragment_decor_editor`, `item_decor_cell`, `item_none_decor`, `item_sub_tab`, `item_font_chip`, `item_color_chip` | Nền ảnh `2:1182`, nền màu `2:1240`, sticker `2:1296`, speech `2:1358`, text `2:1452` | chưa |
 | Successful | `fragment_success` | Maker `2:1421`, Cosplay `2:280`; thẻ điểm sao `2:321`, `2:330` | chưa |
 | My creation + Detail | `fragment_my_creation`, `fragment_creation_detail`, `item_creation` | Character: rỗng `2:1520`, danh sách `2:1548`, chọn nhiều `2:1656`, chi tiết `2:1746`. Design: rỗng `2:1534`, danh sách `2:1614`, chọn nhiều `2:1705`, chi tiết `2:1775` | chưa |
@@ -108,6 +108,11 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
 
 - Figma chưa có các dialog chung (dòng Dialog trong bảng màn hình); người dùng sẽ bổ sung sau, không tự đoán giao diện. Instruction và điểm số Cosplay đã có frame nên ghi ở dòng Cosplay. (2026-11-09)
 - Có làm Lucky Gift: khoá 2/3 item mỗi tab part, quay để mở part bất kỳ của tab bất kỳ, chưa cần quảng cáo, đếm ngược 30:00 chạy tiếp khi thoát app. (2026-11-09)
+- Panel Move theo Figma 2:931 (2026-11-10), người dùng đã chọn:
+  - Bỏ nút zoom +/-; zoom bằng hai ngón tay trên nhân vật.
+  - Thêm nút RESET: đưa vị trí / góc xoay / cỡ của bộ phận đang chọn về mặc định (`CustomizeViewModel.resetPartTransform`).
+  - Đang Move vẫn hiện Home, NEXT, hàng công cụ, Random và nút quà như Figma.
+  - Nút Back ở Customize dùng glyph Home như Figma, hành vi vẫn là quay lại (hỏi Exit nếu đã sửa).
 - Quy tắc Lucky Gift (2026-11-09):
   - Mỗi lượt mở 5 part.
   - Mỗi tab mở 1/3 đầu danh sách, khoá 2/3 sau; part mặc định luôn mở.

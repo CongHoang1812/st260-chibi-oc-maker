@@ -1,105 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Panel chế độ Move (Figma 8:24): Exit | xoay trái/phải | D-pad | zoom +/- -->
+<!-- Panel chế độ Move (Figma 2:945): 2 hàng nút xanh 56, cách đỉnh 24, khe 8.
+     Hàng 1: RESET (bộ phận đang chọn) | xoay trái | lên | xoay phải
+     Hàng 2: EXIT                      | trái      | xuống | phải
+     Không có nút zoom (Figma): zoom bằng hai ngón tay trên nhân vật. -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:parentTag="android.widget.LinearLayout"
-    tools:orientation="vertical">
+    tools:orientation="vertical"
+    tools:parentTag="android.widget.LinearLayout">
 
-    <com.conght.chibiocmaker.core.widget.WoodButton
-        android:id="@+id/btn_exit"
-        style="@style/Widget.ST260ChibiOCMaker.WoodButton"
-        android:layout_marginStart="@dimen/screen_padding"
-        android:layout_marginTop="@dimen/grid_gap"
-        android:text="@string/exit"
-        app:buttonWidth="@dimen/move_exit_w" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="@dimen/character_size"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/grid_gap">
+        android:layout_marginTop="@dimen/move_panel_top"
+        android:orientation="horizontal">
 
-        <!-- Cột trái: xoay -->
-        <ImageButton
+        <com.conght.chibiocmaker.core.widget.WoodButton
+            android:id="@+id/btn_reset_part"
+            style="@style/Widget.ST260ChibiOCMaker.MoveTextButton"
+            android:text="@string/move_reset"
+            app:variant="blue" />
+
+        <com.conght.chibiocmaker.core.widget.RoundIconButton
             android:id="@+id/btn_rotate_left"
-            style="@style/Widget.ST260ChibiOCMaker.ImageIconButton"
+            style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
             android:contentDescription="@string/cd_rotate_left"
-            android:src="@drawable/ic_rotate_left"
-            app:layout_constraintBottom_toTopOf="@id/btn_rotate_right"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:icon="@drawable/ic_rotate_left" />
 
-        <ImageButton
-            android:id="@+id/btn_rotate_right"
-            style="@style/Widget.ST260ChibiOCMaker.ImageIconButton"
-            android:layout_marginTop="@dimen/screen_padding"
-            android:contentDescription="@string/cd_rotate_right"
-            android:src="@drawable/ic_rotate_right_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_rotate_left" />
-
-        <!-- Giữa: D-pad 3×3 (40dp, gap 8) -->
-        <ImageButton
+        <com.conght.chibiocmaker.core.widget.RoundIconButton
             android:id="@+id/btn_up"
-            style="@style/Widget.ST260ChibiOCMaker.ImageIconButton"
+            style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
             android:contentDescription="@string/cd_move_up"
-            android:src="@drawable/ic_arrow_up"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:icon="@drawable/ic_arrow_up"
+            app:iconSize="@dimen/move_arrow_glyph" />
 
-        <ImageButton
+        <com.conght.chibiocmaker.core.widget.RoundIconButton
+            android:id="@+id/btn_rotate_right"
+            style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
+            android:contentDescription="@string/cd_rotate_right"
+            app:icon="@drawable/ic_rotate_right_button" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/move_button_gap"
+        android:orientation="horizontal">
+
+        <com.conght.chibiocmaker.core.widget.WoodButton
+            android:id="@+id/btn_exit"
+            style="@style/Widget.ST260ChibiOCMaker.MoveTextButton"
+            android:text="@string/exit"
+            app:variant="red" />
+
+        <com.conght.chibiocmaker.core.widget.RoundIconButton
             android:id="@+id/btn_left"
-            style="@style/Widget.ST260ChibiOCMaker.ImageIconButton"
-            android:layout_marginEnd="@dimen/move_dpad_offset"
+            style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
             android:contentDescription="@string/cd_move_left"
-            android:src="@drawable/ic_arrow_left"
-            app:layout_constraintEnd_toEndOf="@id/btn_up"
-            app:layout_constraintTop_toBottomOf="@id/btn_up"
-            android:layout_marginTop="@dimen/grid_gap" />
+            app:icon="@drawable/ic_arrow_left"
+            app:iconSize="@dimen/move_arrow_glyph" />
 
-        <ImageButton
-            android:id="@+id/btn_right"
-            style="@style/Widget.ST260ChibiOCMaker.ImageIconButton"
-            android:layout_marginStart="@dimen/move_dpad_offset"
-            android:layout_marginTop="@dimen/grid_gap"
-            android:contentDescription="@string/cd_move_right"
-            android:src="@drawable/ic_arrow_right"
-            app:layout_constraintStart_toStartOf="@id/btn_up"
-            app:layout_constraintTop_toBottomOf="@id/btn_up" />
-
-        <ImageButton
+        <com.conght.chibiocmaker.core.widget.RoundIconButton
             android:id="@+id/btn_down"
-            style="@style/Widget.ST260ChibiOCMaker.ImageIconButton"
-            android:layout_marginTop="@dimen/move_dpad_offset"
+            style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
             android:contentDescription="@string/cd_move_down"
-            android:src="@drawable/ic_arrow_down"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_up" />
+            app:icon="@drawable/ic_arrow_down"
+            app:iconSize="@dimen/move_arrow_glyph" />
 
-        <!-- Cột phải: zoom -->
-        <ImageButton
-            android:id="@+id/btn_zoom_in"
-            style="@style/Widget.ST260ChibiOCMaker.ImageIconButton"
-            android:contentDescription="@string/cd_zoom_in"
-            android:src="@drawable/ic_zoom_in"
-            app:layout_constraintBottom_toTopOf="@id/btn_zoom_out"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
-
-        <ImageButton
-            android:id="@+id/btn_zoom_out"
-            style="@style/Widget.ST260ChibiOCMaker.ImageIconButton"
-            android:layout_marginTop="@dimen/screen_padding"
-            android:contentDescription="@string/cd_zoom_out"
-            android:src="@drawable/ic_zoom_out"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_zoom_in" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.conght.chibiocmaker.core.widget.RoundIconButton
+            android:id="@+id/btn_right"
+            style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
+            android:contentDescription="@string/cd_move_right"
+            app:icon="@drawable/ic_arrow_right"
+            app:iconSize="@dimen/move_arrow_glyph" />
+    </LinearLayout>
 </merge>

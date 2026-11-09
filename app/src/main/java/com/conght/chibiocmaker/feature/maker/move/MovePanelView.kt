@@ -20,8 +20,9 @@ data class MoveLimits(
 )
 
 /**
- * Panel chế độ Move (Figma 8:24). Các nút xoay / di chuyển / zoom giữ để lặp (80ms).
- * Bước: dịch [MOVE_STEP_DP] dp, xoay [ROTATE_STEP_DEG]°, zoom [ZOOM_STEP].
+ * Panel chế độ Move (Figma 2:945): RESET bộ phận, Exit, xoay trái / phải, D-pad.
+ * Figma không có nút zoom: zoom bằng hai ngón tay trên canvas (CustomizeFragment `onGesture`).
+ * Các nút xoay / di chuyển giữ để lặp (80ms). Bước: dịch [MOVE_STEP_DP] dp, xoay [ROTATE_STEP_DEG]°.
  */
 class MovePanelView @JvmOverloads constructor(
     context: Context,
@@ -33,7 +34,9 @@ class MovePanelView @JvmOverloads constructor(
         fun onExit()
         fun onMove(dxDp: Float, dyDp: Float)
         fun onRotate(degrees: Float)
-        fun onZoom(delta: Float)
+
+        /** RESET: đưa vị trí / góc xoay / cỡ của bộ phận đang chọn về mặc định. */
+        fun onResetPart()
     }
 
     var listener: Listener? = null
@@ -44,14 +47,13 @@ class MovePanelView @JvmOverloads constructor(
         orientation = VERTICAL
         binding = ViewMovePanelBinding.inflate(LayoutInflater.from(context), this)
         binding.btnExit.setOnSingleClickListener { listener?.onExit() }
+        binding.btnResetPart.setOnSingleClickListener { listener?.onResetPart() }
         binding.btnRotateLeft.setOnRepeatClickListener { listener?.onRotate(-ROTATE_STEP_DEG) }
         binding.btnRotateRight.setOnRepeatClickListener { listener?.onRotate(ROTATE_STEP_DEG) }
         binding.btnUp.setOnRepeatClickListener { listener?.onMove(0f, -MOVE_STEP_DP) }
         binding.btnDown.setOnRepeatClickListener { listener?.onMove(0f, MOVE_STEP_DP) }
         binding.btnLeft.setOnRepeatClickListener { listener?.onMove(-MOVE_STEP_DP, 0f) }
         binding.btnRight.setOnRepeatClickListener { listener?.onMove(MOVE_STEP_DP, 0f) }
-        binding.btnZoomIn.setOnRepeatClickListener { listener?.onZoom(ZOOM_STEP) }
-        binding.btnZoomOut.setOnRepeatClickListener { listener?.onZoom(-ZOOM_STEP) }
     }
 
     fun setLimits(limits: MoveLimits) {
@@ -59,8 +61,6 @@ class MovePanelView @JvmOverloads constructor(
         binding.btnRight.setActive(limits.canMoveRight)
         binding.btnUp.setActive(limits.canMoveUp)
         binding.btnDown.setActive(limits.canMoveDown)
-        binding.btnZoomIn.setActive(limits.canZoomIn)
-        binding.btnZoomOut.setActive(limits.canZoomOut)
     }
 
     private fun View.setActive(active: Boolean) {
@@ -71,7 +71,6 @@ class MovePanelView @JvmOverloads constructor(
     companion object {
         const val MOVE_STEP_DP = 10f
         const val ROTATE_STEP_DEG = 15f
-        const val ZOOM_STEP = 0.1f
         private const val DISABLED_ALPHA = 0.5f
     }
 }

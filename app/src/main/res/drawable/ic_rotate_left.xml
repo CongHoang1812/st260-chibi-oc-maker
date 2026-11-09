@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh từ SVG Figma bằng svg2vd.py (rotate_left.svg) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:pathData="M1.611 12C2.37 12 2.986 12.57 3.096 13.32C3.737 17.659 7.485 21 11.999 21C17.475 21 21.826 16.083 20.866 10.431C20.413 7.766 18.718 5.408 16.343 4.118C12.837 2.215 8.863 2.865 6.163 5.163L7.293 6.293C7.923 6.923 7.477 8 6.586 8H2C1.448 8 1 7.552 1 7V2.414C1 1.523 2.077 1.077 2.707 1.707L4.039 3.039C7.6 -0.115 12.921 -1.068 17.637 1.408C20.957 3.151 23.301 6.435 23.86 10.143C24.982 17.58 19.227 24 12 24C5.979 24 0.979 19.543 0.128 13.754C-0.00700035 12.834 0.681 12 1.611 12Z" android:fillColor="#FFFFFFFF" />
+</vector>

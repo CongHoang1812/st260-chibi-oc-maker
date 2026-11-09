@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Maker – Customize (Figma 3:335) + Move (8:24). Cả màn nằm trong 1 ShimmerFrameLayout để
+<!-- Maker – Customize (Figma 2:469) + Move (2:931). Cả màn nằm trong 1 ShimmerFrameLayout để
      mọi skeleton (canvas, màu, lưới, tab) quét đồng bộ; ô None / Xúc xắc là view thật nên không bị phủ. -->
 <com.conght.chibiocmaker.core.widget.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,27 +7,27 @@
     android:id="@+id/shimmer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/customize_canvas_bg"
     app:shimmerAutoStart="false"
-    app:shimmerTone="dark">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:importantForAccessibility="no"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_tavern" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/overlay_20" />
+    app:shimmerTone="light">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Canvas nhân vật rộng tối đa 352, kéo dài xuống sát panel dưới -->
+        <!-- Mốc hàng công cụ (Figma y 480): ngay trên panel, cách 16. Luôn có mặt (kể cả Cosplay ẩn nút)
+             để canvas không đổi kích thước theo việc ẩn / hiện nút. -->
+        <Space
+            android:id="@+id/tools_row"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/icon_button"
+            android:layout_marginBottom="@dimen/customize_tools_bottom"
+            app:layout_constraintBottom_toTopOf="@id/panel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Canvas nhân vật rộng tối đa 352, từ dưới top bar tới trên hàng công cụ -->
         <com.conght.chibiocmaker.core.widget.CharacterCanvasView
             android:id="@+id/canvas"
             android:layout_width="0dp"
@@ -35,7 +35,7 @@
             android:layout_marginTop="@dimen/content_top"
             android:layout_marginBottom="@dimen/grid_gap"
             android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@id/panel"
+            app:layout_constraintBottom_toTopOf="@id/tools_row"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -48,7 +48,7 @@
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/grid_gap"
             android:layout_marginTop="@dimen/content_top"
-            app:layout_constraintBottom_toTopOf="@id/panel"
+            app:layout_constraintBottom_toTopOf="@id/tools_row"
             app:layout_constraintWidth_max="@dimen/character_size_large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,7 +71,7 @@
             android:layout_marginStart="@dimen/screen_padding"
             android:layout_marginTop="@dimen/top_bar_top"
             android:contentDescription="@string/cd_back"
-            android:src="@drawable/ic_back"
+            android:src="@drawable/ic_home_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -81,6 +81,7 @@
             android:layout_marginEnd="@dimen/screen_padding"
             android:layout_marginTop="@dimen/top_bar_top"
             android:text="@string/next"
+            android:textAllCaps="true"
             app:buttonWidth="@dimen/next_button_w"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -185,52 +186,51 @@
             app:strokeColor="@color/white"
             app:strokeWidth="@dimen/cosplay_reference_border" />
 
-        <!-- Cột tool trái: reset / flip / move -->
+        <!-- Hàng công cụ (Figma 2:479 / 2:485 / 2:491): reset / flip / move nằm ngang, cách nhau 12 -->
         <com.conght.chibiocmaker.core.widget.RoundIconButton
             android:id="@+id/btn_reset"
             android:layout_width="@dimen/icon_button"
             android:layout_height="@dimen/icon_button"
             android:layout_marginStart="@dimen/screen_padding"
-            android:layout_marginTop="@dimen/content_top"
             android:contentDescription="@string/cd_reset"
             app:icon="@drawable/ic_reset"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/tools_row" />
 
         <com.conght.chibiocmaker.core.widget.RoundIconButton
             android:id="@+id/btn_flip"
             android:layout_width="@dimen/icon_button"
             android:layout_height="@dimen/icon_button"
-            android:layout_marginTop="@dimen/tool_gap"
+            android:layout_marginStart="@dimen/customize_tool_gap"
             android:contentDescription="@string/cd_flip"
-            app:icon="@drawable/ic_flip"
-            app:layout_constraintStart_toStartOf="@id/btn_reset"
-            app:layout_constraintTop_toBottomOf="@id/btn_reset" />
+            app:icon="@drawable/ic_flip_tool"
+            app:layout_constraintStart_toEndOf="@id/btn_reset"
+            app:layout_constraintTop_toTopOf="@id/tools_row" />
 
         <com.conght.chibiocmaker.core.widget.RoundIconButton
             android:id="@+id/btn_move"
             android:layout_width="@dimen/icon_button"
             android:layout_height="@dimen/icon_button"
-            android:layout_marginTop="@dimen/tool_gap"
+            android:layout_marginStart="@dimen/customize_tool_gap"
             android:contentDescription="@string/cd_move"
-            app:icon="@drawable/ic_move"
-            app:layout_constraintStart_toStartOf="@id/btn_reset"
-            app:layout_constraintTop_toBottomOf="@id/btn_flip" />
+            app:icon="@drawable/ic_move_tool"
+            app:layout_constraintStart_toEndOf="@id/btn_flip"
+            app:layout_constraintTop_toTopOf="@id/tools_row" />
 
-        <!-- Random cả nhân vật: góc phải dưới canvas, sát panel dưới -->
+        <!-- Random cả nhân vật (Figma 2:496): cuối hàng công cụ, bên phải -->
         <ImageButton
             android:id="@+id/btn_random_all"
             android:layout_width="@dimen/random_all_size"
             android:layout_height="@dimen/random_all_size"
-            android:layout_marginEnd="@dimen/random_all_end"
-            android:layout_marginBottom="@dimen/random_all_end"
+            android:layout_marginEnd="@dimen/screen_padding"
             android:background="@drawable/bg_gift_button"
             android:contentDescription="@string/cd_random"
             android:padding="@dimen/random_all_padding"
             android:scaleType="fitCenter"
             android:src="@drawable/img_dice_gift"
-            app:layout_constraintBottom_toBottomOf="@id/canvas_skeleton"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:stateListAnimator="@animator/press_scale"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tools_row" />
 
         <!-- Panel dưới -->
         <FrameLayout
@@ -247,14 +247,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <!-- Hàng chấm màu (Figma 2:529): không có nền, cách mép trái 24, đỉnh 16 -->
                 <FrameLayout
                     android:id="@+id/color_bar"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/color_bar_height"
-                    android:layout_marginHorizontal="@dimen/screen_padding"
-                    android:layout_marginTop="@dimen/grid_gap"
-                    android:background="@drawable/bg_color_bar"
-                    android:padding="@dimen/color_bar_padding"
+                    android:layout_marginHorizontal="@dimen/part_grid_padding_h"
+                    android:layout_marginTop="@dimen/customize_panel_top"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -273,7 +272,7 @@
                     android:id="@+id/rv_parts"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/grid_gap"
+                    android:layout_marginTop="@dimen/customize_panel_top"
                     android:clipToPadding="false"
                     android:overScrollMode="never"
                     android:paddingHorizontal="@dimen/part_grid_padding_h"
@@ -284,21 +283,26 @@
                     app:layout_constraintTop_toBottomOf="@id/color_bar"
                     tools:listitem="@layout/item_part" />
 
-                <!-- Mốc 48dp từ đáy: lưới dừng ở đây, tab chọn (56) nhô lên đè 8dp -->
+                <!-- Mốc thanh tab: lưới dừng ở mép trên thanh tab -->
                 <Space
                     android:id="@+id/tabs_line"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/category_tab_h"
+                    android:layout_height="@dimen/category_tab_bar_h"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
+                <!-- Thanh tab category (Figma 2:537): nền xanh đậm, ô 40, đệm 20 / 8 -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_tabs"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/category_tab_selected_h"
+                    android:layout_height="@dimen/category_tab_bar_h"
+                    android:background="@color/tab_bar_bg"
+                    android:clipToPadding="false"
                     android:orientation="horizontal"
                     android:overScrollMode="never"
+                    android:paddingHorizontal="@dimen/category_tab_bar_padding_h"
+                    android:paddingVertical="@dimen/category_tab_bar_padding_v"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

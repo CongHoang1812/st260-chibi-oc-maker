@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mũi tên panel Move (Figma 2:960): phần trắng của SVG Figma, khung 48 = lõi nút 56 (bỏ nền xanh, nền do WoodButtonDrawable.blue vẽ) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <group android:translateX="-4">
+        <path android:fillColor="@color/white" android:pathData="M16.1169 16H39.8831C40.3036 16.0017 40.714 16.1272 41.0626 16.3604C41.4112 16.5936 41.6823 16.9241 41.8415 17.3101C42.0008 17.6962 42.0411 18.1204 41.9574 18.5292C41.8737 18.938 41.6697 19.313 41.3712 19.6067L29.5093 31.3761C29.3117 31.5738 29.0766 31.7307 28.8175 31.8378C28.5585 31.9449 28.2806 32 28 32C27.7194 32 27.4415 31.9449 27.1825 31.8378C26.9234 31.7307 26.6883 31.5738 26.4907 31.3761L14.6288 19.6067C14.3303 19.313 14.1263 18.938 14.0426 18.5292C13.9589 18.1204 13.9992 17.6962 14.1585 17.3101C14.3177 16.9241 14.5888 16.5936 14.9374 16.3604C15.286 16.1272 15.6964 16.0017 16.1169 16Z" />
+    </group>
+</vector>

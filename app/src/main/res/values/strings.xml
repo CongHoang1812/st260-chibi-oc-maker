@@ -10,6 +10,8 @@
     <string name="cancel">Cancel</string>
     <string name="done">Done</string>
     <string name="exit">Exit</string>
+    <!-- Nút RESET panel Move: đưa bộ phận đang chọn về vị trí / góc / cỡ mặc định (Figma 2:969) -->
+    <string name="move_reset">Reset</string>
     <string name="edit">Edit</string>
     <string name="download">Download</string>
     <string name="random">Random</string>
