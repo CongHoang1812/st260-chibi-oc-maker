@@ -27,7 +27,7 @@
     <string name="intro_2">Débloque ton look\nchic et stylé</string>
     <string name="intro_3">Exprime-toi\npar le style</string>
     <string name="permission">Autorisations</string>
-    <string name="permission_media">Photos</string>
+    <string name="permission_storage">Stockage</string>
     <string name="permission_notification">Notifications</string>
 
     <string name="language">Langue</string>
@@ -138,9 +138,15 @@
 
     <string name="lucky_gift_title">Cadeau chance</string>
     <string name="lucky_gift_start">Lancer</string>
+    <string name="lucky_gift_free">Gratuit</string>
     <string name="lucky_gift_congrats">Félicitations</string>
     <string name="lucky_gift_unlocked_message">Vous avez débloqué de nouveaux accessoires\nrécupérez-les et créez votre personnage !</string>
     <string name="lucky_gift_collect">Récupérer</string>
     <string name="cd_lucky_gift">Cadeau chance</string>
     <string name="cd_locked">Verrouillé</string>
+    <string name="dialog_storage_title">Autorisation de stockage</string>
+    <string name="dialog_storage_message">L\'accès au stockage a été refusé. Ouvrez les Paramètres pour l\'autoriser et enregistrer les images.</string>
+    <string name="go_to_settings">Paramètres</string>
+    <string name="dialog_lucky_ad_title">Regarder une pub</string>
+    <string name="dialog_lucky_ad_message">Regardez la pub en entier pour débloquer un tour supplémentaire maintenant, ou attendez la fin du minuteur.</string>
 </resources>

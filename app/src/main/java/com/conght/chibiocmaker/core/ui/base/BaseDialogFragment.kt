@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.DialogFragment
 import androidx.viewbinding.ViewBinding
 import com.conght.chibiocmaker.R
 import com.conght.chibiocmaker.core.ui.applyNavigationBarMode
+import com.conght.chibiocmaker.core.ui.rehideNavigationBarIfNeeded
 
 /** DialogFragment nền trong suốt (Theme.ST260ChibiOCMaker.Dialog), nội dung tự vẽ bằng ViewBinding. */
 abstract class BaseDialogFragment<VB : ViewBinding>(
@@ -31,6 +33,14 @@ abstract class BaseDialogFragment<VB : ViewBinding>(
         val host = FrameLayout(inflater.context)
         _binding = inflate(inflater, host, false)
         host.addView(binding.root)
+        // Đóng bàn phím (ô nhập tên) / quay lại dialog: thanh điều hướng có thể hiện lại → ẩn tiếp
+        ViewCompat.setOnApplyWindowInsetsListener(host) { _, insets ->
+            dialog?.window?.rehideNavigationBarIfNeeded(insets)
+            insets
+        }
+        host.viewTreeObserver.addOnWindowFocusChangeListener { hasFocus ->
+            if (hasFocus) dialog?.window?.applyNavigationBarMode()
+        }
         return host
     }
 

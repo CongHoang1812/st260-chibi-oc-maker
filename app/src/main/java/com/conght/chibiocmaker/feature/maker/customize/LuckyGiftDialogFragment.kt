@@ -3,6 +3,8 @@ package com.conght.chibiocmaker.feature.maker.customize
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.view.isInvisible
@@ -18,6 +20,8 @@ import com.conght.chibiocmaker.core.ui.collectWhenStarted
 import com.conght.chibiocmaker.core.ui.loadImage
 import com.conght.chibiocmaker.core.ui.setOnSingleClickListener
 import com.conght.chibiocmaker.databinding.DialogLuckyGiftBinding
+import com.conght.chibiocmaker.feature.dialog.ConfirmDialogFragment
+import com.conght.chibiocmaker.feature.dialog.ConfirmDialogs
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -25,13 +29,18 @@ import kotlinx.coroutines.launch
 /**
  * Overlay Lucky Gift trong Customize (Figma 2:551 / 2:805 / 10:185). Dùng chung [CustomizeViewModel]
  * với màn cha, nên vòng quay, kết quả và đếm ngược sống qua xoay màn / process death.
- * START → ô sáng chạy quanh lưới rồi dừng ở các part trúng → Congratulations → Collect đóng overlay.
+ * START → 5 cột cuộn như máy slot, dừng lần lượt từ trái sang phải, sáng các part trúng → Congratulations
+ * → Collect đóng overlay. Đang đếm ngược thì nút thành 🎬 FREE: xem quảng cáo để quay thêm một lượt.
  */
 class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(DialogLuckyGiftBinding::inflate) {
 
     private val viewModel: CustomizeViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
+    /** Ô của vòng quay theo thứ tự hàng (index = row * COLUMNS + column), khớp thứ tự của grid. */
     private val gridCells = mutableListOf<ImageView>()
+
+    /** Mỗi cột một dải ô dọc nằm trong khung cắt; lúc quay thêm ô đệm vào dải rồi trượt xuống. */
+    private val reelStrips = mutableListOf<LinearLayout>()
     private val resultCells = mutableListOf<ImageView>()
     private var shownGrid: List<GiftCell>? = null
     private var shownResult: List<GiftCell>? = null
@@ -46,7 +55,10 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
         shownResult = null
         sawNoResult = false
         buildCells()
-        binding.btnSpin.setOnSingleClickListener { viewModel.spinLuckyGift() }
+        binding.btnSpin.setOnSingleClickListener { onSpinClick() }
+        childFragmentManager.setFragmentResultListener(KEY_WATCH_AD, viewLifecycleOwner) { _, result ->
+            if (ConfirmDialogFragment.isConfirmed(result)) viewModel.spinLuckyGift(withAd = true)
+        }
         binding.btnCollect.setOnSingleClickListener {
             viewModel.collectLuckyGift()
             dismiss()
@@ -55,23 +67,39 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
         collectWhenStarted(viewModel.state) { render(it.luckyGift) }
     }
 
+    /** Hết đếm ngược: quay luôn. Đang đếm ngược: hỏi xem quảng cáo để quay thêm một lượt. */
+    private fun onSpinClick() {
+        val gift = viewModel.state.value.luckyGift ?: return
+        when {
+            gift.canSpin -> viewModel.spinLuckyGift()
+            gift.canSpinWithAd && childFragmentManager.findFragmentByTag(ConfirmDialogFragment.TAG) == null ->
+                ConfirmDialogs.luckyGiftAd(KEY_WATCH_AD).show(childFragmentManager, ConfirmDialogFragment.TAG)
+        }
+    }
+
     private fun buildCells() {
         val inflater = LayoutInflater.from(requireContext())
         val gap = resources.getDimensionPixelSize(R.dimen.lucky_gift_cell_gap)
-        val rowGap = resources.getDimensionPixelSize(R.dimen.lucky_gift_row_gap)
-        gridCells.clear()
+        val cellSize = resources.getDimensionPixelSize(R.dimen.lucky_gift_cell)
+        val reelHeight = reelHeight(ROWS)
+        val cells = arrayOfNulls<ImageView>(ROWS * COLUMNS)
+        reelStrips.clear()
         binding.grid.removeAllViews()
-        repeat(PartLocks.GRID_SIZE / COLUMNS) { row ->
-            val line = LinearLayout(requireContext()).apply { orientation = LinearLayout.HORIZONTAL }
-            binding.grid.addView(line)
-            if (row > 0) line.updateLayoutParams<LinearLayout.LayoutParams> { topMargin = rowGap }
-            repeat(COLUMNS) { column ->
-                val cell = inflater.inflate(R.layout.item_lucky_gift_cell, line, false) as ImageView
-                if (column > 0) (cell.layoutParams as LinearLayout.LayoutParams).marginStart = gap
-                line.addView(cell)
-                gridCells += cell
+        repeat(COLUMNS) { column ->
+            // FrameLayout cắt phần dải nằm ngoài khung (clipChildren mặc định)
+            val reel = FrameLayout(requireContext())
+            binding.grid.addView(reel, LinearLayout.LayoutParams(cellSize, reelHeight).apply {
+                if (column > 0) marginStart = gap
+            })
+            val strip = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
+            reel.addView(strip, FrameLayout.LayoutParams(cellSize, reelHeight))
+            repeat(ROWS) { row ->
+                cells[row * COLUMNS + column] = inflater.addReelCell(strip, row)
             }
+            reelStrips += strip
         }
+        gridCells.clear()
+        gridCells += cells.filterNotNull()
 
         val resultSize = resources.getDimensionPixelSize(R.dimen.lucky_gift_result_cell)
         resultCells.clear()
@@ -102,11 +130,18 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
         }
 
         val left = gift.remainingSeconds
-        binding.btnSpin.text = if (left > 0) {
-            getString(R.string.timer_format, left / SECONDS_PER_MINUTE, left % SECONDS_PER_MINUTE)
-        } else {
-            getString(R.string.lucky_gift_start)
+        // Hết giờ: START. Đang đếm ngược, chưa xem quảng cáo: 🎬 FREE (Figma 2:677) + đồng hồ bên dưới.
+        // Đã dùng lượt quảng cáo: giờ còn lại nằm trên nút (Figma 2:888), chờ hết giờ mới quay tiếp
+        val timer = getString(R.string.timer_format, left / SECONDS_PER_MINUTE, left % SECONDS_PER_MINUTE)
+        val freeAd = left > 0 && !gift.adSpinUsed
+        binding.ivSpinAd.isVisible = freeAd
+        binding.tvSpin.text = when {
+            left == 0 -> getString(R.string.lucky_gift_start)
+            freeAd -> getString(R.string.lucky_gift_free)
+            else -> timer
         }
+        binding.timerRow.isVisible = freeAd
+        binding.tvSpinTimer.text = timer
 
         val result = gift.result
         if (result == null) {
@@ -116,23 +151,50 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
             if (sawNoResult) playSpin(gift.grid, result) else showResult(result)
         }
         val busy = spinAnimation != null || result != null
-        binding.btnSpin.isEnabled = gift.canSpin && !busy
-        binding.btnSpin.alpha = if (binding.btnSpin.isEnabled || busy) 1f else DISABLED_ALPHA
+        binding.btnSpin.isEnabled = (gift.canSpin || gift.canSpinWithAd) && !busy
+        // Nút đang hiện giờ (Figma 2:888) vẫn đậm như thường
+        val showsTimer = left > 0 && gift.adSpinUsed
+        binding.btnSpin.alpha = if (binding.btnSpin.isEnabled || busy || showsTimer) 1f else DISABLED_ALPHA
         isCancelable = !busy
     }
 
-    /** Ô sáng chạy ngẫu nhiên, chậm dần, rồi dừng ở các ô trúng. */
+    /**
+     * Mỗi cột cuộn xuống qua một loạt ô ngẫu nhiên rồi chậm dần, dừng lần lượt từ trái sang phải
+     * (cột sau cuộn dài hơn, cùng tốc độ). Các part trúng luôn dừng ở hàng giữa, dừng hết thì sáng hàng đó.
+     */
     private fun playSpin(grid: List<GiftCell>, result: List<GiftCell>) {
-        val filled = gridCells.take(grid.size).ifEmpty { gridCells }
-        val winners = result.map { won -> grid.indexOfFirst { it.key == won.key } }.filter { it >= 0 }
-        spinAnimation = viewLifecycleOwner.lifecycleScope.launch {
-            var previous: ImageView? = null
-            repeat(SPIN_STEPS) { step ->
-                previous?.isSelected = false
-                previous = filled.random().also { it.isSelected = true }
-                delay(SPIN_START_MS + step * SPIN_SLOWDOWN_MS)
+        // Chụp ảnh đang hiện làm điểm bắt đầu của cuộn, trước khi đổi ô thật sang bố cục kết quả
+        val before = gridCells.map { it.drawable?.constantState?.newDrawable(resources) ?: it.drawable }
+        val winners = arrangeWithWinnersInMiddle(grid, result)
+        val thumbnails = grid.map { it.thumbnailUrl }
+        val inflater = LayoutInflater.from(requireContext())
+        val pitch = resources.getDimensionPixelSize(R.dimen.lucky_gift_cell) +
+            resources.getDimensionPixelSize(R.dimen.lucky_gift_row_gap)
+        var longest = 0L
+        reelStrips.forEachIndexed { column, strip ->
+            val fillers = REEL_FILLERS + column * REEL_FILLERS_STEP
+            // Dải: [ô thật – điểm dừng] [ô ngẫu nhiên] [bản sao ô đang hiện – điểm bắt đầu]
+            repeat(fillers) { index ->
+                val cell = inflater.addReelCell(strip, ROWS + index)
+                thumbnails.randomOrNull()?.let { cell.loadImage(it, R.color.white) }
             }
-            previous?.isSelected = false
+            repeat(ROWS) { row ->
+                val copy = inflater.addReelCell(strip, ROWS + fillers + row)
+                copy.setImageDrawable(before.getOrNull(row * COLUMNS + column))
+            }
+            strip.updateLayoutParams { height = reelHeight(ROWS * 2 + fillers) }
+            strip.translationY = -((ROWS + fillers) * pitch).toFloat()
+            val duration = REEL_BASE_MS + column * REEL_STAGGER_MS
+            strip.animate()
+                .translationY(0f)
+                .setDuration(duration)
+                .setInterpolator(DecelerateInterpolator(REEL_DECELERATION))
+                .start()
+            longest = maxOf(longest, duration)
+        }
+        spinAnimation = viewLifecycleOwner.lifecycleScope.launch {
+            delay(longest)
+            resetReels()
             winners.forEach { gridCells[it].isSelected = true }
             delay(WINNER_HOLD_MS)
             spinAnimation = null
@@ -140,6 +202,57 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
             isCancelable = false
         }
         isCancelable = false
+    }
+
+    /**
+     * Đặt lại ảnh các ô thật (điểm dừng của cuộn): part trúng nằm giữa hàng giữa, part còn lại rải vào
+     * các ô khác (hàng giữa chỉ chứa part trúng). Trả về index các ô trúng.
+     */
+    private fun arrangeWithWinnersInMiddle(grid: List<GiftCell>, result: List<GiftCell>): List<Int> {
+        val count = result.size.coerceAtMost(COLUMNS)
+        val firstWinner = (ROWS / 2) * COLUMNS + (COLUMNS - count) / 2
+        val winners = (firstWinner until firstWinner + count).toList()
+        val middleRow = (ROWS / 2) * COLUMNS until (ROWS / 2 + 1) * COLUMNS
+        val arrangement = arrayOfNulls<GiftCell>(gridCells.size)
+        winners.forEachIndexed { index, cell -> arrangement[cell] = result[index] }
+        val wonKeys = result.map { it.key }.toSet()
+        val others = grid.filter { it.key !in wonKeys }.shuffled()
+        val freeSlots = gridCells.indices.filter { it !in middleRow }
+        val slots = if (others.size < freeSlots.size) freeSlots.shuffled() else freeSlots
+        slots.zip(others).forEach { (cell, item) -> arrangement[cell] = item }
+        gridCells.forEachIndexed { index, cell ->
+            cell.isSelected = false
+            val item = arrangement[index]
+            if (item == null) cell.setImageDrawable(null) else cell.loadImage(item.thumbnailUrl, R.color.white)
+        }
+        return winners
+    }
+
+    /** Bỏ ô đệm, dải về đúng 3 ô thật. */
+    private fun resetReels() {
+        reelStrips.forEach { strip ->
+            strip.animate().cancel()
+            strip.translationY = 0f
+            if (strip.childCount > ROWS) strip.removeViews(ROWS, strip.childCount - ROWS)
+            strip.updateLayoutParams { height = reelHeight(ROWS) }
+        }
+    }
+
+    /** Thêm một ô vào cuối dải [strip]; ô thứ [position] > 0 cách ô trên một khoảng hàng. */
+    private fun LayoutInflater.addReelCell(strip: LinearLayout, position: Int): ImageView {
+        val cell = inflate(R.layout.item_lucky_gift_cell, strip, false) as ImageView
+        if (position > 0) {
+            (cell.layoutParams as LinearLayout.LayoutParams).topMargin =
+                resources.getDimensionPixelSize(R.dimen.lucky_gift_row_gap)
+        }
+        strip.addView(cell)
+        return cell
+    }
+
+    private fun reelHeight(cells: Int): Int {
+        val cell = resources.getDimensionPixelSize(R.dimen.lucky_gift_cell)
+        val rowGap = resources.getDimensionPixelSize(R.dimen.lucky_gift_row_gap)
+        return cells * cell + (cells - 1) * rowGap
     }
 
     private fun showResult(result: List<GiftCell>?) {
@@ -157,6 +270,8 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
     private fun View.isGone() = visibility == View.GONE
 
     override fun onDestroyView() {
+        reelStrips.forEach { it.animate().cancel() }
+        reelStrips.clear()
         spinAnimation = null
         super.onDestroyView()
     }
@@ -164,12 +279,16 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
     companion object {
         const val TAG = "LuckyGiftDialog"
 
+        private const val KEY_WATCH_AD = "lucky_gift_watch_ad"
         private const val COLUMNS = 5
-        private const val SPIN_STEPS = 20
-        private const val SPIN_START_MS = 60L
-        private const val SPIN_SLOWDOWN_MS = 12L
-        private const val WINNER_HOLD_MS = 700L
+        private const val ROWS = PartLocks.GRID_SIZE / COLUMNS
+        private const val REEL_FILLERS = 12
+        private const val REEL_FILLERS_STEP = 4
+        private const val REEL_BASE_MS = 1_400L
+        private const val REEL_STAGGER_MS = 350L
+        private const val REEL_DECELERATION = 1.6f
         private const val SECONDS_PER_MINUTE = 60
+        private const val WINNER_HOLD_MS = 700L
         private const val DISABLED_ALPHA = 0.6f
 
         fun showOnce(manager: FragmentManager) {

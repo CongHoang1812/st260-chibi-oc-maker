@@ -20,12 +20,20 @@ interface LuckyGiftRepository {
     /** Lưu cùng lúc part vừa trúng và mốc đếm ngược: thoát app giữa chừng cũng không quay lại được. */
     suspend fun recordSpin(templateId: String, parts: Set<String>, nextSpinAtMs: Long)
 
+    /** Mốc [nextSpinAtMs] của lượt đếm ngược đã quay bằng quảng cáo (mỗi lượt đếm ngược chỉ 1 lần); 0 = chưa. */
+    val adSpinUsedForMs: Flow<Long>
+
+    /** Quay bằng quảng cáo lúc đang đếm ngược: lưu part trúng, đồng hồ giữ nguyên mốc [cooldownEndMs]. */
+    suspend fun recordAdSpin(templateId: String, parts: Set<String>, cooldownEndMs: Long)
+
     /** Không khoá gì: mặc định của ViewModel khi không được Hilt tiêm repository thật. */
     object Disabled : LuckyGiftRepository {
         override val locksEnabled = false
         override fun unlockedParts(templateId: String) = flowOf(emptySet<String>())
         override val nextSpinAtMs = flowOf(0L)
         override suspend fun recordSpin(templateId: String, parts: Set<String>, nextSpinAtMs: Long) = Unit
+        override val adSpinUsedForMs = flowOf(0L)
+        override suspend fun recordAdSpin(templateId: String, parts: Set<String>, cooldownEndMs: Long) = Unit
     }
 }
 
@@ -36,4 +44,7 @@ class LuckyGiftRepositoryImpl @Inject constructor(
     override val nextSpinAtMs = dataStore.luckyGiftNextSpinAt
     override suspend fun recordSpin(templateId: String, parts: Set<String>, nextSpinAtMs: Long) =
         dataStore.recordLuckyGiftSpin(templateId, parts, nextSpinAtMs)
+    override val adSpinUsedForMs = dataStore.luckyGiftAdSpinUsedFor
+    override suspend fun recordAdSpin(templateId: String, parts: Set<String>, cooldownEndMs: Long) =
+        dataStore.recordLuckyGiftAdSpin(templateId, parts, cooldownEndMs)
 }

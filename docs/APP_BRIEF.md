@@ -150,7 +150,14 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
 - Setting / Chọn template theo Figma (2026-11-10): nền gradient chung, bỏ lớp tối. Thẻ template thành ô trắng 160 bo 4, ảnh phủ kín, lưới cách 8 (bỏ khung giấy có bóng cũ).
 - Cosplay / Lucky roll theo Figma (2026-11-10):
   - Nút Random có ảnh xúc xắc bên trái chữ: `WoodButton` thêm `app:woodIcon` (icon + chữ canh giữa thành một khối), style `RandomButton`.
-  - Màn chơi Cosplay: đồng hồ chỉ còn viên "00:00" như Figma, ẩn thanh tiến trình (`progress_timer` vẫn còn trong layout, ẩn). Ảnh mẫu thành polaroid nhỏ nghiêng -4° lấn ra mép phải, chưa có băng dính như Figma.
+  - Màn chơi Cosplay: đồng hồ chỉ còn viên "00:00" như Figma, ẩn thanh tiến trình (`progress_timer` vẫn còn trong layout, ẩn). Ảnh mẫu thành polaroid 80×96 nghiêng -4° lấn ra mép phải, có băng dính hồng góc trên-trái / dưới-phải (Figma `39:26`).
   - Instruction: thẻ kem + tab tiêu đề cam (`bg_dialog_title_tab.xml`), nút X cách thẻ 24. Popup điểm / ảnh mẫu: thẻ polaroid giống Successful Cosplay, % chữ nâu dưới ảnh.
   - Lucky roll: ô vuông rộng hết màn, Random rộng 328.
+- Quyền (2026-11-10, đổi 3 lần, đây là bản chốt):
+  - Màn Permission: Android 12 trở xuống chỉ dòng Storage, Android 13 trở lên chỉ dòng Notification. Bỏ quyền `READ_MEDIA_*` khỏi manifest (app không đọc ảnh máy).
+  - Download (View / Success / My creation): Android 10+ lưu ngay; Android 9 trở xuống xin quyền ghi, từ chối 2 lần thì lần bấm sau hiện dialog mở Settings (`ConfirmDialogs.storageSettings`).
+- Nút Next ở Customize khoá (mờ) khi ảnh nhân vật chưa lên đủ: lúc mới vào, đổi bộ phận, random (`CharacterCanvasView.onSettledChanged`).
+- Thanh điều hướng hệ thống ẩn ở mọi màn, mọi thiết bị (bỏ `R.bool.hide_navigation_bar`), kể cả dialog, sau khi đóng bàn phím, khi quay lại app. Vuốt từ đáy hiện tạm rồi tự ẩn; lúc splash mở có thể thấy thanh một chút.
+- Lucky Gift quay thêm bằng quảng cáo (2026-11-10): đang đếm ngược, nút ở vòng quay thành 🎬 FREE (Figma `2:677`, giờ chỉ hiện ở nút quà ngoài Customize); bấm thì hiện dialog "Watch an ad" (Cancel | Watch Ad). Xem xong được quay ngay một lượt, đồng hồ chạy tiếp, không đặt lại 30:00. Mỗi lượt đếm ngược chỉ được 1 lần quảng cáo; dùng rồi thì nút hiện giờ còn lại (Figma `2:888`), hết giờ mới quay START, lượt đếm ngược mới lại có FREE. Lưu mốc đã dùng ở DataStore (`lucky_gift_ad_used_for`) nên thoát app vẫn giữ. Chưa có Ads SDK nên Watch Ad cho quay luôn. Hiệu ứng quay: 5 cột cuộn kiểu máy slot, dừng lần lượt trái → phải; part trúng luôn dừng ở hàng giữa. Dưới nút FREE có dòng đồng hồ + giờ còn lại (Figma chưa có, tự thêm).
+- Intro: nền dưới ảnh vẽ riêng `#ADD5E5 → #95CBE5` để nối liền với lớp mờ trên mọi chiều cao màn.
 - `APP_KEY` `ST279_AnimeOCMaker` chỉ là API mượn tạm vì app chưa có API thật. Chưa cần chạy `probe_api.py`; phải đổi sang API thật và kiểm tra lại trước khi phát hành. (2026-11-09)

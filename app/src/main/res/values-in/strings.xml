@@ -27,7 +27,7 @@
     <string name="intro_2">Buka tampilan\nkeren dan berkelas</string>
     <string name="intro_3">Ekspresikan dirimu\nmelalui gaya</string>
     <string name="permission">Izin</string>
-    <string name="permission_media">Foto</string>
+    <string name="permission_storage">Penyimpanan</string>
     <string name="permission_notification">Notifikasi</string>
 
     <string name="language">Bahasa</string>
@@ -136,9 +136,15 @@
 
     <string name="lucky_gift_title">Hadiah Keberuntungan</string>
     <string name="lucky_gift_start">Mulai</string>
+    <string name="lucky_gift_free">Gratis</string>
     <string name="lucky_gift_congrats">Selamat</string>
     <string name="lucky_gift_unlocked_message">Kamu membuka lebih banyak aksesori\nkumpulkan dan buat karaktermu sendiri!</string>
     <string name="lucky_gift_collect">Ambil</string>
     <string name="cd_lucky_gift">Hadiah keberuntungan</string>
     <string name="cd_locked">Terkunci</string>
+    <string name="dialog_storage_title">Izin penyimpanan</string>
+    <string name="dialog_storage_message">Akses penyimpanan ditolak. Buka Setelan untuk mengizinkannya dan menyimpan gambar.</string>
+    <string name="go_to_settings">Setelan</string>
+    <string name="dialog_lucky_ad_title">Tonton iklan</string>
+    <string name="dialog_lucky_ad_message">Tonton iklan sampai selesai untuk membuka satu putaran tambahan sekarang, atau tunggu sampai timer selesai.</string>
 </resources>

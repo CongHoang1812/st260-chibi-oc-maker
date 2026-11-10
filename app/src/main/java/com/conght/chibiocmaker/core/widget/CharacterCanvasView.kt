@@ -57,15 +57,22 @@ class CharacterCanvasView @JvmOverloads constructor(
     private val loadingIds = mutableSetOf<String>()
     private var staging = false
 
+    /** Layer tải thẳng (lần đầu hiện) chưa xong ảnh. */
+    private val directLoadingIds = mutableSetOf<String>()
+    private var lastSettled = true
+
     /** Đầu vào layer của lần [render] trước: kéo / zoom chỉ đổi transform nên khỏi dựng lại layer. */
     private var renderedDetail: TemplateDetail? = null
     private var renderedSelections: Map<String, PartSelection>? = null
 
     /** false = đang chờ layer mới (màn hình vẫn là nhân vật cũ) → chưa nên exportBitmap(). */
-    val isSettled: Boolean get() = pendingUrls.isEmpty()
+    val isSettled: Boolean get() = pendingUrls.isEmpty() && directLoadingIds.isEmpty()
 
     /** Gọi sau khi layer mới đã hiện xong, lúc này exportBitmap() ra đúng nhân vật mới. */
     var onSettled: (() -> Unit)? = null
+
+    /** Gọi khi [isSettled] đổi (bắt đầu chờ layer mới / đã hiện xong), dùng để khoá nút Next. */
+    var onSettledChanged: ((Boolean) -> Unit)? = null
     private val density = resources.displayMetrics.density
 
     private var lastX = 0f
@@ -94,6 +101,7 @@ class CharacterCanvasView @JvmOverloads constructor(
             renderedDetail = detail
             renderedSelections = config.selections
             renderLayers(detail, config)
+            dispatchSettled()
         }
         layerContainer.applyTransform(config.transform, density)
         // Gồm cả layer đang chờ để lúc đổi layer bộ phận không bị nhảy về vị trí gốc
@@ -110,6 +118,7 @@ class CharacterCanvasView @JvmOverloads constructor(
             (layers.keys - ids.toSet()).forEach { id ->
                 layers.remove(id)?.let(layerContainer::removeView)
                 layerUrls.remove(id)
+                directLoadingIds.remove(id)
             }
             ids.forEachIndexed { index, id ->
                 val view = layers.getOrPut(id) { newLayerView() }
@@ -189,7 +198,8 @@ class CharacterCanvasView @JvmOverloads constructor(
             if (replacement == null) {
                 setLayer(id, old, url)
             } else {
-                Glide.with(old).clear(old)
+                Glide.with(old).clear(old) // huỷ cả lần tải thẳng còn dở (listener không chạy nữa)
+                directLoadingIds.remove(id)
                 layerContainer.removeView(old)
                 replacement.visibility = VISIBLE
                 layers[id] = replacement
@@ -198,8 +208,22 @@ class CharacterCanvasView @JvmOverloads constructor(
         }
         pendingUrls.clear()
         pendingViews.clear()
-        // post: listener của Glide chạy trước khi ảnh được gán vào view, báo ngay thì export thiếu layer
-        post { onSettled?.invoke() }
+        postSettled()
+    }
+
+    /** post: listener của Glide chạy trước khi ảnh được gán vào view, báo ngay thì export thiếu layer. */
+    private fun postSettled() {
+        post {
+            dispatchSettled()
+            if (isSettled) onSettled?.invoke()
+        }
+    }
+
+    private fun dispatchSettled() {
+        val settled = isSettled
+        if (settled == lastSettled) return
+        lastSettled = settled
+        onSettledChanged?.invoke(settled)
     }
 
     /** Bỏ layer đang chờ của [ids] (url đích đã đổi / đổi template). */
@@ -221,6 +245,7 @@ class CharacterCanvasView @JvmOverloads constructor(
     private fun setLayer(categoryId: String, view: ImageView, url: String?) {
         if (layerUrls.containsKey(categoryId) && layerUrls[categoryId] == url) return
         layerUrls[categoryId] = url
+        directLoadingIds.remove(categoryId)
         if (url == null) {
             Glide.with(view).clear(view)
             view.setImageDrawable(null)
@@ -233,7 +258,34 @@ class CharacterCanvasView @JvmOverloads constructor(
             view.setImageDrawable(url.removePrefix(MockImageLoader.MOCK_COLOR_PREFIX).toColorInt().toDrawable())
         } else {
             // Không dùng HARDWARE bitmap để exportBitmap() vẽ được ra canvas phần mềm
-            Glide.with(view).load(url).disallowHardwareConfig().into(view)
+            directLoadingIds += categoryId
+            val onDone = {
+                if (layerUrls[categoryId] == url && directLoadingIds.remove(categoryId)) postSettled()
+            }
+            Glide.with(view).load(url).disallowHardwareConfig()
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean,
+                    ): Boolean {
+                        onDone()
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean,
+                    ): Boolean {
+                        onDone()
+                        return false
+                    }
+                })
+                .into(view)
         }
     }
 

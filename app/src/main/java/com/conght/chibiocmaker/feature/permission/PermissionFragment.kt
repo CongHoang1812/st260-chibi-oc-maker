@@ -1,11 +1,8 @@
 package com.conght.chibiocmaker.feature.permission
 
-import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -14,6 +11,7 @@ import com.conght.chibiocmaker.core.common.AppPermissions
 import com.conght.chibiocmaker.core.ui.applyStatusBarPadding
 import com.conght.chibiocmaker.core.ui.base.BaseFragment
 import com.conght.chibiocmaker.core.ui.collectWhenStarted
+import com.conght.chibiocmaker.core.ui.openAppSettings
 import com.conght.chibiocmaker.core.ui.setLightStatusBar
 import com.conght.chibiocmaker.core.ui.setOnSingleClickListener
 import com.conght.chibiocmaker.databinding.FragmentPermissionBinding
@@ -25,8 +23,8 @@ class PermissionFragment : BaseFragment<FragmentPermissionBinding>(FragmentPermi
 
     private val viewModel: PermissionViewModel by viewModels()
 
-    private val mediaLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        onPermissionResult(AppPermissions.media.asIterable(), AppPermissions.isMediaGranted(requireContext()))
+    private val storageLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+        onPermissionResult(AppPermissions.storage.orEmpty().asIterable(), AppPermissions.isStorageGranted(requireContext()))
     }
 
     private val notificationLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -38,13 +36,17 @@ class PermissionFragment : BaseFragment<FragmentPermissionBinding>(FragmentPermi
         binding.root.applyStatusBarPadding()
         setLightStatusBar(true)
 
-        binding.rowMedia.tvName.setText(R.string.permission_media)
+        binding.rowMedia.tvName.setText(R.string.permission_storage)
         binding.rowNotification.tvName.setText(R.string.permission_notification)
-        // Dưới Android 13 không có quyền thông báo lúc chạy → ẩn dòng này
+        // Android 12 trở xuống: chỉ dòng Storage. Android 13 trở lên: chỉ dòng Notification
+        binding.rowMedia.root.isVisible = AppPermissions.storage != null
         binding.rowNotification.root.isVisible = AppPermissions.notification != null
 
         binding.rowMedia.root.setOnSingleClickListener {
-            if (!AppPermissions.isMediaGranted(requireContext())) mediaLauncher.launch(AppPermissions.media)
+            val permissions = AppPermissions.storage
+            if (permissions != null && !AppPermissions.isStorageGranted(requireContext())) {
+                storageLauncher.launch(permissions)
+            }
         }
         binding.rowNotification.root.setOnSingleClickListener {
             val permission = AppPermissions.notification
@@ -67,7 +69,7 @@ class PermissionFragment : BaseFragment<FragmentPermissionBinding>(FragmentPermi
 
     private fun renderStates() {
         val context = requireContext()
-        binding.rowMedia.setGranted(AppPermissions.isMediaGranted(context))
+        binding.rowMedia.setGranted(AppPermissions.isStorageGranted(context))
         binding.rowNotification.setGranted(AppPermissions.isNotificationGranted(context))
     }
 
@@ -81,11 +83,6 @@ class PermissionFragment : BaseFragment<FragmentPermissionBinding>(FragmentPermi
     private fun onPermissionResult(permissions: Iterable<String>, granted: Boolean) {
         renderStates()
         val canAskAgain = permissions.any { shouldShowRequestPermissionRationale(it) }
-        if (!granted && !canAskAgain) openAppSettings()
-    }
-
-    private fun openAppSettings() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:${requireContext().packageName}".toUri())
-        startActivity(intent)
+        if (!granted && !canAskAgain) requireContext().openAppSettings()
     }
 }

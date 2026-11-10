@@ -108,6 +108,11 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <!-- Đếm ngược dưới nút FREE trong overlay Lucky Gift (nền tối) -->
+    <style name="Text.LuckyGiftTimer.Light">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <!-- Rate us dùng Roboto (font hệ thống) -->
     <style name="Text.Rate" parent="TextAppearance.AppCompat">
         <item name="android:fontFamily">sans-serif</item>

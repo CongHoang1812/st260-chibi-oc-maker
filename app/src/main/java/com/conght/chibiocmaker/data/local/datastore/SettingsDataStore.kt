@@ -62,10 +62,23 @@ class SettingsDataStore @Inject constructor(
         }
     }
 
+    /** Mốc [luckyGiftNextSpinAt] của lượt đếm ngược đã dùng quay bằng quảng cáo; 0 = chưa dùng. */
+    val luckyGiftAdSpinUsedFor: Flow<Long> = dataStore.data.map { it[KEY_LUCKY_GIFT_AD_USED_FOR] ?: 0L }
+
+    /** Lượt quay bằng quảng cáo: lưu part trúng, giữ nguyên mốc đếm ngược, đánh dấu lượt đếm ngược này đã dùng. */
+    suspend fun recordLuckyGiftAdSpin(templateId: String, parts: Set<String>, cooldownEndMs: Long) {
+        dataStore.edit {
+            val key = keyLuckyGiftUnlocked(templateId)
+            it[key] = it[key].orEmpty() + parts
+            it[KEY_LUCKY_GIFT_AD_USED_FOR] = cooldownEndMs
+        }
+    }
+
     private fun keyLuckyGiftUnlocked(templateId: String) = stringSetPreferencesKey("lucky_gift_unlocked_$templateId")
 
     private companion object {
         val KEY_LUCKY_GIFT_NEXT_SPIN = longPreferencesKey("lucky_gift_next_spin_at")
+        val KEY_LUCKY_GIFT_AD_USED_FOR = longPreferencesKey("lucky_gift_ad_used_for")
         val KEY_LANGUAGE = stringPreferencesKey("language_code")
         val KEY_ONBOARDING_DONE = booleanPreferencesKey("onboarding_done")
         val KEY_COSPLAY_INSTRUCTION = booleanPreferencesKey("cosplay_instruction_shown")

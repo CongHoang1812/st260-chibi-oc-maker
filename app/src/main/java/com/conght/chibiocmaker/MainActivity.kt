@@ -8,6 +8,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.conght.chibiocmaker.core.ui.applyNavigationBarMode
+import com.conght.chibiocmaker.core.ui.rehideNavigationBarIfNeeded
 import com.conght.chibiocmaker.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.updatePadding(left = systemBars.left, right = systemBars.right, bottom = systemBars.bottom)
+            window.rehideNavigationBarIfNeeded(insets)
             insets
         }
         window.applyNavigationBarMode()

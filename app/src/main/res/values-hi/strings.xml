@@ -27,7 +27,7 @@
     <string name="intro_2">अपना स्टाइलिश और\nशानदार लुक अनलॉक करें</string>
     <string name="intro_3">स्टाइल के ज़रिए\nखुद को व्यक्त करें</string>
     <string name="permission">अनुमति</string>
-    <string name="permission_media">फ़ोटो</string>
+    <string name="permission_storage">स्टोरेज</string>
     <string name="permission_notification">सूचनाएं</string>
 
     <string name="language">भाषा</string>
@@ -137,9 +137,15 @@
 
     <string name="lucky_gift_title">लकी गिफ्ट</string>
     <string name="lucky_gift_start">शुरू</string>
+    <string name="lucky_gift_free">फ़्री</string>
     <string name="lucky_gift_congrats">बधाई हो</string>
     <string name="lucky_gift_unlocked_message">आपने और भी एक्सेसरीज़ अनलॉक कर ली हैं\nउन्हें इकट्ठा करें और अपना किरदार बनाएं!</string>
     <string name="lucky_gift_collect">इकट्ठा करें</string>
     <string name="cd_lucky_gift">लकी गिफ्ट</string>
     <string name="cd_locked">लॉक है</string>
+    <string name="dialog_storage_title">स्टोरेज अनुमति</string>
+    <string name="dialog_storage_message">स्टोरेज की अनुमति नहीं दी गई। इमेज सेव करने के लिए सेटिंग्स खोलकर अनुमति दें।</string>
+    <string name="go_to_settings">सेटिंग्स</string>
+    <string name="dialog_lucky_ad_title">विज्ञापन देखें</string>
+    <string name="dialog_lucky_ad_message">अभी एक अतिरिक्त स्पिन पाने के लिए पूरा विज्ञापन देखें, या टाइमर खत्म होने तक इंतज़ार करें।</string>
 </resources>

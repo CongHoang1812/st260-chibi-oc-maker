@@ -163,26 +163,49 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <!-- COSPLAY: ảnh mẫu dạng polaroid nhỏ nghiêng -4°, lấn ra mép phải, ngay trên panel (Figma 39:26) -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_reference"
+        <!-- COSPLAY: ảnh mẫu dạng polaroid 80×96 nghiêng -4°, lấn ra mép phải, ngay trên panel,
+             băng dính hồng góc trên-trái và dưới-phải (Figma 39:26) -->
+        <FrameLayout
+            android:id="@+id/reference_card"
             android:layout_width="@dimen/cosplay_reference_w"
             android:layout_height="@dimen/cosplay_reference_h"
             android:background="@drawable/bg_cosplay_reference"
-            android:contentDescription="@string/cd_reference_image"
             android:elevation="@dimen/cosplay_reference_elevation"
-            android:paddingStart="@dimen/cosplay_reference_padding"
-            android:paddingTop="@dimen/cosplay_reference_padding"
-            android:paddingEnd="@dimen/cosplay_reference_padding"
-            android:paddingBottom="@dimen/cosplay_reference_padding_bottom"
             android:rotation="@dimen/cosplay_reference_rotation"
-            android:scaleType="centerCrop"
             android:translationX="@dimen/cosplay_reference_offset_x"
             android:translationY="@dimen/cosplay_reference_offset_y"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/panel"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:visibility="visible" />
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/iv_reference"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/cd_reference_image"
+                android:paddingStart="@dimen/cosplay_reference_padding"
+                android:paddingTop="@dimen/cosplay_reference_padding"
+                android:paddingEnd="@dimen/cosplay_reference_padding"
+                android:paddingBottom="@dimen/cosplay_reference_padding_bottom"
+                android:scaleType="centerCrop" />
+
+            <ImageView
+                android:layout_width="@dimen/cosplay_reference_tape_top"
+                android:layout_height="@dimen/cosplay_reference_tape_top"
+                android:layout_marginStart="@dimen/cosplay_reference_tape_top_margin"
+                android:layout_marginTop="@dimen/cosplay_reference_tape_top_margin"
+                android:importantForAccessibility="no"
+                android:src="@drawable/img_reference_tape_top" />
+
+            <ImageView
+                android:layout_width="@dimen/cosplay_reference_tape_bottom"
+                android:layout_height="@dimen/cosplay_reference_tape_bottom"
+                android:layout_marginStart="@dimen/cosplay_reference_tape_bottom_start"
+                android:layout_marginTop="@dimen/cosplay_reference_tape_bottom_top"
+                android:importantForAccessibility="no"
+                android:src="@drawable/img_reference_tape_bottom" />
+        </FrameLayout>
 
         <!-- Hàng công cụ (Figma 2:479 / 2:485 / 2:491): reset / flip / move nằm ngang, cách nhau 12 -->
         <com.conght.chibiocmaker.core.widget.RoundIconButton

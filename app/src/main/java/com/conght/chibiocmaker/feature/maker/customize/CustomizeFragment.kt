@@ -179,7 +179,9 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
             if (!viewModel.state.value.isReady || !binding.canvas.isSettled) return@setOnSingleClickListener
             viewModel.saveAndContinue(binding.canvas.exportBitmap())
         }
-        binding.ivReference.setOnSingleClickListener { showReferenceDialog() }
+        binding.referenceCard.setOnSingleClickListener { showReferenceDialog() }
+        // Ảnh nhân vật chưa lên đủ (mới vào, đổi bộ phận, random) → khoá Next
+        binding.canvas.onSettledChanged = { updateNextEnabled() }
         // Nộp bài lúc layer cuối còn đang tải: chờ tải xong mới chụp ảnh kết quả
         binding.canvas.onSettled = {
             if (view != null && lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
@@ -248,8 +250,7 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
         (state.detail as? Resource.Error)?.let { binding.errorState.setError(it.throwable) }
         binding.canvasSkeleton.root.isInvisible = ready || state.detail is Resource.Error
         binding.canvas.isInvisible = !ready
-        binding.btnNext.isEnabled = ready
-        binding.btnNext.alpha = if (ready) 1f else DISABLED_ALPHA
+        updateNextEnabled(ready)
         binding.rvParts.swapAdapter(if (ready) readyParts else loadingParts)
         binding.rvColors.swapAdapter(if (ready) colorAdapter else loadingColors)
         binding.rvTabs.swapAdapter(if (ready) tabAdapter else loadingTabs)
@@ -368,7 +369,7 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
     /** Thanh thời gian + thumbnail ảnh tham chiếu (chỉ COSPLAY). */
     private fun renderCosplay(cosplay: CosplayState?) {
         binding.timerBar.isVisible = cosplay != null
-        binding.ivReference.isVisible = cosplay != null
+        binding.referenceCard.isVisible = cosplay != null
         cosplay ?: return
         val left = cosplay.remainingSeconds
         binding.tvTimer.text = getString(R.string.timer_format, left / SECONDS_PER_MINUTE, left % SECONDS_PER_MINUTE)
@@ -391,6 +392,13 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
     }
 
     /** Đã nộp bài: chụp nhân vật cho popup → hiện popup điểm (một lần, sống qua xoay màn). */
+    /** Next chỉ bấm được khi đã có dữ liệu và mọi layer của nhân vật đã hiện xong. */
+    private fun updateNextEnabled(ready: Boolean = viewModel.state.value.isReady) {
+        val enabled = ready && binding.canvas.isSettled
+        binding.btnNext.isEnabled = enabled
+        binding.btnNext.alpha = if (enabled) 1f else DISABLED_ALPHA
+    }
+
     private fun handleCosplayResult(cosplay: CosplayState) {
         val percent = cosplay.scorePercent ?: return
         // Hết giờ khi đang xem ảnh mẫu → đóng popup ảnh mẫu để nhường popup điểm

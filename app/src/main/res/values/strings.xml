@@ -30,7 +30,7 @@
     <string name="intro_2">Unlock your stylish\n&amp; classy look</string>
     <string name="intro_3">Express yourself\nthrough style</string>
     <string name="permission">Permission</string>
-    <string name="permission_media">Photos</string>
+    <string name="permission_storage">Storage</string>
     <string name="permission_notification">Notifications</string>
 
     <!-- Ngôn ngữ (tên hiển thị như Figma, không dịch) -->
@@ -160,9 +160,15 @@
 
     <string name="lucky_gift_title">Lucky Gift</string>
     <string name="lucky_gift_start">Start</string>
+    <string name="lucky_gift_free">Free</string>
     <string name="lucky_gift_congrats">Congratulations</string>
     <string name="lucky_gift_unlocked_message">You\'ve unlocked more accessories\ncollect them and create your own character!</string>
     <string name="lucky_gift_collect">Collect</string>
     <string name="cd_lucky_gift">Lucky gift</string>
     <string name="cd_locked">Locked</string>
+    <string name="dialog_storage_title">Storage permission</string>
+    <string name="dialog_storage_message">Storage access was denied. Open Settings to allow it and save images.</string>
+    <string name="go_to_settings">Settings</string>
+    <string name="dialog_lucky_ad_title">Watch an ad</string>
+    <string name="dialog_lucky_ad_message">Watch the full ad to unlock one extra spin now, or wait for the timer to finish.</string>
 </resources>

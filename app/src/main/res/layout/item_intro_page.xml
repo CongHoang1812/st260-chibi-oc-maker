@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Trang intro (Figma 2:1141 / 2:1149 / 2:1159): ảnh 560dp mờ dần xuống nền + 2 dòng chữ -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Trang intro (Figma 2:1141 / 2:1149 / 2:1159): ảnh 560dp mờ dần sang #ADD5E5, nền bên dưới nối tiếp từ đúng màu đó + 2 dòng chữ -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/intro_image_h">
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/intro_image_h"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/img_intro_1" />
 
-        <ImageView
-            android:id="@+id/iv_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:importantForAccessibility="no"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/img_intro_1" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_intro_fade"
+        app:layout_constraintBottom_toBottomOf="@id/iv_image"
+        app:layout_constraintEnd_toEndOf="@id/iv_image"
+        app:layout_constraintStart_toStartOf="@id/iv_image"
+        app:layout_constraintTop_toTopOf="@id/iv_image" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_intro_fade" />
-    </FrameLayout>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_intro_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_image" />
 
     <TextView
         android:id="@+id/tv_text"
@@ -33,5 +43,8 @@
         android:layout_marginTop="@dimen/screen_padding"
         android:gravity="center"
         android:textAppearance="@style/Text.Body.Intro"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_image"
         tools:text="@string/intro_1" />
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

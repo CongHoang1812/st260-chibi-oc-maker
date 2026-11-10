@@ -27,7 +27,7 @@
     <string name="intro_2">Desbloquea tu look\nelegante y con estilo</string>
     <string name="intro_3">Exprésate\na través del estilo</string>
     <string name="permission">Permisos</string>
-    <string name="permission_media">Fotos</string>
+    <string name="permission_storage">Almacenamiento</string>
     <string name="permission_notification">Notificaciones</string>
 
     <string name="language">Idioma</string>
@@ -138,9 +138,15 @@
 
     <string name="lucky_gift_title">Regalo de la suerte</string>
     <string name="lucky_gift_start">Empezar</string>
+    <string name="lucky_gift_free">Gratis</string>
     <string name="lucky_gift_congrats">¡Felicidades!</string>
     <string name="lucky_gift_unlocked_message">Has desbloqueado más accesorios\n¡recógelos y crea tu propio personaje!</string>
     <string name="lucky_gift_collect">Recoger</string>
     <string name="cd_lucky_gift">Regalo de la suerte</string>
     <string name="cd_locked">Bloqueado</string>
+    <string name="dialog_storage_title">Permiso de almacenamiento</string>
+    <string name="dialog_storage_message">Se denegó el acceso al almacenamiento. Abre Ajustes para permitirlo y guardar imágenes.</string>
+    <string name="go_to_settings">Ajustes</string>
+    <string name="dialog_lucky_ad_title">Ver un anuncio</string>
+    <string name="dialog_lucky_ad_message">Mira el anuncio completo para desbloquear un giro extra ahora, o espera a que termine el temporizador.</string>
 </resources>

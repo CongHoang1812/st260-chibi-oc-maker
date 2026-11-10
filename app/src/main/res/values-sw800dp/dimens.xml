@@ -115,8 +115,13 @@
     <dimen name="cosplay_reference_stroke">2.7dp</dimen>
     <dimen name="cosplay_reference_radius">5dp</dimen>
     <dimen name="cosplay_reference_elevation">4dp</dimen>
-    <dimen name="cosplay_reference_offset_x">26dp</dimen>
-    <dimen name="cosplay_reference_offset_y">30dp</dimen>
+    <dimen name="cosplay_reference_offset_x">20dp</dimen>
+    <dimen name="cosplay_reference_offset_y">36dp</dimen>
+    <dimen name="cosplay_reference_tape_top">34.4dp</dimen>
+    <dimen name="cosplay_reference_tape_top_margin">1.34dp</dimen>
+    <dimen name="cosplay_reference_tape_bottom">34dp</dimen>
+    <dimen name="cosplay_reference_tape_bottom_start">124dp</dimen>
+    <dimen name="cosplay_reference_tape_bottom_top">130dp</dimen>
     <dimen name="cosplay_score_close_gap">40dp</dimen>
     <dimen name="app_toast_margin">48dp</dimen>
     <dimen name="loading_dialog_w">400dp</dimen>
@@ -305,6 +310,11 @@
     <dimen name="lucky_gift_start_h">114dp</dimen>
     <dimen name="lucky_gift_start_top">382dp</dimen>
     <dimen name="lucky_gift_start_text_bottom">26dp</dimen>
+    <dimen name="lucky_gift_ad_icon">48dp</dimen>
+    <dimen name="lucky_gift_ad_icon_gap">8dp</dimen>
+    <!-- Dòng đếm ngược dưới khung: frame_top + frame_h + 8 -->
+    <dimen name="lucky_gift_timer_top">612dp</dimen>
+    <dimen name="lucky_gift_timer_icon">32dp</dimen>
     <dimen name="lucky_gift_result_w">688dp</dimen>
     <dimen name="lucky_gift_result_h">208dp</dimen>
     <dimen name="lucky_gift_result_cell">112dp</dimen>

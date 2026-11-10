@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Băng dính góc dưới-phải polaroid ảnh mẫu Cosplay (Figma 39:30): gradient hồng -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="16.9706dp"
+    android:height="16.9706dp"
+    android:viewportWidth="16.9706"
+    android:viewportHeight="16.9706">
+    <path android:pathData="M5.42115 16.7349C5.6815 16.4745 5.6815 16.0524 5.42115 15.7921C5.1608 15.5317 4.73869 15.5317 4.47834 15.7921L4.00694 15.3206C4.26729 15.0603 4.26729 14.6382 4.00694 14.3778C3.74659 14.1175 3.32448 14.1175 3.06413 14.3778L2.59272 13.9064C2.85307 13.6461 2.85307 13.224 2.59272 12.9636C2.33238 12.7033 1.91027 12.7033 1.64992 12.9636L1.17851 12.4922C1.43886 12.2319 1.43886 11.8098 1.17851 11.5494C0.918162 11.2891 0.496052 11.2891 0.235702 11.5494L0 11.3137C0 11.3137 6.36396 5.42115 6.59966 5.18545C6.83537 4.94975 11.3137 0 11.3137 0L11.5494 0.235702C11.2891 0.496052 11.2891 0.918162 11.5494 1.17851C11.8098 1.43886 12.2319 1.43886 12.4922 1.17851L12.9636 1.64992C12.7033 1.91027 12.7033 2.33238 12.9636 2.59272C13.224 2.85307 13.6461 2.85307 13.9064 2.59272L14.3778 3.06413C14.1175 3.32448 14.1175 3.74659 14.3778 4.00694C14.6382 4.26729 15.0603 4.26729 15.3206 4.00694L15.7921 4.47834C15.5317 4.73869 15.5317 5.1608 15.7921 5.42115C16.0524 5.6815 16.4745 5.6815 16.7349 5.42115L16.9706 5.65685C16.9706 5.65685 12.4922 10.6066 12.2565 10.8423C12.0208 11.078 5.65685 16.9706 5.65685 16.9706L5.42115 16.7349Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="2.9463"
+                android:endY="14.26"
+                android:startX="14.26"
+                android:startY="2.94627"
+                android:type="linear">
+                <item android:color="@color/success_tape" android:offset="0" />
+                <item android:color="@color/success_tape_light" android:offset="0.320563" />
+                <item android:color="@color/success_tape" android:offset="1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

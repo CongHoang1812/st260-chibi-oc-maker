@@ -9,4 +9,4 @@
     android:focusable="true"
     android:textAppearance="@style/Text.Body.Orange"
     app:drawableEndCompat="@drawable/ic_radio_off"
-    tools:text="@string/permission_media" />
+    tools:text="@string/permission_storage" />

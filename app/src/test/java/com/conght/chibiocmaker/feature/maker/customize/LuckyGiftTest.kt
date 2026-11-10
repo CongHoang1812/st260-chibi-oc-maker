@@ -99,6 +99,11 @@ class LuckyGiftTest {
             unlocked.value = unlocked.value + parts
             this.nextSpinAtMs.value = nextSpinAtMs
         }
+        override val adSpinUsedForMs = MutableStateFlow(0L)
+        override suspend fun recordAdSpin(templateId: String, parts: Set<String>, cooldownEndMs: Long) {
+            unlocked.value = unlocked.value + parts
+            adSpinUsedForMs.value = cooldownEndMs
+        }
     }
 
     private val gson = Gson()
@@ -226,6 +231,57 @@ class LuckyGiftTest {
         runCurrent()
         assertNull(vm.state.value.luckyGift!!.result)
         assertTrue(repo.unlocked.value.isEmpty())
+    }
+
+    @Test
+    fun spinWithAd_duringCooldown_unlocksParts_keepsTimer() = runTest {
+        val repo = repository()
+        repo.nextSpinAtMs.value = testScheduler.currentTime + 10 * 60_000L
+        val vm = viewModel(repo)
+        vm.prepareLuckyGift()
+        assertTrue(vm.state.value.luckyGift!!.canSpinWithAd)
+
+        vm.spinLuckyGift(withAd = true)
+        runCurrent()
+        val gift = vm.state.value.luckyGift!!
+        assertEquals(PartLocks.UNLOCK_PER_SPIN, gift.result!!.size)
+        assertEquals(PartLocks.UNLOCK_PER_SPIN, repo.unlocked.value.size)
+        // Đồng hồ chạy tiếp từ mốc cũ, không đặt lại 30:00
+        assertEquals(10 * 60, gift.remainingSeconds)
+        assertTrue(gift.adSpinUsed)
+        assertFalse(gift.canSpinWithAd) // đang hiện Congratulations
+
+        // Mỗi lượt đếm ngược chỉ xem quảng cáo 1 lần
+        vm.collectLuckyGift()
+        vm.prepareLuckyGift()
+        assertFalse(vm.state.value.luckyGift!!.canSpinWithAd)
+        vm.spinLuckyGift(withAd = true)
+        runCurrent()
+        assertNull(vm.state.value.luckyGift!!.result)
+
+        // Hết giờ: quay START được, lượt đếm ngược mới lại cho xem quảng cáo
+        advanceTimeBy(10 * 60_000L + 1_000L)
+        assertTrue(vm.state.value.luckyGift!!.canSpin)
+        vm.prepareLuckyGift()
+        vm.spinLuckyGift()
+        runCurrent()
+        vm.collectLuckyGift()
+        vm.prepareLuckyGift()
+        // Mốc đếm ngược mới khác mốc đã xem quảng cáo (dữ liệu test chỉ 6 part nên đã mở hết, không quay tiếp được)
+        val next = vm.state.value.luckyGift!!
+        assertTrue(next.remainingSeconds > 0)
+        assertFalse(next.adSpinUsed)
+    }
+
+    @Test
+    fun spinWithAd_isIgnoredWhenFreeSpinAvailable() = runTest {
+        val repo = repository()
+        val vm = viewModel(repo)
+        vm.prepareLuckyGift()
+        assertFalse(vm.state.value.luckyGift!!.canSpinWithAd)
+        vm.spinLuckyGift(withAd = true)
+        runCurrent()
+        assertNull(vm.state.value.luckyGift!!.result)
     }
 
     @Test

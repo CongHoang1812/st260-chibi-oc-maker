@@ -7,13 +7,9 @@
     <!-- Nút Download ghi ảnh ra thư viện máy. Android 10+ dùng MediaStore nên không cần quyền này. -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" />
-    <!-- Chỉ để chọn ảnh nền từ thư viện. -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
+         />
+
+
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Kiểm tra WhatsApp đã cài và gói sticker đã được thêm chưa. -->

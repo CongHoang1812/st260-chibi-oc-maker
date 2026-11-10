@@ -131,8 +131,13 @@ data class LuckyGiftState(
     val grid: List<GiftCell> = emptyList(),
     /** Part vừa trúng; khác null = đang hiện Congratulations. */
     val result: List<GiftCell>? = null,
+    /** Lượt đếm ngược hiện tại đã dùng lượt quay bằng quảng cáo. */
+    val adSpinUsed: Boolean = false,
 ) {
     val canSpin: Boolean get() = remainingSeconds == 0 && hasLocked && result == null
+
+    /** Đang đếm ngược: xem hết quảng cáo để quay thêm một lượt ngay, mỗi lượt đếm ngược chỉ 1 lần. */
+    val canSpinWithAd: Boolean get() = remainingSeconds > 0 && !adSpinUsed && hasLocked && result == null
 }
 
 sealed interface CustomizeEvent {
@@ -239,12 +244,26 @@ class CustomizeViewModel @Inject constructor(
         val remaining: Int,
         val grid: List<String>,
         val result: List<String>?,
+        val adSpinUsed: Boolean,
     )
+
+    /** Mốc lưu khi xem quảng cáo trùng mốc đếm ngược hiện tại → lượt đếm ngược này đã dùng. */
+    private val adSpinUsed: Flow<Boolean> = combine(
+        luckyGiftRepository.nextSpinAtMs,
+        luckyGiftRepository.adSpinUsedForMs,
+    ) { nextSpinAt, usedFor -> nextSpinAt != 0L && usedFor == nextSpinAt }
 
     private val giftInputs: Flow<GiftInputs?> = if (!locksEnabled || templateId == null) {
         flowOf(null)
     } else {
-        combine(luckyGiftRepository.unlockedParts(templateId), giftRemaining, giftGrid, giftResult, ::GiftInputs)
+        combine(
+            luckyGiftRepository.unlockedParts(templateId),
+            giftRemaining,
+            giftGrid,
+            giftResult,
+            adSpinUsed,
+            ::GiftInputs,
+        )
     }
 
     val state: StateFlow<CustomizeUiState> = combine(
@@ -277,6 +296,7 @@ class CustomizeViewModel @Inject constructor(
                 hasLocked = locked.isNotEmpty(),
                 grid = cells(gift.grid),
                 result = gift.result?.let(::cells),
+                adSpinUsed = gift.adSpinUsed,
             ),
         )
     }
@@ -600,11 +620,15 @@ class CustomizeViewModel @Inject constructor(
 
     private var spinning = false
 
-    /** START: trúng [PartLocks.UNLOCK_PER_SPIN] part khoá (ưu tiên ô đang hiện), lưu cùng mốc đếm ngược 30 phút. */
-    fun spinLuckyGift() {
+    /**
+     * START: trúng [PartLocks.UNLOCK_PER_SPIN] part khoá (ưu tiên ô đang hiện), lưu cùng mốc đếm ngược 30 phút.
+     * [withAd] = lượt thêm sau khi xem quảng cáo lúc đang đếm ngược: đồng hồ chạy tiếp, không đặt lại.
+     */
+    fun spinLuckyGift(withAd: Boolean = false) {
         val id = templateId ?: return
         val gift = current.luckyGift ?: return
-        if (!gift.canSpin || spinning) return
+        val allowed = if (withAd) gift.canSpinWithAd else gift.canSpin
+        if (!allowed || spinning) return
         val locked = current.lockedParts
         val onGrid = gift.grid.map { it.key }.filter { it in locked }
         val won = onGrid.shuffled().take(PartLocks.UNLOCK_PER_SPIN).ifEmpty {
@@ -615,8 +639,12 @@ class CustomizeViewModel @Inject constructor(
         savedStateHandle[KEY_GIFT_RESULT] = ArrayList(won)
         viewModelScope.launch {
             try {
-                val next = luckyGiftRepository.nowMs() + PartLocks.COOLDOWN_SECONDS * MS_PER_SECOND
-                luckyGiftRepository.recordSpin(id, won.toSet(), next)
+                if (withAd) {
+                    luckyGiftRepository.recordAdSpin(id, won.toSet(), luckyGiftRepository.nextSpinAtMs.first())
+                } else {
+                    val next = luckyGiftRepository.nowMs() + PartLocks.COOLDOWN_SECONDS * MS_PER_SECOND
+                    luckyGiftRepository.recordSpin(id, won.toSet(), next)
+                }
             } finally {
                 spinning = false
             }

@@ -1,7 +1,13 @@
 package com.conght.chibiocmaker.feature.success
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -38,6 +44,9 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>(FragmentSuccessBind
 
     private val viewModel: SuccessViewModel by viewModels()
     private val download = registerGalleryDownload { viewModel.download() }
+
+    /** Tia sáng sau thẻ Cosplay: xoay chậm liên tục + phóng to / thu nhỏ nhẹ. */
+    private var burstAnimator: AnimatorSet? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -79,6 +88,7 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>(FragmentSuccessBind
         binding.cosplayDecor.isVisible = cosplay
         if (!cosplay) return
         binding.root.setBackgroundResource(R.drawable.bg_success_cosplay)
+        startBurstAnimation()
         val size = resources.getDimensionPixelSize(R.dimen.success_card_image)
         binding.ivResult.updateLayoutParams<ConstraintLayout.LayoutParams> {
             width = size
@@ -95,6 +105,35 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>(FragmentSuccessBind
         }
         binding.starBadge.contentDescription =
             resources.getQuantityString(R.plurals.cd_rate_stars, viewModel.stars, viewModel.stars)
+    }
+
+    private fun startBurstAnimation() {
+        val burst = binding.ivBurst
+        val rotate = ObjectAnimator.ofFloat(burst, View.ROTATION, 0f, FULL_TURN).apply {
+            duration = BURST_TURN_MS
+            interpolator = LinearInterpolator()
+            repeatCount = ValueAnimator.INFINITE
+        }
+        val pulse = ObjectAnimator.ofPropertyValuesHolder(
+            burst,
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, BURST_PULSE_SCALE),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, BURST_PULSE_SCALE),
+        ).apply {
+            duration = BURST_PULSE_MS
+            interpolator = AccelerateDecelerateInterpolator()
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.REVERSE
+        }
+        burstAnimator = AnimatorSet().apply {
+            playTogether(rotate, pulse)
+            start()
+        }
+    }
+
+    override fun onDestroyView() {
+        burstAnimator?.cancel()
+        burstAnimator = null
+        super.onDestroyView()
     }
 
     private fun share() {
@@ -130,6 +169,11 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>(FragmentSuccessBind
     }
 
     companion object {
+        private const val FULL_TURN = 360f
+        private const val BURST_TURN_MS = 16_000L
+        private const val BURST_PULSE_MS = 1_600L
+        private const val BURST_PULSE_SCALE = 1.08f
+
         /** Id creation vừa lưu (Long). */
         const val ARG_CREATION_ID = "creationId"
 

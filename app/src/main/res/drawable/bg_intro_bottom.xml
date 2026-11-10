@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nền phần dưới ảnh intro: bắt đầu đúng màu cuối của bg_intro_fade (#ADD5E5) rồi về màu đáy nền chung (#95CBE5),
+     để chỗ nối ảnh / nền liền màu trên mọi chiều cao màn (Figma 2:1141: nền #E7F1E5 → #95CBE5 trên 800, tại y=560 ≈ #ADD5E5) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="270"
+        android:endColor="@color/language_bg"
+        android:startColor="@color/intro_fade" />
+</shape>

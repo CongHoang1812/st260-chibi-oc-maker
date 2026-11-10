@@ -7,21 +7,21 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 
 /**
- * Quyền app dùng (xem 01_ANALYSIS.md mục 5). App chỉ ĐỌC ảnh (chọn ảnh nền),
- * mọi ảnh lưu vào internal storage nên không cần quyền ghi.
+ * Quyền xin ở màn Permission: Android 12 trở xuống xin Storage, Android 13 trở lên xin Notification.
+ * Ảnh của app lưu ở internal storage; ghi ra Gallery (nút Download) xem `registerGalleryDownload`.
  */
 object AppPermissions {
 
-    /** Quyền đọc ảnh theo API level (API 34+ chấp nhận cả quyền chọn một phần ảnh). */
-    val media: Array<String>
+    /** Quyền bộ nhớ, `null` từ Android 13 (không còn quyền này). Android 9 trở xuống xin kèm quyền ghi. */
+    val storage: Array<String>?
         get() = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> arrayOf(
-                Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED,
+            Build.VERSION.SDK_INT <= Build.VERSION_CODES.P -> arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
             )
 
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
-            else -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+            Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+            else -> null
         }
 
     /** Quyền thông báo, `null` khi API < 33 (không cần xin). */
@@ -32,10 +32,10 @@ object AppPermissions {
             null
         }
 
-    fun isMediaGranted(context: Context): Boolean = media.any { isGranted(context, it) }
+    fun isStorageGranted(context: Context): Boolean = storage?.all { isGranted(context, it) } ?: true
 
     fun isNotificationGranted(context: Context): Boolean = notification?.let { isGranted(context, it) } ?: true
 
-    private fun isGranted(context: Context, permission: String) =
+    fun isGranted(context: Context, permission: String) =
         ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 }

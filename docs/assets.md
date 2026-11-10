@@ -7,6 +7,7 @@ File Figma: `OUCDw6CTtEW3cw3iPNNcqc` (xem `docs/APP_BRIEF.md`). Figma đổi nod
 | `drawable-xxhdpi/bg_lucky_gift_frame.webp` | `9:184` (ảnh gốc trong node) | Ảnh gốc 1280×1192, cắt bỏ tab tiêu đề phía trên (38dp), xoá vết hai cạnh tab còn sót, thu về 960×780 (320×260dp @3x), WebP lossless. Cửa sổ giữa trong suốt, nền sáng vẽ bằng `bg_lucky_gift_window.xml` |
 | `drawable-xxhdpi/bg_lucky_gift_result.webp` | `10:409` | Xuất PNG @3x (nền đục), tự tạo alpha bo góc 40dp, WebP lossless |
 | `drawable-nodpi/img_lucky_gift.webp` | `2:631` (ảnh gốc trong `2:628`) | Ảnh gốc 512×512, thu về 192×192, WebP q88 |
+| `drawable-xxhdpi/ic_ad_clapper.webp` | `2:799` (ảnh gốc trong nút FREE `2:677`) | Ảnh gốc 512×512, thu về 72×72 (24dp @3x), WebP lossless |
 | `drawable/bg_lucky_gift_start.xml` | `2:668` | Path SVG của Figma chuyển sang VectorDrawable, bỏ bóng 1dp; chữ START là `@string/lucky_gift_start` |
 
 Vẽ bằng XML theo số đo Figma, không xuất ảnh: `bg_lucky_gift_title.xml` (`2:673`, `10:403`), `bg_lucky_gift_button.xml` (`2:628`), `bg_lucky_gift_window.xml` (`2:647`), `bg_lucky_gift_cell.xml`.
@@ -39,7 +40,7 @@ Icon và glyph sinh từ SVG của Figma bằng `scripts/svg2vd.py` (viền tron
 | `drawable-nodpi/img_permission.webp` | `2:1168` (ảnh gốc) | Khung 300, ảnh 260 đặt ở x 20, @3x; chưa có bóng mờ dưới chân (mix-blend overlay) |
 | `drawable-nodpi/img_empty_character.webp` | `2:1532` (ảnh gốc) | 200dp @3x |
 
-Vẽ bằng XML theo số đo Figma, không xuất ảnh: `bg_tavern.xml` (gradient nền chung `#E7F1E5 → #95CBE5`), `bg_intro_fade.xml` (`2:1148`), `bg_part_item.xml` / `bg_part_item_selected.xml` (`2:1200` / `2:1219`), `bg_template_item.xml` (`2:463`), `bg_creation_card.xml` (`2:1560`).
+Vẽ bằng XML theo số đo Figma, không xuất ảnh: `bg_tavern.xml` (gradient nền chung `#E7F1E5 → #95CBE5`), `bg_intro_fade.xml` (`2:1148`), `bg_intro_bottom.xml` (nền dưới ảnh intro, `#ADD5E5 → #95CBE5`, nối liền với lớp mờ trên mọi chiều cao màn), `bg_part_item.xml` / `bg_part_item_selected.xml` (`2:1200` / `2:1219`), `bg_template_item.xml` (`2:463`), `bg_creation_card.xml` (`2:1560`).
 
 Chưa làm, để cùng màn tương ứng: `bg_instruction_paper` (làm cùng Cosplay).
 
@@ -129,4 +130,4 @@ Thẻ template vẽ bằng `bg_template_item.xml` (`2:463`), không xuất ảnh
 |---|---|---|
 | `drawable-nodpi/img_dice_random.webp` | ảnh gốc trong `2:196` / `2:167` | Ảnh gốc 2000px, cắt theo khung 40×24 (ảnh 144.51% × 232.82%, lệch -23.82% / -66.41%), 120×72 (@3x), WebP q88 |
 
-Vẽ bằng XML: `bg_timer_pill.xml` (`2:213`), `bg_cosplay_reference.xml` (`39:27`), `bg_dialog_title_tab.xml` (`2:453`). Popup điểm dùng lại `bg_success_card.xml` và băng dính `img_success_tape_*`. Mũi tên Lucky roll `img_lucky_arrow.xml` đã trùng vector `2:158`. Đã bỏ `bg_instruction_paper.webp`, `bg_timer_label.xml`, `progress_timer.xml`.
+Vẽ bằng XML: `bg_timer_pill.xml` (`2:213`), `bg_cosplay_reference.xml` (`39:27`), băng dính ảnh mẫu `img_reference_tape_top.xml` (`39:29`, path Figma xoay 45° trong vector) / `img_reference_tape_bottom.xml` (`39:30`), `bg_dialog_title_tab.xml` (`2:453`). Popup điểm dùng lại `bg_success_card.xml` và băng dính `img_success_tape_*`. Mũi tên Lucky roll `img_lucky_arrow.xml` đã trùng vector `2:158`. Đã bỏ `bg_instruction_paper.webp`, `bg_timer_label.xml`, `progress_timer.xml`.
