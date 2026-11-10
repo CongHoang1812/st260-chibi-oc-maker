@@ -1,7 +1,7 @@
 """Chuyển SVG glyph xuất từ Figma sang VectorDrawable.
 
 Hỗ trợ đúng những gì Figma xuất cho glyph của app này:
-- <path d fill>, <rect x y width height rx fill stroke>, <use href=#id fill>
+- <path d fill>, <rect x y width height rx fill stroke>, <circle>, <ellipse>, <use href=#id fill>
 - viền qua <mask>: mask chỉ chứa hình → viền trong (clip-path); mask = rect trắng trừ hình → viền ngoài (vẽ trước fill)
 - filter bóng đổ feOffset dy (alpha 0.2) → bản sao hình lệch dy, màu đen 20%
 Bỏ qua clip-path khung 0..W (trùng viewport).
@@ -40,6 +40,16 @@ def rect_path(e):
         f"V{fmt(y + h - r)}A{fmt(r)},{fmt(r)} 0 0 1 {fmt(x + w - r)},{fmt(y + h)}"
         f"H{fmt(x + r)}A{fmt(r)},{fmt(r)} 0 0 1 {fmt(x)},{fmt(y + h - r)}"
         f"V{fmt(y + r)}A{fmt(r)},{fmt(r)} 0 0 1 {fmt(x + r)},{fmt(y)}Z"
+    )
+
+
+def ellipse_path(e):
+    cx, cy = num(e.get("cx")), num(e.get("cy"))
+    rx = num(e.get("r", e.get("rx")))
+    ry = num(e.get("r", e.get("ry")))
+    return (
+        f"M{fmt(cx - rx)},{fmt(cy)}A{fmt(rx)},{fmt(ry)} 0 1 1 {fmt(cx + rx)},{fmt(cy)}"
+        f"A{fmt(rx)},{fmt(ry)} 0 1 1 {fmt(cx - rx)},{fmt(cy)}Z"
     )
 
 
@@ -91,8 +101,8 @@ def convert(src):
             if t == "use":
                 ref = e.get(XLINK).lstrip("#")
                 fills.append((defs[ref], e.get("fill"), None, rules.get(ref)))
-            elif t in ("path", "rect"):
-                d = e.get("d") if t == "path" else rect_path(e)
+            elif t in ("path", "rect", "circle", "ellipse"):
+                d = e.get("d") if t == "path" else rect_path(e) if t == "rect" else ellipse_path(e)
                 fill = e.get("fill")
                 if fill and fill != "none":
                     fills.append((d, fill, e.get("fill-opacity"), e.get("fill-rule")))
@@ -136,12 +146,17 @@ def convert(src):
                     leaf = []
                 f = c.get("filter")
                 walk(c, filters[f[5:-1]] if f else dy)
-            else:
+            elif t in ("path", "rect", "circle", "ellipse", "use"):
                 leaf.append(c)
+            else:
+                # Thẻ chưa hỗ trợ thì dừng hẳn: bỏ qua sẽ sinh vector thiếu hình, app crash khi nạp ("no path defined")
+                raise ValueError(f"thẻ SVG chưa hỗ trợ: <{t}>")
         if leaf:
             emit_group(leaf, dy)
 
     walk(root, 0.0)
+    if not out:
+        raise ValueError("không sinh được path nào: VectorDrawable rỗng sẽ crash khi nạp")
     head = (
         '<?xml version="1.0" encoding="utf-8"?>\n'
         f'<!-- Sinh từ SVG Figma bằng svg2vd.py ({src.split("/")[-1].split(chr(92))[-1]}) -->\n'
