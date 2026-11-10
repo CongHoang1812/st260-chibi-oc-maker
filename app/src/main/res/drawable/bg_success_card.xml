@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Thẻ polaroid Cosplay (Figma 2:283): kem, viền 4 #FFE5CC bo 8, bóng đổ 0 4 dưới đáy (view cao hơn thẻ 4dp) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:top="@dimen/success_card_shadow">
+        <shape>
+            <solid android:color="@color/button_shade" />
+            <corners android:radius="@dimen/success_card_radius" />
+        </shape>
+    </item>
+    <item android:bottom="@dimen/success_card_shadow">
+        <shape>
+            <solid android:color="@color/success_card" />
+            <stroke android:width="@dimen/success_card_stroke" android:color="@color/success_card_stroke" />
+            <corners android:radius="@dimen/success_card_radius" />
+        </shape>
+    </item>
+</layer-list>

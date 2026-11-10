@@ -71,7 +71,7 @@ STACKS = {
     "home": ["home_cards_top", "home_card_size", "home_card_gap", "home_card_size"],
     "lucky_roll": ["lucky_random_top", "wood_button_height"],
     "cosplay_start": ["cosplay_buttons_top", "wood_button_height"],
-    "success": ["success_image_top", "character_size_large", "screen_padding", "wood_button_height"],
+    "success": ["success_image_top", "success_image_max", "success_download_top", "wood_button_height"],
     "creation_detail": ["content_top", "character_size", "screen_padding", "wood_button_height"],
     "permission": ["list_top", "permission_image", "screen_padding", "language_item_h", "screen_padding",
                    "language_item_h", "permission_continue_gap", "line_24"],

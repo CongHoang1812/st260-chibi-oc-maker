@@ -97,6 +97,15 @@
     <color name="lucky_gift_button_border">#662A00</color>
     <color name="lucky_gift_badge">#FF0000</color>
 
+    <!-- Successful Cosplay (Figma 2:280): nền cam, thẻ polaroid, băng dính -->
+    <color name="success_cosplay_top">#FFEACC</color>
+    <color name="success_cosplay_bottom">#FFAF40</color>
+    <color name="success_card">#FFF9F2</color>
+    <color name="success_card_stroke">#FFE5CC</color>
+    <color name="success_tape">#FF8080</color>
+    <color name="success_tape_light">#FFBABA</color>
+    <color name="success_tape_shadow">#59000000</color>
+
     <!-- Gradient đáy thẻ Home (Figma 2:1012 / 2:1016 / 2:1014 / 2:1018) -->
     <color name="home_fade_maker">#EBB1B7</color>
     <color name="home_fade_maker_transparent">#00EBB1B7</color>

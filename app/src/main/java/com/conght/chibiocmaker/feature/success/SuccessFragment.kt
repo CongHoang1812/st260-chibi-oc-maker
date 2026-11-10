@@ -72,17 +72,23 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>(FragmentSuccessBind
         }
     }
 
-    /** COSPLAY: huy hiệu sao + viền ảnh nâu 4dp, ảnh dịch xuống dưới huy hiệu. */
+    /** COSPLAY: nền cam, thẻ polaroid (Figma 2:280); ảnh thu vào ô 208 trong thẻ, 3 sao ở đáy thẻ. */
     private fun setupSource() {
         val cosplay = viewModel.source == Source.COSPLAY
         binding.starBadge.isVisible = cosplay
+        binding.cosplayDecor.isVisible = cosplay
         if (!cosplay) return
-        val border = resources.getDimension(R.dimen.success_image_border)
-        binding.ivResult.strokeWidth = border
-        val inset = (border / 2).toInt()
-        binding.ivResult.setPadding(inset, inset, inset, inset)
+        binding.root.setBackgroundResource(R.drawable.bg_success_cosplay)
+        val size = resources.getDimensionPixelSize(R.dimen.success_card_image)
         binding.ivResult.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            topMargin = resources.getDimensionPixelSize(R.dimen.success_cosplay_image_top)
+            width = size
+            height = size
+            dimensionRatio = null
+            topToTop = R.id.cosplay_card
+            startToStart = R.id.cosplay_card
+            endToEnd = R.id.cosplay_card
+            bottomToBottom = ConstraintLayout.LayoutParams.UNSET
+            topMargin = resources.getDimensionPixelSize(R.dimen.success_card_padding)
         }
         listOf(binding.ivStar1, binding.ivStar2, binding.ivStar3).forEachIndexed { index, star ->
             star.setImageResource(if (index < viewModel.stars) R.drawable.img_star_on else R.drawable.img_star_off)

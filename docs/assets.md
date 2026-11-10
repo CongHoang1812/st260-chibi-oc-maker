@@ -78,3 +78,13 @@ Chưa làm, để cùng màn tương ứng: ảnh Splash (`2:1091`), các khung 
 Vẽ bằng XML theo số đo Figma: `bg_editor_tab_on.xml` / `bg_editor_tab_off.xml` (`2:1228` / `2:1231`: viền nâu, bóng trong, quầng 2dp). Ô lưới dùng lại `bg_part_item*` (cùng số đo `2:1200` / `2:1219`).
 
 Đã bỏ `ic_none_editor.xml` (trùng `ic_none`), `bg_decor_item_state.xml`, `bg_decor_item_selected.xml`.
+
+## Màn Successful (2026-11-10)
+
+| File | Node | Ghi chú |
+|---|---|---|
+| `drawable-nodpi/img_success_burst.webp` | `2:282` | Tia sáng sau thẻ Cosplay: rasterize từ SVG bằng Python (24 tia, gradient tròn trắng → trong suốt), 1144px = 572dp @2x. Figma xuất PNG bị nền đục nên không dùng ảnh xuất |
+| `drawable/img_success_tape_top.xml`, `img_success_tape_bottom.xml` | `2:286`, `2:288` | Băng dính: path SVG + gradient `aapt:attr`, bóng đổ là bản sao lệch 1dp |
+| `drawable-nodpi/img_star_on.webp`, `img_star_off.webp` | ảnh gốc trong `2:330` (`image 22` / `image 23`) | 512 → 132px (44dp @3x) |
+
+Vẽ bằng XML: `bg_success_card.xml` (`2:283`, thẻ kem viền `#FFE5CC` + bóng 4dp), `bg_success_cosplay.xml` (gradient `#FFEACC → #FFAF40`). Đã bỏ `bg_star_badge.xml` (Figma không còn huy hiệu sao trên ảnh).
