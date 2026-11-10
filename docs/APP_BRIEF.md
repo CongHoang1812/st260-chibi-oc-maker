@@ -127,7 +127,8 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
 - Decor editor theo Figma (2026-11-10):
   - Tab chính chuyển xuống thanh đáy (nút 40, chọn = cam), tab con nền đổi thứ tự thành Image, Color như Figma; mở editor vào Image trước.
   - Sticker / Speech: Figma không có hàng tab con, chỉ hiện khi API trả từ 2 pack trở lên.
-  - Giữ nút xác nhận (`btn_text_done`) cạnh ô nhập chữ dù Figma không có, để thêm chữ không phụ thuộc phím Done của bàn phím.
+  - Nút xác nhận (`btn_text_done`) cạnh ô nhập chữ đã có trong Figma (`282:83`): ô nhập và nút cao 36, dấu ✓ cam.
+  - Tab Speech có hàng font + màu phía trên lưới (Figma `282:43` / `282:66`), font / màu / lưới cách nhau 8; tab Text cách nhau 16.
   - Nền trắng của vùng thiết kế là View riêng sau `DecorCanvasView`, để ảnh xuất ra vẫn trong suốt khi nền None (như trước).
 - API ST279 đặt tên decor khác app mẫu (2026-11-10): khoá `sticker` / `speech bubble` và thư mục ảnh `bg/sticker`, `bg/speech bubble` (app mẫu: `stickers` / `speech_bubble`). `DecorConfigDto` đọc cả hai kiểu, `ApiMapper` ghép thư mục theo khoá có dữ liệu. Khi đổi sang API thật thì kiểm tra lại.
 - Successful theo Figma (2026-11-10): Maker là ảnh vuông trắng rộng hết màn; Cosplay là thẻ polaroid trên nền cam có tia sáng, ảnh 208 và 3 sao nằm trong thẻ (bỏ huy hiệu sao và viền nâu cũ). Nút Download rộng 328.
@@ -143,7 +144,7 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
   - Chi tiết dùng bố cục như Successful Maker (ảnh trắng rộng hết màn, Edit rộng 328).
   - Khoảng cách nút trên header `top_bar_action_gap` đổi 16 → 12 theo Figma.
 - Onboarding theo Figma (2026-11-10):
-  - Splash: ảnh minh hoạ + logo (dùng lại `img_logo` của Home). Figma không có thanh loading / dòng "can contain ads": giữ ở đáy, thanh loading dựng lại bằng màu cam (bỏ ô vuông cũ).
+  - Splash: ảnh minh hoạ + logo (dùng lại `img_logo` của Home). Đáy theo Figma `282:18`: vòng loading 44 xoay + "This action can contain ads" (Roboto 16, #01394D 80%), bỏ thanh loading và chữ Loading.
   - Hàng danh sách (`ListRow`, dùng chung Language / Permission / Setting): luôn nền trắng, chữ cam, chọn chỉ đổi radio (bỏ kiểu cả hàng tô cam).
   - Language từ Setting dùng cùng nền gradient, bỏ lớp tối; vẫn dùng `btn_check`, không thêm nút Save.
   - Tiêu đề Language / Permission (`Text.Title`) đổi sang cam; chữ Intro xanh đậm `#01394D`.
@@ -158,6 +159,6 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
   - Download (View / Success / My creation): Android 10+ lưu ngay; Android 9 trở xuống xin quyền ghi, từ chối 2 lần thì lần bấm sau hiện dialog mở Settings (`ConfirmDialogs.storageSettings`).
 - Nút Next ở Customize khoá (mờ) khi ảnh nhân vật chưa lên đủ: lúc mới vào, đổi bộ phận, random (`CharacterCanvasView.onSettledChanged`).
 - Thanh điều hướng hệ thống ẩn ở mọi màn, mọi thiết bị (bỏ `R.bool.hide_navigation_bar`), kể cả dialog, sau khi đóng bàn phím, khi quay lại app. Vuốt từ đáy hiện tạm rồi tự ẩn; lúc splash mở có thể thấy thanh một chút.
-- Lucky Gift quay thêm bằng quảng cáo (2026-11-10): đang đếm ngược, nút ở vòng quay thành 🎬 FREE (Figma `2:677`, giờ chỉ hiện ở nút quà ngoài Customize); bấm thì hiện dialog "Watch an ad" (Cancel | Watch Ad). Xem xong được quay ngay một lượt, đồng hồ chạy tiếp, không đặt lại 30:00. Mỗi lượt đếm ngược chỉ được 1 lần quảng cáo; dùng rồi thì nút hiện giờ còn lại (Figma `2:888`), hết giờ mới quay START, lượt đếm ngược mới lại có FREE. Lưu mốc đã dùng ở DataStore (`lucky_gift_ad_used_for`) nên thoát app vẫn giữ. Chưa có Ads SDK nên Watch Ad cho quay luôn. Hiệu ứng quay: 5 cột cuộn kiểu máy slot, dừng lần lượt trái → phải; part trúng luôn dừng ở hàng giữa. Dưới nút FREE có dòng đồng hồ + giờ còn lại (Figma chưa có, tự thêm).
+- Lucky Gift quay thêm bằng quảng cáo (2026-11-10): đang đếm ngược, nút ở vòng quay thành 🎬 FREE (Figma `2:677`, giờ chỉ hiện ở nút quà ngoài Customize); bấm thì hiện dialog "Watch an ad" (Cancel | Watch Ad). Xem xong được quay ngay một lượt, đồng hồ chạy tiếp, không đặt lại 30:00. Mỗi lượt đếm ngược chỉ được 1 lần quảng cáo; dùng rồi thì nút hiện giờ còn lại (Figma `2:888`), hết giờ mới quay START, lượt đếm ngược mới lại có FREE. Lưu mốc đã dùng ở DataStore (`lucky_gift_ad_used_for`) nên thoát app vẫn giữ. Chưa có Ads SDK nên Watch Ad cho quay luôn. Hiệu ứng quay: 5 cột cuộn kiểu máy slot, dừng lần lượt trái → phải; part trúng luôn dừng ở hàng giữa. Dưới nút FREE có dòng đồng hồ + giờ còn lại (Figma chưa có, tự thêm). Nút quà ngoài Customize: còn lượt (START / FREE) thì chấm đỏ, đã dùng quảng cáo thì hiện giờ. Lớp tối sau overlay 70% (Figma `2:759`), các dialog khác vẫn 50%.
 - Intro: nền dưới ảnh vẽ riêng `#ADD5E5 → #95CBE5` để nối liền với lớp mờ trên mọi chiều cao màn.
 - `APP_KEY` `ST279_AnimeOCMaker` chỉ là API mượn tạm vì app chưa có API thật. Chưa cần chạy `probe_api.py`; phải đổi sang API thật và kiểm tra lại trước khi phát hành. (2026-11-09)

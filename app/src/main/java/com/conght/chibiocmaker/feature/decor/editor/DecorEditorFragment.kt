@@ -4,6 +4,7 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
@@ -12,12 +13,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.ColorUtils
 import androidx.core.content.res.use
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -300,6 +302,15 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
         }
         binding.rvFonts.isVisible = showText
         binding.rvTextColors.isVisible = showText
+        // Text: font cách màu 16, màu là hàng cuối. Speech: font / màu / lưới cách nhau 8
+        val speechTab = tab == EditorTab.SPEECH
+        val speechGap = resources.getDimensionPixelSize(R.dimen.editor_speech_row_gap)
+        binding.rvFonts.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin = if (speechTab) speechGap else resources.getDimensionPixelSize(R.dimen.editor_fonts_bottom)
+        }
+        binding.rvTextColors.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin = if (speechTab) speechGap else 0
+        }
         binding.rvGrid.isVisible = tab != EditorTab.TEXT
         val fontId = target?.fontId ?: data.fontId
         fontAdapter.selectedId = fontId

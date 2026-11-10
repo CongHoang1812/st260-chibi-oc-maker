@@ -1,7 +1,6 @@
 package com.conght.chibiocmaker.feature.splash
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
@@ -17,22 +16,23 @@ import com.conght.chibiocmaker.databinding.FragmentSplashBinding
 import com.conght.chibiocmaker.feature.intro.IntroFragment
 import com.conght.chibiocmaker.feature.language.LanguageFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
 @AndroidEntryPoint
 class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding::inflate) {
 
     private val viewModel: SplashViewModel by viewModels()
+    private var spinnerAnimator: ObjectAnimator? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.content.applyStatusBarPadding()
         setLightStatusBar(true)
 
+        startSpinner()
         viewLifecycleOwner.lifecycleScope.launch {
-            runProgress()
+            delay(SPLASH_MS)
             val nav = findNavController()
             // Intro hiện mỗi lần mở app; Language + Permission chỉ ở lần đầu
             if (viewModel.isOnboardingDone()) {
@@ -49,23 +49,25 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
         }
     }
 
-    /** Chạy progress 0 → 100 trong [PROGRESS_MS]; huỷ animator nếu coroutine bị huỷ. */
-    private suspend fun runProgress() = suspendCancellableCoroutine { cont ->
-        val animator = ValueAnimator.ofInt(0, binding.progress.max).apply {
-            duration = PROGRESS_MS
+    /** Vòng loading (Figma 282:19) xoay đều liên tục tới khi rời màn. */
+    private fun startSpinner() {
+        spinnerAnimator = ObjectAnimator.ofFloat(binding.ivSpinner, View.ROTATION, 0f, FULL_TURN).apply {
+            duration = SPIN_MS
             interpolator = LinearInterpolator()
-            addUpdateListener { binding.progress.progress = it.animatedValue as Int }
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    if (cont.isActive) cont.resume(Unit)
-                }
-            })
+            repeatCount = ValueAnimator.INFINITE
+            start()
         }
-        cont.invokeOnCancellation { animator.cancel() }
-        animator.start()
+    }
+
+    override fun onDestroyView() {
+        spinnerAnimator?.cancel()
+        spinnerAnimator = null
+        super.onDestroyView()
     }
 
     private companion object {
-        const val PROGRESS_MS = 2500L
+        const val SPLASH_MS = 2500L
+        const val SPIN_MS = 1000L
+        const val FULL_TURN = 360f
     }
 }

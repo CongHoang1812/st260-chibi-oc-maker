@@ -28,10 +28,9 @@
     <dimen name="splash_image_h">1140dp</dimen>
     <dimen name="splash_fade_top">68dp</dimen>
     <dimen name="splash_fade_bottom">114dp</dimen>
-    <dimen name="splash_progress_w">480dp</dimen>
-    <dimen name="splash_progress_h">32dp</dimen>
-    <dimen name="splash_progress_inset">6dp</dimen>
-    <dimen name="splash_bottom_margin">48dp</dimen>
+    <dimen name="splash_bottom_margin">60dp</dimen>
+    <dimen name="splash_ads_padding">8dp</dimen>
+    <dimen name="splash_spinner">88dp</dimen>
     <dimen name="intro_controls_h">40dp</dimen>
     <dimen name="check_button">96dp</dimen>
     <dimen name="permission_image">520dp</dimen>
@@ -157,7 +156,7 @@
     <dimen name="editor_panel_body_h">438dp</dimen>
     <dimen name="editor_panel_padding_top">32dp</dimen>
     <dimen name="editor_sub_tab_bottom">28dp</dimen>
-    <dimen name="editor_input_bottom">24dp</dimen>
+    <dimen name="editor_input_bottom">32dp</dimen>
     <dimen name="editor_fonts_bottom">32dp</dimen>
     <dimen name="editor_nav_h">112dp</dimen>
     <dimen name="editor_nav_gap">40dp</dimen>
@@ -175,6 +174,8 @@
     <dimen name="editor_nav_icon_padding">24dp</dimen>
     <dimen name="editor_chip">80dp</dimen>
     <dimen name="editor_input_h">80dp</dimen>
+    <dimen name="editor_text_input_h">72dp</dimen> <!-- ô nhập + nút ✓ tab Text (Figma 2:1454 / 282:83) -->
+    <dimen name="editor_speech_row_gap">16dp</dimen> <!-- font / màu / lưới ở tab Speech (Figma 2:1384) -->
     <dimen name="hidden_input_size">2dp</dimen>
     <dimen name="editor_input_text">32sp</dimen>
     <dimen name="editor_chip_text">32sp</dimen>

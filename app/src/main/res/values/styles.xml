@@ -67,6 +67,10 @@
         <item name="android:textColor">@color/text_dark</item>
     </style>
 
+    <style name="Text.Caption.White">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <!-- Tiêu đề trên tab cam của dialog chung (Figma 2:453): Rammetto 16 trắng -->
     <style name="Text.DialogTitle.Tab">
         <item name="android:textSize">@dimen/text_16</item>
@@ -240,11 +244,12 @@
     </style>
 
     <!-- Chữ nhỏ ở splash (Figma dùng Inter -> font hệ thống) -->
+    <!-- Dòng quảng cáo Splash (Figma 282:22): Roboto 16, #01394D 80% -->
     <style name="Text.SplashInfo" parent="TextAppearance.AppCompat">
         <item name="android:fontFamily">sans-serif</item>
         <item name="fontFamily">sans-serif</item>
-        <item name="android:textSize">@dimen/text_12</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_16</item>
+        <item name="android:textColor">@color/splash_info</item>
     </style>
 
     <style name="ShapeAppearance.ST260ChibiOCMaker.DecorItem" parent="">

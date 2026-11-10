@@ -123,7 +123,7 @@
                     <EditText
                         android:id="@+id/et_text"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/editor_input_h"
+                        android:layout_height="@dimen/editor_text_input_h"
                         android:layout_weight="1"
                         android:background="@drawable/bg_text_input"
                         android:hint="@string/text_hint"
@@ -136,11 +136,11 @@
                         android:textColorHint="@color/hint_gray"
                         android:textSize="@dimen/editor_input_text" />
 
-                    <!-- Figma không có nút xác nhận; giữ để thêm chữ không phụ thuộc phím Done của bàn phím -->
+                    <!-- Nút xác nhận 36×36 (Figma 282:83): trắng viền cam, dấu ✓ cam -->
                     <ImageButton
                         android:id="@+id/btn_text_done"
-                        android:layout_width="@dimen/editor_input_h"
-                        android:layout_height="@dimen/editor_input_h"
+                        android:layout_width="@dimen/editor_text_input_h"
+                        android:layout_height="@dimen/editor_text_input_h"
                         android:layout_marginStart="@dimen/grid_gap"
                         android:background="@drawable/bg_text_input"
                         android:contentDescription="@string/cd_confirm"
@@ -148,7 +148,8 @@
                         android:src="@drawable/ic_check" />
                 </LinearLayout>
 
-                <!-- Hàng font + màu chữ (Speech / Text, Figma 2:1456 / 2:1479) -->
+                <!-- Hàng font + màu chữ (Text 2:1456 / 2:1479 cách nhau 16; Speech 282:43 / 282:66 cách nhau 8,
+                     khoảng cách đổi theo tab trong Fragment) -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_fonts"
                     android:layout_width="match_parent"

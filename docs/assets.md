@@ -114,7 +114,7 @@ Vẽ bằng XML: `bg_small_icon.xml` (`2:1561`, lõi cam viền nâu bo 8), `bg_
 | `drawable/ic_radio_on.xml`, `ic_radio_off.xml` | `2:1099`, `2:1106` | Radio cam 16 |
 | `drawable/ic_check_language.xml` | `2:1139` | Dấu ✓ cam 24 |
 
-Logo Splash (`2:1093`) trùng `img_logo.webp` (`21:29`). Vẽ bằng XML: `bg_splash.xml` (gradient `#FFD2A6 → #BE8661`), `bg_language_item.xml` (`2:1095`), `progress_splash.xml` (Figma không có). Đã bỏ `progress_splash_tile.png`. Ảnh Splash gốc chỉ 1024px nên phần hiển thị ~1.8 px/dp, hơi mờ trên máy xxhdpi.
+Logo Splash (`2:1093`) trùng `img_logo.webp` (`21:29`). Vẽ bằng XML: `bg_splash.xml` (gradient `#FFD2A6 → #BE8661`), `bg_language_item.xml` (`2:1095`), `ic_splash_spinner.xml` (`282:19`, Fragment xoay). Đã bỏ `progress_splash_tile.png`, `progress_splash.xml`. Ảnh Splash gốc chỉ 1024px nên phần hiển thị ~1.8 px/dp, hơi mờ trên máy xxhdpi.
 
 ## Setting + Chọn template (2026-11-10)
 

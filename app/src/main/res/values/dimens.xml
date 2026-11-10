@@ -35,10 +35,9 @@
     <dimen name="splash_fade_top">34dp</dimen> <!-- 6% của 570 -->
     <dimen name="splash_fade_bottom">57dp</dimen> <!-- 10% của 570 -->
     <!-- Viền + bóng logo (splash, home) -->
-    <dimen name="splash_progress_w">240dp</dimen>
-    <dimen name="splash_progress_h">16dp</dimen>
-    <dimen name="splash_progress_inset">3dp</dimen>
-    <dimen name="splash_bottom_margin">24dp</dimen>
+    <dimen name="splash_bottom_margin">30dp</dimen>
+    <dimen name="splash_ads_padding">4dp</dimen>
+    <dimen name="splash_spinner">44dp</dimen>
 
     <!-- Intro / permission -->
     <dimen name="intro_image_h">560dp</dimen>
@@ -203,7 +202,7 @@
     <dimen name="editor_panel_body_h">264dp</dimen> <!-- Figma 2:1194 -->
     <dimen name="editor_panel_padding_top">16dp</dimen>
     <dimen name="editor_sub_tab_bottom">14dp</dimen> <!-- lưới bắt đầu ở 64 = 16 + 34 + 14 -->
-    <dimen name="editor_input_bottom">12dp</dimen>
+    <dimen name="editor_input_bottom">16dp</dimen>
     <dimen name="editor_fonts_bottom">16dp</dimen>
     <dimen name="editor_nav_h">56dp</dimen> <!-- Figma 2:1227 -->
     <dimen name="editor_nav_gap">20dp</dimen> <!-- Figma gap 24 giữa nút 40; view 44 có 2dp quầng bóng mỗi bên -->
@@ -221,6 +220,8 @@
     <dimen name="editor_nav_icon_padding">12dp</dimen> <!-- (44 - 20) / 2 -->
     <dimen name="editor_chip">40dp</dimen>
     <dimen name="editor_input_h">40dp</dimen>
+    <dimen name="editor_text_input_h">36dp</dimen> <!-- ô nhập + nút ✓ tab Text (Figma 2:1454 / 282:83) -->
+    <dimen name="editor_speech_row_gap">8dp</dimen> <!-- font / màu / lưới ở tab Speech (Figma 2:1384) -->
     <dimen name="hidden_input_size">1dp</dimen>
     <dimen name="editor_input_text">16sp</dimen>
     <dimen name="editor_chip_text">16sp</dimen>
@@ -338,6 +339,7 @@
     <dimen name="color_picker_cursor_stroke">2dp</dimen>
 
     <!-- Lucky Gift: nút quà dưới Next (Figma 2:628, y 120 - status bar 44) -->
+    <item name="lucky_gift_dim" type="fraction">70%</item> <!-- lớp tối sau overlay Lucky Gift (Figma 2:759) -->
     <dimen name="lucky_gift_button">44dp</dimen>
     <dimen name="lucky_gift_button_top">76dp</dimen>
     <dimen name="lucky_gift_button_inset">4dp</dimen>

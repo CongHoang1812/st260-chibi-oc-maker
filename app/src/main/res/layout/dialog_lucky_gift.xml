@@ -153,7 +153,8 @@
             android:layout_marginTop="@dimen/lucky_gift_message_top"
             android:gravity="center"
             android:text="@string/lucky_gift_unlocked_message"
-            android:textAppearance="@style/Text.Body.White" />
+            android:textAppearance="@style/Text.Caption.White"
+            android:textSize="@dimen/text_12" />
 
         <com.conght.chibiocmaker.core.widget.WoodButton
             android:id="@+id/btn_collect"

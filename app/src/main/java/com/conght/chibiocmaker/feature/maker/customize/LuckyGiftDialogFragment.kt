@@ -269,6 +269,12 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
 
     private fun View.isGone() = visibility == View.GONE
 
+    /** Lớp tối sau overlay đậm hơn dialog chung: đen 70% (Figma 2:759). */
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setDimAmount(resources.getFraction(R.fraction.lucky_gift_dim, 1, 1))
+    }
+
     override fun onDestroyView() {
         reelStrips.forEach { it.animate().cancel() }
         reelStrips.clear()

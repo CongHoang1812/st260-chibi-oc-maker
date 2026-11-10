@@ -353,15 +353,17 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
 
     /**
      * Nút quà: ẩn khi không có Lucky Gift (Cosplay) hoặc đã mở hết part.
-     * Quay được thì có chấm đỏ, đang chờ thì hiện đếm ngược bên dưới.
+     * Còn lượt quay (START, hoặc FREE xem quảng cáo lúc đang đếm ngược) thì có chấm đỏ (Figma 2:551 / 2:677);
+     * đã dùng lượt quảng cáo thì hiện đếm ngược bên dưới (Figma 2:805).
      */
     private fun renderLuckyGift(gift: LuckyGiftState?) {
         val visible = gift != null && gift.hasLocked
         binding.luckyGift.isVisible = visible
         val left = gift?.remainingSeconds ?: 0
-        binding.luckyGiftBadge.isVisible = visible && left == 0
-        binding.tvLuckyGiftTimer.isVisible = visible && left > 0
-        if (left > 0) {
+        val waiting = left > 0 && gift?.adSpinUsed == true
+        binding.luckyGiftBadge.isVisible = visible && !waiting
+        binding.tvLuckyGiftTimer.isVisible = visible && waiting
+        if (waiting) {
             binding.tvLuckyGiftTimer.text = getString(R.string.timer_format, left / SECONDS_PER_MINUTE, left % SECONDS_PER_MINUTE)
         }
     }
