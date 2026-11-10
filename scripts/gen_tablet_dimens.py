@@ -62,8 +62,7 @@ PHONE = {
 TAB_DIMENS = ["category_tab_w", "category_tab_h", "category_tab_selected_h",
               "category_tab_radius", "category_tab_icon", "category_tab_gap"]
 # Cả nhóm cùng hệ số để ảnh nền (có bóng) và thumbnail vẫn khớp nhau
-TEMPLATE_DIMENS = ["template_item_w", "template_item_h", "template_thumb", "template_thumb_left",
-                   "template_thumb_top", "template_grid_gap_v"]
+TEMPLATE_DIMENS = ["template_item_w", "template_grid_gap_h", "template_grid_gap_v"]
 PART_DIMENS = ["part_item_h", "part_item_icon"]
 
 # Màn xếp dọc cố định (không cuộn, không co giãn): tổng chiều cao tính từ dưới status bar
@@ -85,8 +84,9 @@ def factors(bucket):
     b = BUCKETS[bucket]
     s, cols = b["scale"], b["columns"]
     out = dict.fromkeys(TAB_DIMENS, s * b["tab_boost"])
-    # Template: cột × item = rộng màn - 2 × screen_padding
-    out.update(dict.fromkeys(TEMPLATE_DIMENS, (b["width"] - 2 * 16 * s) / cols["template_grid_columns"] / 168))
+    # Template: cột × ô 160 + khe 8 = rộng màn - 2 × screen_padding
+    tc = cols["template_grid_columns"]
+    out.update(dict.fromkeys(TEMPLATE_DIMENS, (b["width"] - 2 * 16 * s) / (tc * 160 + (tc - 1) * 8)))
     # Part: ô gần vuông, rộng = (rộng màn - 2 × part_grid_padding_h) / số cột
     out.update(dict.fromkeys(PART_DIMENS, (b["width"] - 2 * 24 * s) / cols["part_grid_columns"] / 64))
     return out
@@ -98,7 +98,8 @@ def derived(d, cols):
         "cosplay_buttons_top": d["content_top"] + d["character_size"] + d["screen_padding"],
         "lucky_random_top": d["content_top_lucky_roll"] + d["character_size"] + d["screen_padding"],
         # Rộng lưới = cột × item + khe
-        "template_grid_w": cols["template_grid_columns"] * d["template_item_w"],
+        "template_grid_w": cols["template_grid_columns"] * d["template_item_w"]
+        + (cols["template_grid_columns"] - 1) * d["template_grid_gap_h"],
         "creation_grid_w": cols["creation_grid_columns"] * d["creation_item_w"]
         + (cols["creation_grid_columns"] - 1) * d["creation_grid_gap_h"],
     }

@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Setting (Figma 3:468) -->
+<!-- Setting (Figma 2:1020): nền gradient chung, 4 hàng thẻ trắng có icon cam 24 + chữ cam -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:importantForAccessibility="no"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_tavern" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/overlay_20" />
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_tavern">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content"
@@ -36,7 +25,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/screen_padding"
-            android:layout_marginTop="@dimen/list_top"
+            android:layout_marginTop="@dimen/setting_list_top"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +39,7 @@
                 android:drawablePadding="@dimen/radius_large"
                 android:focusable="true"
                 android:text="@string/language"
-                android:textAppearance="@style/Text.Body"
+                android:textAppearance="@style/Text.Body.Orange"
                 app:drawableStartCompat="@drawable/ic_language" />
 
             <TextView
@@ -61,7 +50,7 @@
                 android:drawablePadding="@dimen/radius_large"
                 android:focusable="true"
                 android:text="@string/rate_us"
-                android:textAppearance="@style/Text.Body"
+                android:textAppearance="@style/Text.Body.Orange"
                 android:visibility="gone"
                 app:drawableStartCompat="@drawable/ic_star" />
 
@@ -73,7 +62,7 @@
                 android:drawablePadding="@dimen/radius_large"
                 android:focusable="true"
                 android:text="@string/share_app"
-                android:textAppearance="@style/Text.Body"
+                android:textAppearance="@style/Text.Body.Orange"
                 app:drawableStartCompat="@drawable/ic_share_app" />
 
             <TextView
@@ -84,7 +73,7 @@
                 android:drawablePadding="@dimen/radius_large"
                 android:focusable="true"
                 android:text="@string/privacy_policy"
-                android:textAppearance="@style/Text.Body"
+                android:textAppearance="@style/Text.Body.Orange"
                 app:drawableStartCompat="@drawable/ic_privacy" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

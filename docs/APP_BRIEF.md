@@ -68,8 +68,8 @@ Tính năng có sẵn nhưng app này không dùng hoặc hoạt động khác. 
 | Intro | `fragment_intro`, `item_intro_page` | `2:1141`, `2:1149`, `2:1159` | xong layout (chưa xem trên máy) |
 | Permission | `fragment_permission`, `item_permission_row` | `2:1167` | xong layout (chưa xem trên máy) |
 | Home | `fragment_home` | `2:1003` | xong layout (chưa xem trên máy) |
-| Setting | `fragment_setting` | `2:1020` | chưa |
-| Chọn template | `fragment_template_select`, `item_template` | `2:457` | chưa |
+| Setting | `fragment_setting` | `2:1020` | xong layout (chưa xem trên máy) |
+| Chọn template | `fragment_template_select`, `item_template` | `2:457` | xong layout (chưa xem trên máy) |
 | Customize + Move | `fragment_customize`, `view_move_panel`, `item_part`, `item_none_part`, `item_dice_part`, `item_color_dot`, `item_category_tab` | Customize `2:469`, Move `2:931` | xong layout (chưa xem trên máy) |
 | Decor editor | `fragment_decor_editor`, `item_decor_cell`, `item_none_decor`, `item_sub_tab`, `item_font_chip`, `item_color_chip` | Nền ảnh `2:1182`, nền màu `2:1240`, sticker `2:1296`, speech `2:1358`, text `2:1452` | xong layout (chưa xem trên máy) |
 | Successful | `fragment_success` | Maker `2:1421`, Cosplay `2:280`; thẻ điểm sao `2:321`, `2:330` | xong layout (chưa xem trên máy) |
@@ -147,4 +147,5 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
   - Hàng danh sách (`ListRow`, dùng chung Language / Permission / Setting): luôn nền trắng, chữ cam, chọn chỉ đổi radio (bỏ kiểu cả hàng tô cam).
   - Language từ Setting dùng cùng nền gradient, bỏ lớp tối; vẫn dùng `btn_check`, không thêm nút Save.
   - Tiêu đề Language / Permission (`Text.Title`) đổi sang cam; chữ Intro xanh đậm `#01394D`.
+- Setting / Chọn template theo Figma (2026-11-10): nền gradient chung, bỏ lớp tối. Thẻ template thành ô trắng 160 bo 4, ảnh phủ kín, lưới cách 8 (bỏ khung giấy có bóng cũ).
 - `APP_KEY` `ST279_AnimeOCMaker` chỉ là API mượn tạm vì app chưa có API thật. Chưa cần chạy `probe_api.py`; phải đổi sang API thật và kiểm tra lại trước khi phát hành. (2026-11-09)

@@ -114,3 +114,11 @@ Vẽ bằng XML: `bg_small_icon.xml` (`2:1561`, lõi cam viền nâu bo 8), `bg_
 | `drawable/ic_check_language.xml` | `2:1139` | Dấu ✓ cam 24 |
 
 Logo Splash (`2:1093`) trùng `img_logo.webp` (`21:29`). Vẽ bằng XML: `bg_splash.xml` (gradient `#FFD2A6 → #BE8661`), `bg_language_item.xml` (`2:1095`), `progress_splash.xml` (Figma không có). Đã bỏ `progress_splash_tile.png`. Ảnh Splash gốc chỉ 1024px nên phần hiển thị ~1.8 px/dp, hơi mờ trên máy xxhdpi.
+
+## Setting + Chọn template (2026-11-10)
+
+| File | Node | Ghi chú |
+|---|---|---|
+| `drawable/ic_language.xml`, `ic_star.xml`, `ic_share_app.xml`, `ic_privacy.xml` | `2:1022`, `2:1026`, `2:1030`, `2:1034` | Icon cam 24 trong hàng Setting |
+
+Thẻ template vẽ bằng `bg_template_item.xml` (`2:463`), không xuất ảnh.

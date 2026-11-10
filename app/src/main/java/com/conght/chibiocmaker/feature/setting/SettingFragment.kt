@@ -32,7 +32,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.content.applyStatusBarPadding()
-        setLightStatusBar(false)
+        setLightStatusBar(true)
 
         binding.btnBack.setOnSingleClickListener { findNavController().popBackStack() }
         binding.rowLanguage.setOnSingleClickListener {

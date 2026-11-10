@@ -24,7 +24,8 @@
     <dimen name="content_top">72dp</dimen>
     <dimen name="content_top_lucky_roll">100dp</dimen>
     <dimen name="list_top">80dp</dimen>
-    <dimen name="language_list_top">88dp</dimen> <!-- Figma 2:1094: hàng đầu ở y 132 -->
+    <dimen name="language_list_top">88dp</dimen>
+    <dimen name="setting_list_top">84dp</dimen> <!-- Figma 2:1021: hàng đầu ở y 128 --> <!-- Figma 2:1094: hàng đầu ở y 132 -->
 
     <!-- Splash -->
     <!-- Splash (Figma 2:1091): logo y 81, ảnh y 156 cao 570 (trừ status bar 44) -->
@@ -283,15 +284,12 @@
     <dimen name="small_icon_radius">8dp</dimen>
 
     <!-- Template (cata) -->
-    <!-- Item cata = ảnh bg_template_item gồm cả bóng (168×190), giấy thật nằm ở (5,3) 160×180 -->
-    <dimen name="template_item_w">168dp</dimen>
-    <dimen name="template_item_h">190dp</dimen>
-    <dimen name="template_thumb">136dp</dimen>
-    <dimen name="template_thumb_left">16dp</dimen>
-    <dimen name="template_thumb_top">14dp</dimen>
-    <dimen name="template_grid_top">77dp</dimen>
-    <dimen name="template_grid_w">336dp</dimen>
-    <dimen name="template_grid_gap_v">6dp</dimen>
+    <!-- Chọn template (Figma 2:457): ô trắng 160 bo 4, ảnh phủ kín, lưới 2 cột cách 8 từ y 128 -->
+    <dimen name="template_item_w">160dp</dimen>
+    <dimen name="template_grid_top">84dp</dimen>
+    <dimen name="template_grid_w">328dp</dimen>
+    <dimen name="template_grid_gap_h">8dp</dimen>
+    <dimen name="template_grid_gap_v">8dp</dimen>
 
     <!-- Dialog -->
     <dimen name="dialog_width">312dp</dimen>

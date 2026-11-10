@@ -22,6 +22,7 @@
     <dimen name="content_top_lucky_roll">160dp</dimen>
     <dimen name="list_top">128dp</dimen>
     <dimen name="language_list_top">141dp</dimen>
+    <dimen name="setting_list_top">134dp</dimen>
     <dimen name="splash_logo_top">59dp</dimen>
     <dimen name="splash_logo_h">216dp</dimen>
     <dimen name="splash_image_top">179dp</dimen>
@@ -229,14 +230,11 @@
     <dimen name="small_icon_glyph">19dp</dimen>
     <dimen name="small_icon_padding">10dp</dimen>
     <dimen name="small_icon_radius">13dp</dimen>
-    <dimen name="template_item_w">274dp</dimen>
-    <dimen name="template_item_h">310dp</dimen>
-    <dimen name="template_thumb">222dp</dimen>
-    <dimen name="template_thumb_left">26dp</dimen>
-    <dimen name="template_thumb_top">23dp</dimen>
-    <dimen name="template_grid_top">123dp</dimen>
-    <dimen name="template_grid_w">548dp</dimen>
-    <dimen name="template_grid_gap_v">10dp</dimen>
+    <dimen name="template_item_w">268dp</dimen>
+    <dimen name="template_grid_top">134dp</dimen>
+    <dimen name="template_grid_w">549dp</dimen>
+    <dimen name="template_grid_gap_h">13dp</dimen>
+    <dimen name="template_grid_gap_v">13dp</dimen>
     <dimen name="dialog_width">499dp</dimen>
     <dimen name="dialog_message_width">422dp</dimen>
     <dimen name="instruction_card_w">525dp</dimen>

@@ -35,7 +35,7 @@ class TemplateSelectFragment : BaseFragment<FragmentTemplateSelectBinding>(Fragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.content.applyStatusBarPadding()
-        setLightStatusBar(false)
+        setLightStatusBar(true)
 
         binding.btnBack.setOnSingleClickListener { findNavController().popBackStack() }
 
@@ -47,7 +47,11 @@ class TemplateSelectFragment : BaseFragment<FragmentTemplateSelectBinding>(Fragm
         val columns = resources.getInteger(R.integer.template_grid_columns)
         binding.rvTemplates.layoutManager = GridLayoutManager(requireContext(), columns)
         binding.rvTemplates.addItemDecoration(
-            GridSpacingItemDecoration(columns, 0, resources.getDimensionPixelSize(R.dimen.template_grid_gap_v)),
+            GridSpacingItemDecoration(
+                columns,
+                resources.getDimensionPixelSize(R.dimen.template_grid_gap_h),
+                resources.getDimensionPixelSize(R.dimen.template_grid_gap_v),
+            ),
         )
         binding.rvTemplates.adapter = adapter
         // Lưới chỉ đổi từ thẻ chờ sang thẻ thật: không cần hiệu ứng mờ / hiện dần (gây nháy khi tải xong)
