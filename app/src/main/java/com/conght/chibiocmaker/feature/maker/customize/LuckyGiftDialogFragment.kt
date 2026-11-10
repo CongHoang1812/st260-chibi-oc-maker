@@ -130,7 +130,7 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
         }
 
         val left = gift.remainingSeconds
-        // Hết giờ: START. Đang đếm ngược, chưa xem quảng cáo: 🎬 FREE (Figma 2:677) + đồng hồ bên dưới.
+        // Hết giờ: START. Đang đếm ngược, chưa xem quảng cáo: 🎬 FREE + ⏱ giờ còn lại bên dưới (Figma 2:760).
         // Đã dùng lượt quảng cáo: giờ còn lại nằm trên nút (Figma 2:888), chờ hết giờ mới quay tiếp
         val timer = getString(R.string.timer_format, left / SECONDS_PER_MINUTE, left % SECONDS_PER_MINUTE)
         val freeAd = left > 0 && !gift.adSpinUsed
@@ -140,7 +140,7 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
             freeAd -> getString(R.string.lucky_gift_free)
             else -> timer
         }
-        binding.timerRow.isVisible = freeAd
+        binding.spinTimer.isVisible = freeAd
         binding.tvSpinTimer.text = timer
 
         val result = gift.result

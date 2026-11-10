@@ -8,6 +8,7 @@ File Figma: `OUCDw6CTtEW3cw3iPNNcqc` (xem `docs/APP_BRIEF.md`). Figma đổi nod
 | `drawable-xxhdpi/bg_lucky_gift_result.webp` | `10:409` | Xuất PNG @3x (nền đục), tự tạo alpha bo góc 40dp, WebP lossless |
 | `drawable-nodpi/img_lucky_gift.webp` | `2:631` (ảnh gốc trong `2:628`) | Ảnh gốc 512×512, thu về 192×192, WebP q88 |
 | `drawable-xxhdpi/ic_ad_clapper.webp` | `2:799` (ảnh gốc trong nút FREE `2:677`) | Ảnh gốc 512×512, thu về 72×72 (24dp @3x), WebP lossless |
+| `drawable/ic_lucky_timer.xml` | `282:39` | SVG đồng hồ 10×10 (nét #0099E5) chuyển sang VectorDrawable, dùng trong nút FREE |
 | `drawable/bg_lucky_gift_start.xml` | `2:668` | Path SVG của Figma chuyển sang VectorDrawable, bỏ bóng 1dp; chữ START là `@string/lucky_gift_start` |
 
 Vẽ bằng XML theo số đo Figma, không xuất ảnh: `bg_lucky_gift_title.xml` (`2:673`, `10:403`), `bg_lucky_gift_button.xml` (`2:628`), `bg_lucky_gift_window.xml` (`2:647`), `bg_lucky_gift_cell.xml`.

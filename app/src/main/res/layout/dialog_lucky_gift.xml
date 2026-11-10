@@ -43,7 +43,8 @@
                 android:gravity="center"
                 android:orientation="horizontal" />
 
-            <!-- START (Figma 2:551) / 🎬 FREE khi đang đếm ngược (Figma 2:677) -->
+            <!-- START (Figma 2:551) / 🎬 FREE + ⏱ giờ còn lại bên dưới khi đang đếm ngược (Figma 2:760) /
+                 chỉ giờ khi đã dùng lượt quảng cáo (Figma 2:888) -->
             <LinearLayout
                 android:id="@+id/btn_spin"
                 android:layout_width="@dimen/lucky_gift_start_w"
@@ -52,54 +53,62 @@
                 android:layout_marginTop="@dimen/lucky_gift_start_top"
                 android:background="@drawable/bg_lucky_gift_start"
                 android:gravity="center"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:paddingBottom="@dimen/lucky_gift_start_text_bottom"
                 android:stateListAnimator="@animator/press_scale">
 
-                <ImageView
-                    android:id="@+id/iv_spin_ad"
-                    android:layout_width="@dimen/lucky_gift_ad_icon"
-                    android:layout_height="@dimen/lucky_gift_ad_icon"
-                    android:layout_marginEnd="@dimen/lucky_gift_ad_icon_gap"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_ad_clapper"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_spin"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/lucky_gift_start"
-                    android:textAppearance="@style/Text.LuckyGiftStart" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/iv_spin_ad"
+                        android:layout_width="@dimen/lucky_gift_ad_icon"
+                        android:layout_height="@dimen/lucky_gift_ad_icon"
+                        android:layout_marginEnd="@dimen/lucky_gift_ad_icon_gap"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_ad_clapper"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_spin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:text="@string/lucky_gift_start"
+                        android:textAppearance="@style/Text.LuckyGiftStart" />
+                </LinearLayout>
+
+                <!-- Giờ còn lại dưới chữ FREE (Figma 282:38): đồng hồ 10 + chữ 8, cách 1 -->
+                <LinearLayout
+                    android:id="@+id/spin_timer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/lucky_gift_spin_timer_top"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="@dimen/lucky_gift_spin_timer_icon"
+                        android:layout_height="@dimen/lucky_gift_spin_timer_icon"
+                        android:layout_marginEnd="@dimen/lucky_gift_spin_timer_gap"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_lucky_timer" />
+
+                    <TextView
+                        android:id="@+id/tv_spin_timer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:textAppearance="@style/Text.LuckyGiftStart.Timer"
+                        tools:text="30:00" />
+                </LinearLayout>
             </LinearLayout>
         </FrameLayout>
-
-        <!-- Đang đếm ngược: đồng hồ + giờ còn lại ngay dưới khung, dưới nút FREE -->
-        <LinearLayout
-            android:id="@+id/timer_row"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/lucky_gift_timer_top"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <ImageView
-                android:layout_width="@dimen/lucky_gift_timer_icon"
-                android:layout_height="@dimen/lucky_gift_timer_icon"
-                android:layout_marginEnd="@dimen/lucky_gift_ad_icon_gap"
-                android:importantForAccessibility="no"
-                android:src="@drawable/ic_clock" />
-
-            <TextView
-                android:id="@+id/tv_spin_timer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/Text.LuckyGiftTimer.Light"
-                tools:text="29:59" />
-        </LinearLayout>
 
         <TextView
             android:layout_width="@dimen/lucky_gift_title_w"

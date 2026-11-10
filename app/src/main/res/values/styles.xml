@@ -103,6 +103,12 @@
         <item name="android:textColor">@color/lucky_gift_start_text</item>
     </style>
 
+    <!-- Giờ còn lại dưới chữ FREE (Figma 282:41): Rammetto 8, xanh như chữ FREE -->
+    <style name="Text.LuckyGiftStart.Timer">
+        <item name="android:textSize">@dimen/lucky_gift_spin_timer_text</item>
+        <item name="android:lineHeight" tools:targetApi="28">@dimen/lucky_gift_spin_timer_text</item>
+    </style>
+
     <!-- Đếm ngược dưới nút quà (Figma 21:34: Inter Medium 14 đen) -->
     <style name="Text.LuckyGiftTimer" parent="TextAppearance.AppCompat">
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -110,11 +116,6 @@
         <item name="android:textSize">@dimen/text_14</item>
         <item name="android:lineHeight" tools:targetApi="28">@dimen/line_16</item>
         <item name="android:textColor">@color/black</item>
-    </style>
-
-    <!-- Đếm ngược dưới nút FREE trong overlay Lucky Gift (nền tối) -->
-    <style name="Text.LuckyGiftTimer.Light">
-        <item name="android:textColor">@color/white</item>
     </style>
 
     <!-- Rate us dùng Roboto (font hệ thống) -->

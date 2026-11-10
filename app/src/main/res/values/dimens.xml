@@ -385,9 +385,10 @@
     <dimen name="lucky_gift_start_text_bottom">13dp</dimen>
     <dimen name="lucky_gift_ad_icon">24dp</dimen>
     <dimen name="lucky_gift_ad_icon_gap">4dp</dimen>
-    <!-- Dòng đếm ngược dưới khung: frame_top + frame_h + 8 -->
-    <dimen name="lucky_gift_timer_top">306dp</dimen>
-    <dimen name="lucky_gift_timer_icon">16dp</dimen>
+    <dimen name="lucky_gift_spin_timer_top">2dp</dimen>
+    <dimen name="lucky_gift_spin_timer_icon">10dp</dimen>
+    <dimen name="lucky_gift_spin_timer_gap">1dp</dimen>
+    <dimen name="lucky_gift_spin_timer_text">8sp</dimen>
     <!-- Congratulations (Figma 10:414) -->
     <dimen name="lucky_gift_result_w">344dp</dimen>
     <dimen name="lucky_gift_result_h">104dp</dimen>
