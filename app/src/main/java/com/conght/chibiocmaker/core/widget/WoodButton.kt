@@ -26,7 +26,7 @@ class WoodButton @JvmOverloads constructor(
 ) : AppCompatTextView(context, attrs, defStyleAttr) {
 
     /** Thứ tự trùng enum `variant` trong attrs.xml. */
-    enum class Variant { ORANGE, GRAY, BLUE, RED }
+    enum class Variant { ORANGE, GRAY, BLUE, RED, TELEGRAM, WHATSAPP }
 
     var variant: Variant = Variant.ORANGE
         set(value) {
@@ -78,7 +78,8 @@ class WoodButton @JvmOverloads constructor(
             when (variant) {
                 Variant.ORANGE -> R.color.button_inner_stroke
                 Variant.GRAY -> R.color.tab_off_shadow
-                Variant.BLUE, Variant.RED -> R.color.button_blue_stroke
+                Variant.BLUE, Variant.RED, Variant.TELEGRAM -> R.color.button_blue_stroke
+                Variant.WHATSAPP -> R.color.button_whatsapp_stroke
             },
         )
         invalidate()

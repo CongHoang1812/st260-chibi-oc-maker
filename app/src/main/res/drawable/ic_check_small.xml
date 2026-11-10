@@ -1,9 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh từ SVG Figma bằng svg2vd.py (check_g.svg) -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="12dp"
-    android:height="9dp"
+    android:height="8.485dp"
     android:viewportWidth="12"
     android:viewportHeight="8.48479">
-    <path
-        android:pathData="M0.15 5.71L2.44 8C3.09 8.65 4.13 8.65 4.78 8L11.85 0.93C12.06 0.71 12.05 0.37 11.83 0.15C11.62 -0.05 11.28 -0.05 11.07 0.15L4 7.22C3.78 7.44 3.44 7.44 3.22 7.22L0.93 4.94C0.71 4.72 0.37 4.73 0.15 4.95C-0.05 5.16 -0.05 5.5 0.15 5.71Z"
-        android:fillColor="#FFB25324"/>
+    <path android:pathData="M0.154253 5.71258L2.44375 8.00208C3.08757 8.64569 4.1312 8.64569 4.77501 8.00208L11.8457 0.931353C12.0566 0.71303 12.0505 0.365129 11.8322 0.154276C11.6193 -0.0514252 11.2816 -0.0514252 11.0686 0.154276L3.99794 7.225C3.78332 7.43954 3.43545 7.43954 3.22086 7.225L0.931357 4.9355C0.713033 4.72465 0.365132 4.7307 0.154279 4.94903C-0.051422 5.16199 -0.051422 5.49961 0.154253 5.71258Z" android:fillColor="#FFFFFFFF" />
 </vector>

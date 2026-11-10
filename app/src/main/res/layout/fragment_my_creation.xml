@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- My creation (Figma 3:1229 empty / 3:1257 list / 3:1515 select) -->
+<!-- My creation (Figma Character: rỗng 2:1520, danh sách 2:1548, chọn nhiều 2:1656; Design: 2:1534 / 2:1614 / 2:1705).
+     Nền gradient chung, thân xanh từ y 84 chứa tab Character / Design canh giữa, lưới 2 cột ô 160. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:importantForAccessibility="no"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_tavern" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/overlay_20" />
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_tavern">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Header -->
+        <!-- Thân nền xanh (Figma 2:1554) -->
+        <View
+            android:id="@+id/body"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/creation_body_top"
+            android:background="@color/cream"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Header: Back | (chế độ chọn) Delete, Share, Download -->
         <ImageButton
             android:id="@+id/btn_back"
             style="@style/Widget.ST260ChibiOCMaker.ImageIconButton"
@@ -67,48 +69,25 @@
             app:layout_constraintEnd_toStartOf="@id/btn_share"
             app:layout_constraintTop_toTopOf="@id/btn_download" />
 
-        <!-- Tab giấy: tab chọn nằm cao hơn 8dp và đè lên tab kia -->
-        <TextView
+        <!-- Tab Character / Design: nút viên 124×34 canh giữa, chọn = cam, không chọn = xám (Figma 2:1555) -->
+        <com.conght.chibiocmaker.core.widget.WoodButton
             android:id="@+id/tab_character"
-            android:layout_width="@dimen/creation_tab_w"
-            android:layout_height="@dimen/creation_tab_h"
-            android:layout_marginStart="@dimen/screen_padding"
+            style="@style/Widget.ST260ChibiOCMaker.TabButton"
             android:layout_marginTop="@dimen/creation_tabs_top"
-            android:background="@drawable/bg_creation_tab"
-            android:focusable="true"
-            android:gravity="center"
             android:text="@string/character"
-            android:textAppearance="@style/Text.Body"
-            android:textColor="@color/text_creation_tab"
+            app:layout_constraintEnd_toStartOf="@id/tab_design"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/body" />
 
-        <TextView
+        <com.conght.chibiocmaker.core.widget.WoodButton
             android:id="@+id/tab_design"
-            android:layout_width="@dimen/creation_tab_w"
-            android:layout_height="@dimen/creation_tab_h"
-            android:layout_marginStart="@dimen/creation_tab_second_start"
-            android:layout_marginTop="@dimen/creation_tabs_top"
-            android:background="@drawable/bg_creation_tab"
-            android:focusable="true"
-            android:gravity="center"
+            style="@style/Widget.ST260ChibiOCMaker.TabButton"
+            android:layout_marginStart="@dimen/dialog_button_gap"
             android:text="@string/design"
-            android:textAppearance="@style/Text.Body"
-            android:textColor="@color/text_creation_tab"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Thân nền cream -->
-        <View
-            android:id="@+id/body"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/creation_body_top"
-            android:background="@color/cream"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/tab_character"
+            app:layout_constraintTop_toTopOf="@id/tab_character" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_creations"
@@ -121,13 +100,13 @@
             app:layout_constraintBottom_toTopOf="@id/sticker_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/body"
             tools:listitem="@layout/item_creation" />
 
-        <!-- Empty -->
+        <!-- Rỗng (Figma 2:1532 / 2:1533): ảnh 200 có bóng, chữ trắng ngay dưới -->
         <LinearLayout
             android:id="@+id/empty_state"
-            android:layout_width="@dimen/creation_empty_image"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
@@ -138,32 +117,31 @@
             app:layout_constraintTop_toTopOf="@id/body"
             tools:visibility="visible">
 
-            <com.google.android.material.imageview.ShapeableImageView
+            <ImageView
                 android:layout_width="@dimen/creation_empty_image"
                 android:layout_height="@dimen/creation_empty_image"
                 android:importantForAccessibility="no"
                 android:scaleType="centerCrop"
-                android:src="@drawable/img_empty_character"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.ST260ChibiOCMaker.DecorItem" />
+                android:src="@drawable/img_empty_character" />
 
             <TextView
                 android:id="@+id/tv_empty"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/creation_empty_gap"
                 android:gravity="center"
-                android:textAppearance="@style/Text.Caption"
+                android:textAppearance="@style/Text.TabSmall"
                 tools:text="@string/no_character_here" />
         </LinearLayout>
 
-        <!-- Chế độ chọn – tab Character: xuất sticker (chưa tích hợp) -->
+        <!-- Chế độ chọn – tab Character: thêm sticker vào Telegram / WhatsApp (Figma 2:1686 / 2:1690) -->
         <LinearLayout
             android:id="@+id/sticker_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingVertical="@dimen/screen_padding"
+            android:paddingTop="@dimen/grid_gap"
+            android:paddingBottom="@dimen/creation_sticker_bar_bottom"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -172,16 +150,16 @@
 
             <com.conght.chibiocmaker.core.widget.WoodButton
                 android:id="@+id/btn_telegram"
-                style="@style/Widget.ST260ChibiOCMaker.WoodButton"
+                style="@style/Widget.ST260ChibiOCMaker.StickerButton"
                 android:text="@string/add_to_telegram"
-                app:buttonWidth="@dimen/wood_button_large_width" />
+                app:variant="telegram" />
 
             <com.conght.chibiocmaker.core.widget.WoodButton
                 android:id="@+id/btn_whatsapp"
-                style="@style/Widget.ST260ChibiOCMaker.WoodButton"
+                style="@style/Widget.ST260ChibiOCMaker.StickerButton"
                 android:layout_marginStart="@dimen/grid_gap"
                 android:text="@string/add_to_whatsapp"
-                app:buttonWidth="@dimen/wood_button_large_width" />
+                app:variant="whatsapp" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

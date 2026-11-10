@@ -195,6 +195,16 @@
         <item name="autoSizeMaxTextSize">@dimen/text_14</item>
     </style>
 
+    <!-- Add to Telegram / Add to Whatsapp (Figma 2:1686): 160×44, chữ 12, tự co khi bản dịch dài -->
+    <style name="Widget.ST260ChibiOCMaker.StickerButton" parent="Widget.ST260ChibiOCMaker.WoodButton">
+        <item name="buttonWidth">@dimen/creation_sticker_button_w</item>
+        <item name="android:textSize">@dimen/text_12</item>
+        <item name="android:maxLines">1</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">@dimen/move_text_min</item>
+        <item name="autoSizeMaxTextSize">@dimen/text_12</item>
+    </style>
+
     <!-- Nút chữ panel Move (RESET / EXIT, Figma 2:969): 120×56, chữ in hoa tự co khi bản dịch dài -->
     <style name="Widget.ST260ChibiOCMaker.MoveTextButton" parent="Widget.ST260ChibiOCMaker.WoodButton">
         <item name="android:layout_height">@dimen/move_button</item>

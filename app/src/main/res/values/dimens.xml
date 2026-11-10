@@ -20,7 +20,7 @@
          root của màn cộng thêm status bar thật qua View.applyStatusBarPadding() -->
     <dimen name="screen_padding">16dp</dimen>
     <dimen name="top_bar_top">16dp</dimen>
-    <dimen name="top_bar_action_gap">16dp</dimen>
+    <dimen name="top_bar_action_gap">12dp</dimen> <!-- Figma 2:1662 / 2:1758: nút 44 cách 12 -->
     <dimen name="content_top">72dp</dimen>
     <dimen name="content_top_lucky_roll">100dp</dimen>
     <dimen name="list_top">80dp</dimen>
@@ -113,22 +113,18 @@
     <dimen name="move_arrow_glyph">48dp</dimen>
     <dimen name="move_text_min">10sp</dimen>
 
-    <!-- My creation (Figma 3:1228). Item = ảnh bg_creation_card gồm bóng (164×184), giấy thật 160×180 ở (2,2) -->
-    <dimen name="creation_tabs_top">72dp</dimen>
-    <dimen name="creation_tab_offset">8dp</dimen>
-    <dimen name="creation_tab_second_start">104dp</dimen>
-    <dimen name="creation_body_top">112dp</dimen>
-    <dimen name="creation_grid_top">128dp</dimen>
-    <dimen name="creation_grid_w">332dp</dimen>
-    <dimen name="creation_item_w">164dp</dimen>
-    <dimen name="creation_item_h">184dp</dimen>
-    <dimen name="creation_item_image_inset">14dp</dimen>
-    <dimen name="creation_item_actions_top">154dp</dimen>
-    <dimen name="creation_grid_gap_h">4dp</dimen>
-    <dimen name="creation_grid_gap_v">12dp</dimen>
+    <!-- My creation (Figma 2:1520 rỗng, 2:1548 danh sách, 2:1656 chọn nhiều; Design 2:1534 / 2:1614 / 2:1705) -->
+    <dimen name="creation_body_top">84dp</dimen> <!-- nền xanh từ y 128 - status bar 44 -->
+    <dimen name="creation_tabs_top">16dp</dimen> <!-- tính từ đỉnh nền xanh -->
+    <dimen name="creation_grid_top">64dp</dimen> <!-- tính từ đỉnh nền xanh -->
+    <dimen name="creation_grid_w">328dp</dimen>
+    <dimen name="creation_item_w">160dp</dimen>
+    <dimen name="creation_item_action_inset">8dp</dimen>
+    <dimen name="creation_grid_gap_h">8dp</dimen>
+    <dimen name="creation_grid_gap_v">8dp</dimen>
     <dimen name="creation_empty_image">200dp</dimen>
-    <dimen name="creation_empty_gap">14dp</dimen>
-    <dimen name="creation_tab_z">2dp</dimen>
+    <dimen name="creation_sticker_button_w">160dp</dimen>
+    <dimen name="creation_sticker_bar_bottom">8dp</dimen>
 
     <!-- Cosplay (Figma 3:41 start / 3:77 instruction / 3:132 play) -->
     <dimen name="cosplay_buttons_top">416dp</dimen>
@@ -270,9 +266,6 @@
     <dimen name="home_logo_top">84dp</dimen>
 
     <!-- My creation -->
-    <dimen name="creation_card_image">136dp</dimen>
-    <dimen name="creation_tab_w">96dp</dimen>
-    <dimen name="creation_tab_h">40dp</dimen>
     <dimen name="small_icon">24dp</dimen>
     <dimen name="small_icon_glyph">12dp</dimen>
     <!-- (small_icon - small_icon_glyph) / 2: icon trong nút nhỏ phóng theo nút -->

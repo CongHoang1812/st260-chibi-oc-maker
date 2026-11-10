@@ -72,7 +72,7 @@ STACKS = {
     "lucky_roll": ["lucky_random_top", "wood_button_height"],
     "cosplay_start": ["cosplay_buttons_top", "wood_button_height"],
     "success": ["success_image_top", "success_image_max", "success_download_top", "wood_button_height"],
-    "creation_detail": ["content_top", "character_size", "screen_padding", "wood_button_height"],
+    "creation_detail": ["success_image_top", "success_image_max", "success_download_top", "wood_button_height"],
     "permission": ["list_top", "permission_image", "screen_padding", "language_item_h", "screen_padding",
                    "language_item_h", "permission_continue_gap", "line_24"],
     "customize (nhân vật ≥ 300)": ["content_top", "grid_gap", "bottom_panel_height", 300],

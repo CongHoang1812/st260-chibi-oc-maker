@@ -139,12 +139,19 @@ class WoodButtonDrawable(
         /** Nút đỏ của panel Move (EXIT, Figma 2:966). */
         fun red(context: Context) = create(context, R.color.button_red, R.color.button_blue_stroke)
 
+        /** Add to Telegram / Add to Whatsapp ở My creation (Figma 2:1687 / 2:1691). */
+        fun telegram(context: Context) = create(context, R.color.button_telegram, R.color.button_blue_stroke)
+
+        fun whatsapp(context: Context) = create(context, R.color.button_whatsapp, R.color.button_whatsapp_stroke)
+
         /** Nền theo [WoodButton.Variant] (dùng chung cho WoodButton và RoundIconButton). */
         fun of(context: Context, variant: WoodButton.Variant) = when (variant) {
             WoodButton.Variant.ORANGE -> orange(context)
             WoodButton.Variant.GRAY -> gray(context)
             WoodButton.Variant.BLUE -> blue(context)
             WoodButton.Variant.RED -> red(context)
+            WoodButton.Variant.TELEGRAM -> telegram(context)
+            WoodButton.Variant.WHATSAPP -> whatsapp(context)
         }
 
         private fun create(

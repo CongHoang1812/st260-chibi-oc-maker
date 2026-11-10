@@ -57,6 +57,10 @@
     <color name="button_blue">#80D4FF</color>
     <color name="button_blue_stroke">#005680</color>
     <color name="button_red">#FF8080</color>
+    <!-- Nút Add to Telegram / Add to Whatsapp (Figma 2:1687 / 2:1691) -->
+    <color name="button_telegram">#30A3E6</color>
+    <color name="button_whatsapp">#03D749</color>
+    <color name="button_whatsapp_stroke">#008000</color>
     <!-- Thanh tab category đáy Customize (Figma 2:537) -->
     <color name="tab_bar_bg">#66AACC</color>
     <!-- Thẻ dialog (Figma 2:451) -->

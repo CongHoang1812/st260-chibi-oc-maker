@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Chi tiết creation (Figma 3:1583 character / 3:1608 design) -->
+<!-- Chi tiết creation (Figma Character 2:1746, Design 2:1775): như Successful Maker, ảnh vuông trắng rộng hết màn
+     trên nền gradient chung, nút Edit rộng 328 (chỉ Character). -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/editor_bg"
+    android:background="@drawable/bg_tavern"
     tools:ignore="Overdraw">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -57,39 +58,42 @@
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer"
             style="@style/Widget.ST260ChibiOCMaker.Shimmer"
-            android:layout_width="@dimen/character_size"
-            android:layout_height="@dimen/character_size"
-            android:layout_marginTop="@dimen/content_top"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/success_image_top"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintWidth_max="@dimen/success_image_max">
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_decor_item" />
+                android:background="@color/white" />
         </com.facebook.shimmer.ShimmerFrameLayout>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_image"
-            android:layout_width="@dimen/character_size"
-            android:layout_height="@dimen/character_size"
-            android:layout_marginTop="@dimen/content_top"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/success_image_top"
             android:background="@color/white"
             android:contentDescription="@string/cd_result_image"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.ST260ChibiOCMaker.DecorItem" />
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintWidth_max="@dimen/success_image_max" />
 
         <com.conght.chibiocmaker.core.widget.WoodButton
             android:id="@+id/btn_edit"
             style="@style/Widget.ST260ChibiOCMaker.WoodButton"
-            android:layout_marginTop="@dimen/screen_padding"
+            android:layout_marginTop="@dimen/success_download_top"
             android:text="@string/edit"
             android:visibility="gone"
-            app:buttonWidth="@dimen/wood_button_large_width"
+            app:buttonWidth="@dimen/success_download_w"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_image"

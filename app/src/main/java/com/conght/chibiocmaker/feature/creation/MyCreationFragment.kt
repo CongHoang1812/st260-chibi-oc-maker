@@ -9,9 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -30,6 +28,7 @@ import com.conght.chibiocmaker.core.ui.showDownloadSuccessToast
 import com.conght.chibiocmaker.core.ui.shareImages
 import com.conght.chibiocmaker.core.ui.startTelegramStickerImport
 import com.conght.chibiocmaker.core.ui.whatsAppAddStickerIntent
+import com.conght.chibiocmaker.core.widget.WoodButton
 import com.conght.chibiocmaker.data.model.Creation
 import com.conght.chibiocmaker.data.model.CreationType
 import com.conght.chibiocmaker.data.model.StickerExport
@@ -81,7 +80,7 @@ class MyCreationFragment : BaseFragment<FragmentMyCreationBinding>(FragmentMyCre
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.content.applyStatusBarPadding()
-        setLightStatusBar(false)
+        setLightStatusBar(true)
 
         val columns = resources.getInteger(R.integer.creation_grid_columns)
         binding.rvCreations.layoutManager = GridLayoutManager(requireContext(), columns)
@@ -196,20 +195,12 @@ class MyCreationFragment : BaseFragment<FragmentMyCreationBinding>(FragmentMyCre
         }
     }
 
-    /** Tab đang chọn: nền cream, nằm cao hơn 8dp và đè lên tab kia. */
+    /** Tab đang chọn: nút cam, tab còn lại xám (Figma 2:1555). */
     private fun renderTabs(tab: CreationType) {
-        val top = resources.getDimensionPixelSize(R.dimen.creation_tabs_top)
-        val offset = resources.getDimensionPixelSize(R.dimen.creation_tab_offset)
-        val z = resources.getDimension(R.dimen.creation_tab_z)
         listOf(binding.tabCharacter to CreationType.CHARACTER, binding.tabDesign to CreationType.DESIGN).forEach { (view, type) ->
             val selected = type == tab
             view.isSelected = selected
-            view.translationZ = if (selected) z else 0f
-            val topMargin = if (selected) top else top + offset
-            // Mỗi lần gán layoutParams là một requestLayout: chỉ gán khi tab thật sự đổi chỗ
-            if ((view.layoutParams as ConstraintLayout.LayoutParams).topMargin != topMargin) {
-                view.updateLayoutParams<ConstraintLayout.LayoutParams> { this.topMargin = topMargin }
-            }
+            view.variant = if (selected) WoodButton.Variant.ORANGE else WoodButton.Variant.GRAY
         }
     }
 

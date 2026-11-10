@@ -94,3 +94,13 @@ Vẽ bằng XML: `bg_success_card.xml` (`2:283`, thẻ kem viền `#FFE5CC` + b�
 Không xuất ảnh: mọi dialog dùng thẻ `bg_dialog_card.xml` (kem `#FFE1CC`, viền `#803500`, bo 16) và tab tiêu đề vẽ bằng `WoodButtonDrawable`. Emoji Rate us `img_rate_0..5` đã trùng ảnh trong section `258:406`, giữ nguyên.
 
 Đã bỏ `bg_dialog_paper.webp`, `bg_rate_dialog.webp`, `bg_pack_name_dialog.xml`, `bg_pack_name_input.xml`, `bg_button_primary.xml`, `bg_button_outline.xml`.
+
+## My creation + Detail (2026-11-10)
+
+| File | Node | Ghi chú |
+|---|---|---|
+| `drawable/ic_pencil.xml` | `2:1562` | Glyph trắng 12, nút sửa trên thẻ |
+| `drawable/ic_trash_card.xml` | `2:1567` (Group trong `trash 2`) | Glyph trắng 10×12, nút xoá trên thẻ |
+| `drawable/ic_check_small.xml` | `I2:1675;2:1907` | Dấu ✓ trắng của checkbox đã chọn |
+
+Vẽ bằng XML: `bg_small_icon.xml` (`2:1561`, lõi cam viền nâu bo 8), `bg_small_icon_off.xml` (`2:1677`, xám `#CCC`), `bg_creation_card.xml` (`2:1560`). Ảnh rỗng `img_empty_character` đã có (`2:1532`), chưa có bóng đổ 0 2 2 như Figma. Đã bỏ `bg_creation_tab*.xml`, `color/text_creation_tab.xml`.
