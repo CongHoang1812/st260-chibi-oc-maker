@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nút tab editor đang chọn (lõi cam), Figma 2:1228 / 2:1231.
+     Quầng bóng 2dp (shadow 0 0 4 2 đen 50%), viền nâu 1dp, bóng trong 2dp hai bên + 4dp ở đáy (inset 0 -2 0 2, đen 25%). -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/button_drop" />
+            <corners android:radius="@dimen/editor_nav_radius_glow" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/editor_nav_glow_inner"
+        android:left="@dimen/editor_nav_glow_inner"
+        android:right="@dimen/editor_nav_glow_inner"
+        android:top="@dimen/editor_nav_glow_inner">
+        <shape>
+            <solid android:color="@color/button_shade" />
+            <corners android:radius="@dimen/editor_nav_radius_glow_inner" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/editor_nav_glow"
+        android:left="@dimen/editor_nav_glow"
+        android:right="@dimen/editor_nav_glow"
+        android:top="@dimen/editor_nav_glow">
+        <shape>
+            <solid android:color="@color/brown_dark" />
+            <corners android:radius="@dimen/editor_nav_radius" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/editor_nav_border_inset"
+        android:left="@dimen/editor_nav_border_inset"
+        android:right="@dimen/editor_nav_border_inset"
+        android:top="@dimen/editor_nav_border_inset">
+        <shape>
+            <solid android:color="@color/orange_button" />
+            <corners android:radius="@dimen/editor_nav_radius_inner" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/editor_nav_border_inset"
+        android:left="@dimen/editor_nav_border_inset"
+        android:right="@dimen/editor_nav_border_inset"
+        android:top="@dimen/editor_nav_border_inset">
+        <shape>
+            <solid android:color="@color/button_shade" />
+            <corners android:radius="@dimen/editor_nav_radius_inner" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/editor_nav_shade_bottom"
+        android:left="@dimen/editor_nav_shade_side"
+        android:right="@dimen/editor_nav_shade_side"
+        android:top="@dimen/editor_nav_border_inset">
+        <shape>
+            <solid android:color="@color/orange_button" />
+            <corners android:radius="@dimen/editor_nav_radius_core" />
+        </shape>
+    </item>
+</layer-list>

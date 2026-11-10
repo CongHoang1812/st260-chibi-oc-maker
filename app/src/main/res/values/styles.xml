@@ -155,6 +155,18 @@
         <item name="shimmer_tilt">20</item>
     </style>
 
+    <!-- Nút tab chính của Decor editor (Figma 2:1228): ô 40 bo 16 + 2dp quầng bóng, glyph 20 -->
+    <style name="Widget.ST260ChibiOCMaker.EditorTab" parent="">
+        <item name="android:layout_width">@dimen/editor_nav_button</item>
+        <item name="android:layout_height">@dimen/editor_nav_button</item>
+        <item name="android:background">@drawable/bg_editor_tab</item>
+        <item name="android:padding">@dimen/editor_nav_icon_padding</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:focusable">true</item>
+        <item name="android:stateListAnimator">@animator/press_scale</item>
+        <item name="tint">@color/tint_editor_tab</item>
+    </style>
+
     <style name="Widget.ST260ChibiOCMaker.ImageIconButton" parent="">
         <item name="android:layout_width">@dimen/icon_button_large</item>
         <item name="android:layout_height">@dimen/icon_button_large</item>
@@ -198,6 +210,12 @@
     <style name="ShapeAppearance.ST260ChibiOCMaker.DecorItem" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/decor_item_radius</item>
+    </style>
+
+    <!-- Ảnh trong ô lưới editor, bo 8 như khung (Figma 2:1200) -->
+    <style name="ShapeAppearance.ST260ChibiOCMaker.EditorCell" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_medium</item>
     </style>
 
     <style name="ShapeAppearance.ST260ChibiOCMaker.Circle" parent="">

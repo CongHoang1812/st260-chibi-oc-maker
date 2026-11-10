@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Chip font 32dp: "Aa" bằng font tương ứng (ô đầu "T" = font mặc định) -->
+<!-- Chip font 40dp (Figma 2:1457): "Aa" bằng font tương ứng (ô đầu "T" = font mặc định) -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/editor_chip"

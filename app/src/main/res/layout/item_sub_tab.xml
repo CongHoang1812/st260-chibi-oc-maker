@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Tab con editor: WoodButton 104×34, chữ không viền; chọn = cam, không chọn = xám -->
+<!-- Tab con editor: WoodButton 124×34 (Figma 2:1223), chữ không viền; chọn = cam, không chọn = xám -->
 <com.conght.chibiocmaker.core.widget.WoodButton xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

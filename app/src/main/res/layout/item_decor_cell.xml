@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Ô lưới editor 56×56 trắng bo 4 (màu / ảnh / bánh xe màu / thêm ảnh / item pack) -->
+<!-- Ô lưới editor 56×56 (Figma 2:1200): trắng viền xám 0.5 bo 8; chọn = viền cam 2 vẽ chồng (màu / ảnh / bánh xe màu / thêm ảnh / item pack) -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/decor_item"
-    android:background="@drawable/bg_decor_item"
+    android:background="@drawable/bg_part_item"
     android:focusable="true"
-    android:foreground="@drawable/fg_decor_item_selected">
+    android:foreground="@drawable/fg_decor_item_selected"
+    android:padding="@dimen/cell_stroke">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_image"
@@ -15,6 +16,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.ST260ChibiOCMaker.DecorItem"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.ST260ChibiOCMaker.EditorCell"
         tools:ignore="ContentDescription" />
 </FrameLayout>

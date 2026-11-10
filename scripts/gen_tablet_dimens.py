@@ -28,6 +28,8 @@ BUCKETS = {
         "fixed": {
             # Customize/Decor: nhân vật co giãn ở phần còn lại sau panel
             "bottom_panel_height": 400,
+            # Decor: thân panel + thanh tab (56 × 1.6 ≈ 90) = 400 như Customize
+            "editor_panel_body_h": 310,
             "permission_image": 360,
             # Home: thẻ ngay dưới logo (logo hết ở 84×1.6 + 135×1.6 = 350) để 2 hàng thẻ vừa 888
             "home_cards_top": 360,
@@ -43,6 +45,7 @@ BUCKETS = {
         "tab_boost": 1.13,
         "fixed": {
             "bottom_panel_height": 550,
+            "editor_panel_body_h": 438,  # 550 - thanh tab 56 × 2
             "permission_image": 520,
         },
         "columns": {"template_grid_columns": 2, "creation_grid_columns": 2,
@@ -73,6 +76,7 @@ STACKS = {
     "permission": ["list_top", "permission_image", "screen_padding", "language_item_h", "screen_padding",
                    "language_item_h", "permission_continue_gap", "line_24"],
     "customize (nhân vật ≥ 300)": ["content_top", "grid_gap", "bottom_panel_height", 300],
+    "decor (canvas ≥ 300)": ["editor_canvas_top", "grid_gap", "editor_panel_body_h", "editor_nav_h", 300],
 }
 
 

@@ -165,17 +165,33 @@
     <dimen name="success_star_small">24dp</dimen>
     <dimen name="success_star_big">32dp</dimen>
 
-    <!-- Decor editor (Figma 3:773 / 3:913 / 3:993 / 3:1155) -->
-    <dimen name="editor_tab_row_h">48dp</dimen>
-    <dimen name="editor_tab_gap">32dp</dimen>
-    <dimen name="editor_sub_tab_row_h">50dp</dimen>
-    <dimen name="editor_chip">32dp</dimen>
-    <dimen name="editor_input_h">36dp</dimen>
+    <!-- Decor editor (Figma 2:1182 / 2:1240 / 2:1296 / 2:1358 / 2:1452) -->
+    <dimen name="editor_canvas_top">68dp</dimen> <!-- Figma y 112 - status bar 44 -->
+    <dimen name="editor_panel_body_h">264dp</dimen> <!-- Figma 2:1194 -->
+    <dimen name="editor_panel_padding_top">16dp</dimen>
+    <dimen name="editor_sub_tab_bottom">14dp</dimen> <!-- lưới bắt đầu ở 64 = 16 + 34 + 14 -->
+    <dimen name="editor_input_bottom">12dp</dimen>
+    <dimen name="editor_fonts_bottom">16dp</dimen>
+    <dimen name="editor_nav_h">56dp</dimen> <!-- Figma 2:1227 -->
+    <dimen name="editor_nav_gap">20dp</dimen> <!-- Figma gap 24 giữa nút 40; view 44 có 2dp quầng bóng mỗi bên -->
+    <dimen name="editor_nav_button">44dp</dimen>
+    <dimen name="editor_nav_glow">2dp</dimen>
+    <dimen name="editor_nav_glow_inner">1dp</dimen>
+    <dimen name="editor_nav_radius">16dp</dimen>
+    <dimen name="editor_nav_radius_glow">18dp</dimen>
+    <dimen name="editor_nav_radius_glow_inner">17dp</dimen>
+    <dimen name="editor_nav_radius_inner">15dp</dimen>
+    <dimen name="editor_nav_radius_core">13dp</dimen>
+    <dimen name="editor_nav_border_inset">3dp</dimen> <!-- quầng 2 + viền 1 -->
+    <dimen name="editor_nav_shade_side">5dp</dimen> <!-- bóng trong 2dp hai bên -->
+    <dimen name="editor_nav_shade_bottom">7dp</dimen> <!-- bóng trong 4dp ở đáy -->
+    <dimen name="editor_nav_icon_padding">12dp</dimen> <!-- (44 - 20) / 2 -->
+    <dimen name="editor_chip">40dp</dimen>
+    <dimen name="editor_input_h">40dp</dimen>
     <dimen name="hidden_input_size">1dp</dimen>
     <dimen name="editor_input_text">16sp</dimen>
-    <dimen name="editor_chip_text">10sp</dimen>
-    <dimen name="editor_icon_color_wheel">36dp</dimen>
-    <dimen name="editor_icon_add_image">24dp</dimen> <!-- Figma 2:1198: dấu + 24 -->
+    <dimen name="editor_chip_text">16sp</dimen>
+    <dimen name="editor_cell_icon">24dp</dimen> <!-- Figma 2:1198 / 2:1220: dấu + và None 24 -->
     <dimen name="decor_sticker_w">152dp</dimen>
     <dimen name="decor_sticker_h">96dp</dimen>
     <dimen name="decor_speech_w">191dp</dimen>
@@ -184,7 +200,7 @@
     <dimen name="decor_speech_text">32sp</dimen>
     <dimen name="decor_text_size">36sp</dimen>
     <dimen name="decor_text_shadow">3dp</dimen>
-    <dimen name="decor_handle">20dp</dimen>
+    <dimen name="decor_handle">24dp</dimen> <!-- Figma 2:1304: glyph 12 + đệm 4 + viền 2 -->
     <dimen name="decor_selection_padding">4dp</dimen>
     <dimen name="decor_dash">6dp</dimen>
     <dimen name="part_item_h">56dp</dimen> <!-- Figma 2:505: ô 56 -->
@@ -192,7 +208,6 @@
     <dimen name="part_grid_padding_h">24dp</dimen>
     <dimen name="decor_item">56dp</dimen>
     <dimen name="decor_item_radius">4dp</dimen>
-    <dimen name="decor_tab_icon">32dp</dimen>
     <dimen name="grid_gap">8dp</dimen>
     <dimen name="category_tab_w">40dp</dimen> <!-- Figma 2:538: ô tab 40 -->
     <dimen name="category_tab_h">40dp</dimen>
@@ -201,7 +216,6 @@
     <dimen name="category_tab_icon">32dp</dimen>
     <dimen name="color_bar_height">32dp</dimen>
     <dimen name="color_bar_radius">24dp</dimen>
-    <dimen name="color_dot">24dp</dimen>
     <dimen name="color_dot_gap">8dp</dimen>
     <dimen name="color_dot_ring">2dp</dimen>
     <!-- Customize (Figma 2:469) -->

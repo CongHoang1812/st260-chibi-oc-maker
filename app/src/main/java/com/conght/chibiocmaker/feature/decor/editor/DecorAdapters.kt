@@ -72,17 +72,14 @@ class DecorCellAdapter(
             if (cell !is DecorCell.Image) Glide.with(image).clear(image)
             when (cell) {
                 is DecorCell.ColorWheel -> {
-                    image.layoutParams = image.layoutParams.apply {
-                        width = res.getDimensionPixelSize(R.dimen.editor_icon_color_wheel)
-                        height = width
-                    }
-                    image.setImageResource(R.drawable.img_color_wheel)
+                    // Figma 2:1255: ảnh bánh xe màu vuông phủ kín ô
+                    image.setImageResource(R.drawable.img_color_wheel_cell)
                     binding.root.contentDescription = res.getString(R.string.cd_color_wheel)
                 }
 
                 DecorCell.AddImage -> {
                     image.layoutParams = image.layoutParams.apply {
-                        width = res.getDimensionPixelSize(R.dimen.editor_icon_add_image)
+                        width = res.getDimensionPixelSize(R.dimen.editor_cell_icon)
                         height = width
                     }
                     image.scaleType = ImageView.ScaleType.FIT_CENTER

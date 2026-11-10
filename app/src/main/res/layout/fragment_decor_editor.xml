@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Decor editor (Figma 3:773 / 3:843 / 3:913 / 3:993 / 3:1155). Cả màn trong 1 ShimmerFrameLayout:
-     pack (API) là skeleton, ô None / Color / Image / font / màu là view thật. -->
+<!-- Decor editor (Figma: nền ảnh 2:1182, nền màu 2:1240, sticker 2:1296, speech 2:1358, text 2:1452).
+     Cả màn trong 1 ShimmerFrameLayout: pack (API) là skeleton, ô None / Color / Image / font / màu là view thật. -->
 <com.conght.chibiocmaker.core.widget.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/shimmer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/editor_bg"
+    android:background="@drawable/bg_tavern"
     app:shimmerAutoStart="false"
-    app:shimmerTone="dark"
-    tools:ignore="Overdraw">
+    app:shimmerTone="light">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content"
@@ -37,21 +36,30 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Nền trắng sau canvas: tách khỏi DecorCanvasView để ảnh xuất ra vẫn trong suốt khi nền None -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/editor_bg"
+            app:layout_constraintBottom_toBottomOf="@id/canvas"
+            app:layout_constraintEnd_toEndOf="@id/canvas"
+            app:layout_constraintStart_toStartOf="@id/canvas"
+            app:layout_constraintTop_toTopOf="@id/canvas" />
+
+        <!-- Vùng thiết kế vuông rộng hết màn (Figma 2:1188), co lại khi màn thấp -->
         <com.conght.chibiocmaker.feature.decor.editor.DecorCanvasView
             android:id="@+id/canvas"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/grid_gap"
-            android:layout_marginTop="@dimen/content_top"
+            android:layout_marginTop="@dimen/editor_canvas_top"
+            android:contentDescription="@string/cd_design_canvas"
             app:layout_constraintBottom_toTopOf="@id/panel"
             app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintHeight_max="@dimen/character_size_large"
-            app:layout_constraintVertical_bias="0"
-            app:layout_constraintWidth_max="@dimen/character_size_large"
-            android:contentDescription="@string/cd_design_canvas"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0" />
 
         <!-- Ô nhập ẩn cho bong bóng: chỉ để nhận bàn phím, chữ hiện trực tiếp trên canvas -->
         <EditText
@@ -70,154 +78,150 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="LabelFor" />
 
-        <!-- Panel dưới -->
+        <!-- Panel dưới: phần nội dung xanh nhạt + thanh tab chính ở đáy -->
         <LinearLayout
             android:id="@+id/panel"
             android:layout_width="0dp"
-            android:layout_height="@dimen/bottom_panel_height"
-            android:background="@color/panel_brown"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <!-- Tab chính: Background / Sticker / Speech / Text -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/editor_tab_row_h"
+                android:layout_height="@dimen/editor_panel_body_h"
+                android:background="@color/panel_brown"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/editor_panel_padding_top">
+
+                <!-- Tab con (Image / Color / pack), canh giữa như Figma 2:1222 -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_sub_tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/wood_button_tab_height"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="@dimen/editor_sub_tab_bottom"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:overScrollMode="never"
+                    android:paddingHorizontal="@dimen/part_grid_padding_h"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_sub_tab" />
+
+                <!-- Hàng nhập chữ (tab Text, Figma 2:1454) -->
+                <LinearLayout
+                    android:id="@+id/input_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/editor_input_bottom"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/part_grid_padding_h"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/et_text"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/editor_input_h"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_text_input"
+                        android:hint="@string/text_hint"
+                        android:imeOptions="actionDone"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapSentences"
+                        android:maxLines="1"
+                        android:paddingHorizontal="@dimen/radius_large"
+                        android:textColor="@color/brown_dark"
+                        android:textColorHint="@color/hint_gray"
+                        android:textSize="@dimen/editor_input_text" />
+
+                    <!-- Figma không có nút xác nhận; giữ để thêm chữ không phụ thuộc phím Done của bàn phím -->
+                    <ImageButton
+                        android:id="@+id/btn_text_done"
+                        android:layout_width="@dimen/editor_input_h"
+                        android:layout_height="@dimen/editor_input_h"
+                        android:layout_marginStart="@dimen/grid_gap"
+                        android:background="@drawable/bg_text_input"
+                        android:contentDescription="@string/cd_confirm"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_check" />
+                </LinearLayout>
+
+                <!-- Hàng font + màu chữ (Speech / Text, Figma 2:1456 / 2:1479) -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_fonts"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/editor_chip"
+                    android:layout_marginBottom="@dimen/editor_fonts_bottom"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:overScrollMode="never"
+                    android:paddingHorizontal="@dimen/part_grid_padding_h"
+                    android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_font_chip" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_text_colors"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/editor_chip"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:overScrollMode="never"
+                    android:paddingHorizontal="@dimen/part_grid_padding_h"
+                    android:visibility="gone"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_color_chip" />
+
+                <!-- Lưới 5 cột ô 56×56 (Figma 2:1195) -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingHorizontal="@dimen/part_grid_padding_h"
+                    android:paddingBottom="@dimen/grid_gap"
+                    tools:listitem="@layout/item_decor_cell" />
+            </LinearLayout>
+
+            <!-- Tab chính: Background / Sticker / Speech / Text (Figma 2:1227) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/editor_nav_h"
+                android:background="@color/tab_bar_bg"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/tab_background"
-                    android:layout_width="@dimen/decor_tab_icon"
-                    android:layout_height="@dimen/decor_tab_icon"
+                    style="@style/Widget.ST260ChibiOCMaker.EditorTab"
                     android:contentDescription="@string/cd_tab_background"
-                    android:focusable="true"
-                    android:src="@drawable/ic_tab_background"
-                    app:tint="@color/tint_editor_tab" />
+                    android:src="@drawable/ic_tab_background" />
 
                 <ImageView
                     android:id="@+id/tab_sticker"
-                    android:layout_width="@dimen/decor_tab_icon"
-                    android:layout_height="@dimen/decor_tab_icon"
-                    android:layout_marginStart="@dimen/editor_tab_gap"
+                    style="@style/Widget.ST260ChibiOCMaker.EditorTab"
+                    android:layout_marginStart="@dimen/editor_nav_gap"
                     android:contentDescription="@string/cd_tab_sticker"
-                    android:focusable="true"
-                    android:src="@drawable/ic_tab_sticker"
-                    app:tint="@color/tint_editor_tab" />
+                    android:src="@drawable/ic_tab_sticker" />
 
                 <ImageView
                     android:id="@+id/tab_speech"
-                    android:layout_width="@dimen/decor_tab_icon"
-                    android:layout_height="@dimen/decor_tab_icon"
-                    android:layout_marginStart="@dimen/editor_tab_gap"
+                    style="@style/Widget.ST260ChibiOCMaker.EditorTab"
+                    android:layout_marginStart="@dimen/editor_nav_gap"
                     android:contentDescription="@string/cd_tab_speech"
-                    android:focusable="true"
-                    android:src="@drawable/ic_tab_speech"
-                    app:tint="@color/tint_editor_tab" />
+                    android:src="@drawable/ic_tab_speech" />
 
                 <ImageView
                     android:id="@+id/tab_text"
-                    android:layout_width="@dimen/decor_tab_icon"
-                    android:layout_height="@dimen/decor_tab_icon"
-                    android:layout_marginStart="@dimen/editor_tab_gap"
+                    style="@style/Widget.ST260ChibiOCMaker.EditorTab"
+                    android:layout_marginStart="@dimen/editor_nav_gap"
                     android:contentDescription="@string/cd_tab_text"
-                    android:focusable="true"
-                    android:src="@drawable/ic_tab_text"
-                    app:tint="@color/tint_editor_tab" />
+                    android:src="@drawable/ic_tab_text" />
             </LinearLayout>
-
-            <!-- Tab con (Color / Image / Pack…) -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_sub_tabs"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/editor_sub_tab_row_h"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:overScrollMode="never"
-                android:paddingHorizontal="@dimen/part_grid_padding_h"
-                android:paddingVertical="@dimen/grid_gap"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_sub_tab" />
-
-            <!-- Hàng nhập chữ (tab Text) -->
-            <LinearLayout
-                android:id="@+id/input_row"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/grid_gap"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/part_grid_padding_h"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/et_text"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/editor_input_h"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_text_input"
-                    android:hint="@string/text_hint"
-                    android:imeOptions="actionDone"
-                    android:importantForAutofill="no"
-                    android:inputType="textCapSentences"
-                    android:maxLines="1"
-                    android:paddingHorizontal="@dimen/radius_large"
-                    android:textColor="@color/brown_dark"
-                    android:textColorHint="@color/hint_gray"
-                    android:textSize="@dimen/editor_input_text" />
-
-                <ImageButton
-                    android:id="@+id/btn_text_done"
-                    android:layout_width="@dimen/editor_input_h"
-                    android:layout_height="@dimen/editor_input_h"
-                    android:layout_marginStart="@dimen/radius_large"
-                    android:background="@drawable/bg_text_input"
-                    android:contentDescription="@string/cd_confirm"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_check" />
-            </LinearLayout>
-
-            <!-- Hàng font + màu chữ (Speech / Text) -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_fonts"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/editor_chip"
-                android:layout_marginTop="@dimen/grid_gap"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:overScrollMode="never"
-                android:paddingHorizontal="@dimen/part_grid_padding_h"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_font_chip" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_text_colors"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/editor_chip"
-                android:layout_marginTop="@dimen/grid_gap"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:overScrollMode="never"
-                android:paddingHorizontal="@dimen/part_grid_padding_h"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_color_chip" />
-
-            <!-- Lưới 5 cột ô 56×56 -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_grid"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="@dimen/grid_gap"
-                android:layout_weight="1"
-                android:clipToPadding="false"
-                android:overScrollMode="never"
-                android:paddingHorizontal="@dimen/part_grid_padding_h"
-                android:paddingBottom="@dimen/grid_gap"
-                tools:listitem="@layout/item_decor_cell" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.conght.chibiocmaker.core.widget.ShimmerFrameLayout>

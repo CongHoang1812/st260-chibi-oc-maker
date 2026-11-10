@@ -51,8 +51,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
 
 /**
- * Decor editor (Figma 3:773 / 3:843 / 3:913 / 3:993 / 3:1155).
- * Local làm đầy đủ: Color, Image (Photo Picker), Text, font, màu chữ. Pack (API) → skeleton.
+ * Decor editor (Figma: nền ảnh 2:1182, nền màu 2:1240, sticker 2:1296, speech 2:1358, text 2:1452).
+ * Local làm đầy đủ: Image (Photo Picker), Color, Text, font, màu chữ. Pack (API) → skeleton.
  * Ô None chỉ có ở lưới Background; Sticker / Speech không có, xoá phần tử bằng handle trên canvas.
  */
 @AndroidEntryPoint
@@ -301,7 +301,6 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
         binding.rvFonts.isVisible = showText
         binding.rvTextColors.isVisible = showText
         binding.rvGrid.isVisible = tab != EditorTab.TEXT
-        binding.rvSubTabs.isVisible = tab != EditorTab.TEXT
         val fontId = target?.fontId ?: data.fontId
         fontAdapter.selectedId = fontId
         val textColor = target?.color ?: data.textColor
@@ -326,10 +325,13 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
     /** Vẽ hàng tab con, trả về Resource của pack đang chọn (null nếu tab Color / Image / Text). */
     private fun renderSubTabs(data: EditorData): Resource<DecorPack>? {
         val tab = data.mainTab
-        val type = tab.packType ?: return null
+        val type = tab.packType ?: run {
+            binding.rvSubTabs.isVisible = false
+            return null
+        }
         val resource = packs[type] ?: Resource.Loading
         val fixed = if (tab == EditorTab.BACKGROUND) {
-            listOf(getString(R.string.tab_color), getString(R.string.tab_image))
+            listOf(getString(R.string.tab_image), getString(R.string.tab_color))
         } else {
             emptyList()
         }
@@ -337,6 +339,8 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
         val titles = fixed + packList.mapIndexed { i, p -> p.name.ifBlank { getString(R.string.tab_pack_number, i + 1) } }
         subTabAdapter.submitList(titles.mapIndexed { i, title -> SubTabAdapter.Tab(i, title, i == data.subTab) })
         binding.rvSubTabs.swapAdapter(if (resource is Resource.Success) subTabAdapter else subTabsWithLoading)
+        // Figma Sticker / Speech không có hàng tab con: chỉ hiện khi có từ 2 pack để chọn
+        binding.rvSubTabs.isVisible = fixed.isNotEmpty() || (resource is Resource.Success && titles.size > 1)
 
         val packIndex = data.subTab - fixed.size
         return when {
@@ -490,8 +494,8 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
         private const val KEY_EXIT = "editor_exit"
         private const val KEY_BG_COLOR = "editor_bg_color"
         private const val KEY_TEXT_COLOR = "editor_text_color"
-        private const val SUB_COLOR = 0
-        private const val SUB_IMAGE = 1
+        private const val SUB_IMAGE = 0
+        private const val SUB_COLOR = 1
         private const val SKELETON_CELLS = 14
         private const val SKELETON_PACKS = 3
         private const val TAB_DEBOUNCE_MS = 150L
