@@ -744,7 +744,7 @@ class CustomizeViewModel @Inject constructor(
         const val KEY_GIFT_GRID = "lucky_gift_grid"
         const val KEY_GIFT_RESULT = "lucky_gift_result"
         const val MS_PER_SECOND = 1_000L
-        const val COSPLAY_SECONDS = 10 * 60
+        const val COSPLAY_SECONDS = 1 * 60
         const val COMPLETE_PERCENT = 100
         const val TICK_MS = 1_000L
         const val STOP_TIMEOUT_MS = 5_000L

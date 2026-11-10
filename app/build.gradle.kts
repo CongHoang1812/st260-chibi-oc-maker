@@ -17,8 +17,8 @@ android {
         applicationId = "com.conght.chibiocmaker"
         minSdk = 24
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0.0"
+            versionCode = 1
+            versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Máy chủ chính + dự phòng (chỉ gọi khi máy chủ chính lỗi)
         buildConfigField("String", "BASE_URL", "\"https://lvtglobal.tech/\"")
