@@ -27,7 +27,7 @@ class LanguageFragment : BaseFragment<FragmentLanguageBinding>(FragmentLanguageB
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.content.applyStatusBarPadding()
-        setLightStatusBar(!fromSetting)
+        setLightStatusBar(true)
 
         binding.ivBackground.isVisible = fromSetting
         binding.vOverlay.isVisible = fromSetting

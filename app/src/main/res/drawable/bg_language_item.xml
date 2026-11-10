@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Item ngôn ngữ / setting / permission: chọn = cam, mặc định = trắng -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true">
-        <shape>
-            <solid android:color="@color/orange_selected" />
-            <stroke android:width="@dimen/stroke_medium" android:color="@color/brown_dark" />
-            <corners android:radius="@dimen/language_item_radius" />
-        </shape>
-    </item>
-    <item android:state_selected="true">
-        <shape>
-            <solid android:color="@color/orange_selected" />
-            <stroke android:width="@dimen/stroke_medium" android:color="@color/brown_dark" />
-            <corners android:radius="@dimen/language_item_radius" />
-        </shape>
-    </item>
+<!-- Hàng ngôn ngữ / setting / permission (Figma 2:1095): trắng, viền nâu 1, bo 16, bóng trong nhẹ
+     (inset 0 -1 1 2, đen 10%). Chọn không đổi nền, chỉ đổi radio. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <solid android:color="@color/white" />
-            <stroke android:width="@dimen/stroke_medium" android:color="@color/brown_dark" />
+            <solid android:color="@color/brown_dark" />
             <corners android:radius="@dimen/language_item_radius" />
         </shape>
     </item>
-</selector>
+    <item
+        android:bottom="@dimen/stroke_thin"
+        android:left="@dimen/stroke_thin"
+        android:right="@dimen/stroke_thin"
+        android:top="@dimen/stroke_thin">
+        <shape>
+            <solid android:color="@color/row_shade" />
+            <corners android:radius="@dimen/language_item_radius_inner" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/row_shade_bottom"
+        android:left="@dimen/row_shade_side"
+        android:right="@dimen/row_shade_side"
+        android:top="@dimen/row_shade_side">
+        <shape>
+            <solid android:color="@color/white" />
+            <corners android:radius="@dimen/language_item_radius_core" />
+        </shape>
+    </item>
+</layer-list>

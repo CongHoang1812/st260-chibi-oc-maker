@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Item ngôn ngữ (Figma 3:623): cờ tròn 20 + tên + radio 16; chọn = nền cam, chữ trắng -->
+<!-- Item ngôn ngữ (Figma 2:1095): cờ tròn 24 + tên cam + radio 16; chọn chỉ đổi radio -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

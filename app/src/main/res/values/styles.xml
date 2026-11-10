@@ -9,22 +9,11 @@
         <item name="android:textColor">@color/brown_dark</item>
     </style>
 
-    <!-- 48sp, chữ trắng viền đen (thay ảnh logo, xem docs/assets.md) -->
-    <style name="Text.Logo">
-        <item name="android:textSize">@dimen/text_48</item>
-        <item name="android:lineHeight" tools:targetApi="28">@dimen/line_48</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:shadowColor">@android:color/black</item>
-        <item name="android:shadowDx">1.6</item>
-        <item name="android:shadowDy">1.6</item>
-        <item name="android:shadowRadius">0.01</item>
-    </style>
-
+    <!-- Tiêu đề màn Language / Permission (Figma 2:1137, 2:1169): Rammetto 32 cam -->
     <style name="Text.Title">
         <item name="android:textSize">@dimen/text_32</item>
         <item name="android:lineHeight" tools:targetApi="28">@dimen/line_48</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/orange_button</item>
     </style>
 
     <style name="Text.DialogTitle">
@@ -46,6 +35,11 @@
 
     <style name="Text.Body.White">
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Chữ Intro (Figma 2:1142): Rammetto 16 xanh đậm -->
+    <style name="Text.Body.Intro">
+        <item name="android:textColor">@color/intro_text</item>
     </style>
 
     <style name="Text.Body.Orange">

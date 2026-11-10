@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Permission (Figma 3:741) -->
+<!-- Permission (Figma 2:1167) -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_tavern">
 
     <TextView
         android:id="@+id/tv_title"
@@ -46,7 +47,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/language_item_h"
         android:layout_marginHorizontal="@dimen/screen_padding"
-        android:layout_marginTop="@dimen/screen_padding"
+        android:layout_marginTop="@dimen/permission_row_gap"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/row_media" />

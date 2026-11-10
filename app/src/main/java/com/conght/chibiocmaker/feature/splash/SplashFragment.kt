@@ -29,7 +29,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.content.applyStatusBarPadding()
-        setLightStatusBar(false)
+        setLightStatusBar(true)
 
         viewLifecycleOwner.lifecycleScope.launch {
             runProgress()

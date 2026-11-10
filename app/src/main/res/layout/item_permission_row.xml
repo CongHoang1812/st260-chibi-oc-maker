@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Hàng quyền (Figma 3:761): tên + radio (drawableEnd) thể hiện đã cấp -->
+<!-- Hàng quyền (Figma 2:1175): tên cam + radio (drawableEnd) thể hiện đã cấp -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,6 +7,6 @@
     style="@style/Widget.ST260ChibiOCMaker.ListRow"
     android:clickable="true"
     android:focusable="true"
-    android:textAppearance="@style/Text.Body"
+    android:textAppearance="@style/Text.Body.Orange"
     app:drawableEndCompat="@drawable/ic_radio_off"
     tools:text="@string/permission_media" />

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Nền Splash (Figma 2:1091): #FFD2A6 → #BE8661 ở 91.5% -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="270"
+        android:centerColor="@color/splash_bottom"
+        android:centerY="0.915"
+        android:endColor="@color/splash_bottom"
+        android:startColor="@color/splash_bg" />
+</shape>

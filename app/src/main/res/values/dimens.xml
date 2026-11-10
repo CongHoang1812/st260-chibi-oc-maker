@@ -24,12 +24,17 @@
     <dimen name="content_top">72dp</dimen>
     <dimen name="content_top_lucky_roll">100dp</dimen>
     <dimen name="list_top">80dp</dimen>
+    <dimen name="language_list_top">88dp</dimen> <!-- Figma 2:1094: hàng đầu ở y 132 -->
 
     <!-- Splash -->
-    <dimen name="splash_title_top">198dp</dimen>
+    <!-- Splash (Figma 2:1091): logo y 81, ảnh y 156 cao 570 (trừ status bar 44) -->
+    <dimen name="splash_logo_top">37dp</dimen>
+    <dimen name="splash_logo_h">135dp</dimen>
+    <dimen name="splash_image_top">112dp</dimen>
+    <dimen name="splash_image_h">570dp</dimen>
+    <dimen name="splash_fade_top">34dp</dimen> <!-- 6% của 570 -->
+    <dimen name="splash_fade_bottom">57dp</dimen> <!-- 10% của 570 -->
     <!-- Viền + bóng logo (splash, home) -->
-    <dimen name="logo_stroke">2dp</dimen>
-    <dimen name="logo_shadow_offset">1.6dp</dimen>
     <dimen name="splash_progress_w">240dp</dimen>
     <dimen name="splash_progress_h">16dp</dimen>
     <dimen name="splash_progress_inset">3dp</dimen>
@@ -45,7 +50,8 @@
     <item name="intro_controls_percent" format="float" type="dimen">0.76</item>
     <dimen name="check_button">48dp</dimen>
     <dimen name="permission_image">300dp</dimen>
-    <dimen name="permission_continue_gap">72dp</dimen>
+    <dimen name="permission_continue_gap">76dp</dimen> <!-- Figma 2:1180: Continue ở y 640 -->
+    <dimen name="permission_row_gap">12dp</dimen>
 
     <!-- Viền ô item (Figma 2:1200 / 2:1219) -->
     <dimen name="cell_stroke">0.5dp</dimen>
@@ -245,9 +251,13 @@
     <!-- Danh sách cài đặt / ngôn ngữ -->
     <dimen name="language_item_h">56dp</dimen>
     <dimen name="language_item_radius">16dp</dimen>
+    <dimen name="language_item_radius_inner">15dp</dimen>
+    <dimen name="language_item_radius_core">13dp</dimen>
+    <dimen name="row_shade_side">3dp</dimen> <!-- viền 1 + bóng 2 -->
+    <dimen name="row_shade_bottom">4dp</dimen> <!-- viền 1 + bóng 3 ở đáy -->
     <dimen name="language_item_padding_h">24dp</dimen>
-    <dimen name="language_item_gap">16dp</dimen>
-    <dimen name="flag_size">20dp</dimen>
+    <dimen name="language_item_gap">12dp</dimen> <!-- Figma 2:1094: hàng 56 cách 12 -->
+    <dimen name="flag_size">24dp</dimen>
     <dimen name="radio_size">16dp</dimen>
     <dimen name="stroke_thin">1dp</dimen>
     <dimen name="stroke_medium">2dp</dimen>

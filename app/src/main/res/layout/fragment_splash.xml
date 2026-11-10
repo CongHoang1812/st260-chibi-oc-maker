@@ -1,43 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Splash (Figma 3:572) -->
+<!-- Splash (Figma 2:1091): nền cam đất, ảnh minh hoạ 360×570 mờ hai đầu, logo CHIBI OC MAKER phía trên.
+     Figma không có thanh loading / dòng quảng cáo: giữ ở đáy, dựng từ token. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:importantForAccessibility="no"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_tavern" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/overlay_20" />
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_splash">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false">
+        android:layout_height="match_parent">
 
-        <com.conght.chibiocmaker.core.widget.OutlinedTextView
-            android:id="@+id/tv_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/splash_title_top"
-            android:gravity="center"
-            android:text="@string/app_title"
-            android:textAppearance="@style/Text.Logo"
+        <ImageView
+            android:id="@+id/iv_splash"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/splash_image_h"
+            android:layout_marginTop="@dimen/splash_image_top"
+            android:foreground="@drawable/bg_splash_image_fade"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_splash"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:textOutlineColor="@color/brown_primary"
-            app:textOutlineShadowColor="@android:color/black"
-            app:textOutlineShadowOffset="@dimen/logo_shadow_offset"
-            app:textOutlineWidth="@dimen/logo_stroke" />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Logo dùng chung với Home (Figma 2:1093 trùng ảnh 21:29) -->
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/splash_logo_h"
+            android:layout_marginTop="@dimen/splash_logo_top"
+            android:contentDescription="@string/app_title"
+            android:scaleType="fitCenter"
+            android:src="@drawable/img_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_ads"

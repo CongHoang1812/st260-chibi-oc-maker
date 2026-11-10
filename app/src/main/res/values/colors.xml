@@ -68,6 +68,8 @@
     <color name="dialog_stroke">#803500</color>
     <!-- Viền ô item / decor (Figma 2:1200: #CCC 0.5dp) -->
     <color name="cell_stroke">#CCCCCC</color>
+    <!-- Bóng trong của hàng danh sách (Figma 2:1095: đen 10%) -->
+    <color name="row_shade">#1A000000</color>
     <!-- Đáy lớp mờ của ảnh intro (Figma 2:1148) -->
     <color name="intro_fade">#ADD5E5</color>
     <color name="intro_fade_transparent">#00ABD2E2</color>
@@ -109,6 +111,15 @@
     <color name="success_tape">#FF8080</color>
     <color name="success_tape_light">#FFBABA</color>
     <color name="success_tape_shadow">#59000000</color>
+
+    <!-- Splash (Figma 2:1091 / 2:1092) -->
+    <color name="splash_bottom">#BE8661</color>
+    <color name="splash_bottom_transparent">#00BE8661</color>
+    <color name="splash_fade_top">#F1C297</color>
+    <color name="splash_fade_top_transparent">#00F1C297</color>
+    <color name="splash_track">#80FFFFFF</color>
+    <!-- Chữ Intro (Figma 2:1142) -->
+    <color name="intro_text">#01394D</color>
 
     <!-- Gradient đáy thẻ Home (Figma 2:1012 / 2:1016 / 2:1014 / 2:1018) -->
     <color name="home_fade_maker">#EBB1B7</color>

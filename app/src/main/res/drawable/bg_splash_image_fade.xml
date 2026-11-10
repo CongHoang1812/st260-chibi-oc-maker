@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lớp mờ trên ảnh Splash (Figma 2:1092): đỉnh #F1C297 tan hết ở 6%, đáy #BE8661 bắt đầu từ 90% -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:gravity="top" android:height="@dimen/splash_fade_top">
+        <shape>
+            <gradient
+                android:angle="270"
+                android:endColor="@color/splash_fade_top_transparent"
+                android:startColor="@color/splash_fade_top" />
+        </shape>
+    </item>
+    <item android:gravity="bottom" android:height="@dimen/splash_fade_bottom">
+        <shape>
+            <gradient
+                android:angle="270"
+                android:endColor="@color/splash_bottom"
+                android:startColor="@color/splash_bottom_transparent" />
+        </shape>
+    </item>
+</layer-list>

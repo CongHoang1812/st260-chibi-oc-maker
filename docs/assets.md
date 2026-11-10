@@ -41,7 +41,7 @@ Icon và glyph sinh từ SVG của Figma bằng `scripts/svg2vd.py` (viền tron
 
 Vẽ bằng XML theo số đo Figma, không xuất ảnh: `bg_tavern.xml` (gradient nền chung `#E7F1E5 → #95CBE5`), `bg_intro_fade.xml` (`2:1148`), `bg_part_item.xml` / `bg_part_item_selected.xml` (`2:1200` / `2:1219`), `bg_template_item.xml` (`2:463`), `bg_creation_card.xml` (`2:1560`).
 
-Chưa làm, để cùng màn tương ứng: ảnh Splash (`2:1091`), `bg_instruction_paper` (làm cùng Cosplay).
+Chưa làm, để cùng màn tương ứng: `bg_instruction_paper` (làm cùng Cosplay).
 
 ## Màn Home (2026-11-10)
 
@@ -104,3 +104,13 @@ Không xuất ảnh: mọi dialog dùng thẻ `bg_dialog_card.xml` (kem `#FFE1CC
 | `drawable/ic_check_small.xml` | `I2:1675;2:1907` | Dấu ✓ trắng của checkbox đã chọn |
 
 Vẽ bằng XML: `bg_small_icon.xml` (`2:1561`, lõi cam viền nâu bo 8), `bg_small_icon_off.xml` (`2:1677`, xám `#CCC`), `bg_creation_card.xml` (`2:1560`). Ảnh rỗng `img_empty_character` đã có (`2:1532`), chưa có bóng đổ 0 2 2 như Figma. Đã bỏ `bg_creation_tab*.xml`, `color/text_creation_tab.xml`.
+
+## Onboarding (2026-11-10)
+
+| File | Node | Ghi chú |
+|---|---|---|
+| `drawable-nodpi/img_splash.webp` | ảnh gốc trong `2:1092` | Ảnh gốc vuông 1024; Figma đặt 570×570 lệch trái -37.39% trong khung 360×570 nên cắt x 242–889, WebP q88 (647×1024). Lớp mờ hai đầu vẽ bằng `bg_splash_image_fade.xml` |
+| `drawable/ic_radio_on.xml`, `ic_radio_off.xml` | `2:1099`, `2:1106` | Radio cam 16 |
+| `drawable/ic_check_language.xml` | `2:1139` | Dấu ✓ cam 24 |
+
+Logo Splash (`2:1093`) trùng `img_logo.webp` (`21:29`). Vẽ bằng XML: `bg_splash.xml` (gradient `#FFD2A6 → #BE8661`), `bg_language_item.xml` (`2:1095`), `progress_splash.xml` (Figma không có). Đã bỏ `progress_splash_tile.png`. Ảnh Splash gốc chỉ 1024px nên phần hiển thị ~1.8 px/dp, hơi mờ trên máy xxhdpi.

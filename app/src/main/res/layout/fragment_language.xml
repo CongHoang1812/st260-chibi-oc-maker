@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Language: lần đầu (Figma 3:605) / từ setting (3:505) -->
+<!-- Language: lần đầu (Figma 2:1094) / từ setting (35:18). Cả hai dùng nền gradient chung; setting giữ btn_check thay nút Save -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_tavern">
 
-    <!-- Nền quán rượu khi mở từ setting -->
+    <!-- Nền khi mở từ setting (trùng nền gốc) -->
     <ImageView
         android:id="@+id/iv_background"
         android:layout_width="match_parent"
@@ -16,11 +17,12 @@
         android:src="@drawable/bg_tavern"
         android:visibility="gone" />
 
+    <!-- Figma 35:18 không có lớp tối: giữ view (Fragment bật / tắt) nhưng trong suốt -->
     <View
         android:id="@+id/v_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/overlay_20"
+        android:background="@color/transparent"
         android:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -68,7 +70,7 @@
             android:id="@+id/rv_languages"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/list_top"
+            android:layout_marginTop="@dimen/language_list_top"
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:paddingHorizontal="@dimen/screen_padding"

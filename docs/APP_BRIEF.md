@@ -63,10 +63,10 @@ Tính năng có sẵn nhưng app này không dùng hoặc hoạt động khác. 
 
 | Màn | Layout | Figma node | Trạng thái |
 |---|---|---|---|
-| Splash | `fragment_splash` | `2:1091` | chưa |
-| Language | `fragment_language`, `item_language` | Lần đầu `2:1094`, từ Setting `35:18` | chưa |
-| Intro | `fragment_intro`, `item_intro_page` | `2:1141`, `2:1149`, `2:1159` | chưa |
-| Permission | `fragment_permission`, `item_permission_row` | `2:1167` | chưa |
+| Splash | `fragment_splash` | `2:1091` | xong layout (chưa xem trên máy) |
+| Language | `fragment_language`, `item_language` | Lần đầu `2:1094`, từ Setting `35:18` | xong layout (chưa xem trên máy) |
+| Intro | `fragment_intro`, `item_intro_page` | `2:1141`, `2:1149`, `2:1159` | xong layout (chưa xem trên máy) |
+| Permission | `fragment_permission`, `item_permission_row` | `2:1167` | xong layout (chưa xem trên máy) |
 | Home | `fragment_home` | `2:1003` | xong layout (chưa xem trên máy) |
 | Setting | `fragment_setting` | `2:1020` | chưa |
 | Chọn template | `fragment_template_select`, `item_template` | `2:457` | chưa |
@@ -142,4 +142,9 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
   - Nút Add to Telegram (xanh dương) / Add to Whatsapp (xanh lá) là 2 variant mới của `WoodButton` (`telegram`, `whatsapp`).
   - Chi tiết dùng bố cục như Successful Maker (ảnh trắng rộng hết màn, Edit rộng 328).
   - Khoảng cách nút trên header `top_bar_action_gap` đổi 16 → 12 theo Figma.
+- Onboarding theo Figma (2026-11-10):
+  - Splash: ảnh minh hoạ + logo (dùng lại `img_logo` của Home). Figma không có thanh loading / dòng "can contain ads": giữ ở đáy, thanh loading dựng lại bằng màu cam (bỏ ô vuông cũ).
+  - Hàng danh sách (`ListRow`, dùng chung Language / Permission / Setting): luôn nền trắng, chữ cam, chọn chỉ đổi radio (bỏ kiểu cả hàng tô cam).
+  - Language từ Setting dùng cùng nền gradient, bỏ lớp tối; vẫn dùng `btn_check`, không thêm nút Save.
+  - Tiêu đề Language / Permission (`Text.Title`) đổi sang cam; chữ Intro xanh đậm `#01394D`.
 - `APP_KEY` `ST279_AnimeOCMaker` chỉ là API mượn tạm vì app chưa có API thật. Chưa cần chạy `probe_api.py`; phải đổi sang API thật và kiểm tra lại trước khi phát hành. (2026-11-09)

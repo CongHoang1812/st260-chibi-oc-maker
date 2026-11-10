@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Trang intro (Figma 3:668 / 3:692 / 3:717): ảnh 560dp mờ dần xuống nền + 2 dòng chữ -->
+<!-- Trang intro (Figma 2:1141 / 2:1149 / 2:1159): ảnh 560dp mờ dần xuống nền + 2 dòng chữ -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -32,6 +32,6 @@
         android:layout_marginHorizontal="@dimen/screen_padding"
         android:layout_marginTop="@dimen/screen_padding"
         android:gravity="center"
-        android:textAppearance="@style/Text.Body.White"
+        android:textAppearance="@style/Text.Body.Intro"
         tools:text="@string/intro_1" />
 </LinearLayout>
