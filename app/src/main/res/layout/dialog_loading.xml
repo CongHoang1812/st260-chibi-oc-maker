@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Dialog chờ (tự thiết kế theo design system): thẻ giấy + vòng xoay nâu + "Saving…" -->
+<!-- Dialog chờ: Figma chưa có frame, dựng từ thẻ kem chung (258:18) + vòng xoay cam + "Saving…" -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/loading_dialog_w"
     android:layout_height="@dimen/loading_dialog_h"
-    android:background="@drawable/bg_dialog_paper"
+    android:background="@drawable/bg_dialog_card"
     android:gravity="center"
     android:orientation="vertical"
     tools:ignore="Overdraw">

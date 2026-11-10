@@ -84,7 +84,14 @@
     <dimen name="dialog_title_tab_h">40dp</dimen>
     <dimen name="dialog_title_tab_overlap">20dp</dimen>
     <dimen name="dialog_card_radius">16dp</dimen>
-    <dimen name="dialog_card_padding_top">27dp</dimen>
+    <!-- Dialog chung (Figma Exit 258:18, No internet 258:63, Choose color 258:106): thẻ cao 200 khi chỉ có chữ -->
+    <dimen name="dialog_card_padding_top">39dp</dimen> <!-- nội dung tuỳ biến (bảng màu) bắt đầu ở 39 -->
+    <dimen name="dialog_message_top">14dp</dimen> <!-- vùng chữ bắt đầu ở 53 = 39 + 14 -->
+    <dimen name="dialog_message_min_h">60dp</dimen> <!-- chữ canh giữa ở y 83 dù 1 hay 3 dòng -->
+    <dimen name="dialog_message_gap">34dp</dimen> <!-- vùng chữ → hàng nút (y 147) -->
+    <dimen name="dialog_text_width">280dp</dimen>
+    <dimen name="dialog_title_padding_h">12dp</dimen>
+    <dimen name="dialog_button_gap">8dp</dimen>
 
     <!-- Nhân vật & panel -->
     <dimen name="character_size">328dp</dimen>
@@ -290,19 +297,13 @@
     <dimen name="instruction_card_w">328dp</dimen>
     <dimen name="instruction_card_h">218dp</dimen>
     <dimen name="instruction_card_padding_top">10dp</dimen>
-    <dimen name="dialog_button_w">142dp</dimen>
-    <dimen name="pack_name_input_h">44dp</dimen>
     <dimen name="dialog_padding">16dp</dimen>
     <!-- Khoảng cách dọc trong PaperDialogContainer (Figma 69:34, 69:101).
          TextView (includeFontPadding=false, 1 dòng) chỉ cao ascent+descent của Londrina (1.183em),
          thấp hơn line box Figma -> cộng half-leading: title (32-28.4)/2 = 1.8, caption (20-16.6)/2 = 1.7 -->
-    <dimen name="dialog_title_top">1.8dp</dimen>
-    <dimen name="dialog_title_message_gap">30.5dp</dimen> <!-- 27 + 1.8 + 1.7 -->
-    <dimen name="dialog_message_button_gap">34.7dp</dimen> <!-- 33 + 1.7 -->
-    <dimen name="dialog_title_content_gap">21.8dp</dimen> <!-- 20 + 1.8 -->
     <dimen name="dialog_content_gap">20dp</dimen>
-    <dimen name="dialog_padding_bottom">20dp</dimen>
-    <dimen name="rate_dialog_width">300dp</dimen>
+    <dimen name="dialog_padding_bottom">19dp</dimen>
+    <dimen name="rate_dialog_padding_v">10dp</dimen> <!-- Figma: khối nội dung 290 canh giữa thẻ 310 -->
     <dimen name="rate_emoji">72dp</dimen>
     <dimen name="rate_star">30dp</dimen>
     <dimen name="rate_button_radius">30dp</dimen>
@@ -315,7 +316,7 @@
     <dimen name="color_picker_sv_h">94dp</dimen>
     <dimen name="color_picker_hue_h">24dp</dimen>
     <dimen name="color_picker_hue_bar_h">18dp</dimen>
-    <dimen name="color_picker_gap">12dp</dimen>
+    <dimen name="color_picker_hue_top">9dp</dimen> <!-- thanh màu 18 bắt đầu sau 12, ô 24 (con trỏ) nên lùi 3 -->
     <dimen name="color_picker_cursor">16dp</dimen>
     <dimen name="color_picker_hue_cursor">24dp</dimen>
     <dimen name="color_picker_cursor_stroke">2dp</dimen>

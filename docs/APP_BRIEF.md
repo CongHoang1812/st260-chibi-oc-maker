@@ -76,7 +76,7 @@ Tính năng có sẵn nhưng app này không dùng hoặc hoạt động khác. 
 | My creation + Detail | `fragment_my_creation`, `fragment_creation_detail`, `item_creation` | Character: rỗng `2:1520`, danh sách `2:1548`, chọn nhiều `2:1656`, chi tiết `2:1746`. Design: rỗng `2:1534`, danh sách `2:1614`, chọn nhiều `2:1705`, chi tiết `2:1775` | chưa |
 | Cosplay | `fragment_cosplay_start`, `fragment_customize` (mode COSPLAY), `dialog_cosplay_score`, `dialog_instruction` | Start `2:186`, Instruction `2:423`, chơi `2:207`, điểm số `2:339` | chưa |
 | Lucky roll | `fragment_lucky_roll` | Mặc định `2:155`, sau khi Random `2:169` | chưa |
-| Dialog | `view_paper_dialog`, `dialog_confirm` (Exit / Reset / Random / Delete / No internet), `dialog_color_picker`, `dialog_rate_us`, `dialog_pack_name`, `dialog_loading` | Exit `258:18`, Reset `258:41`, Random `258:52`, No internet `258:63`, Delete `258:74`, Color picker `258:106`, Rate us 0–5 sao `258:108` `258:166` `258:186` `258:206` `258:226` `258:246` (section `258:406`). Chưa có: Pack name, Loading | chưa |
+| Dialog | `view_paper_dialog`, `dialog_confirm` (Exit / Reset / Random / Delete / No internet), `dialog_color_picker`, `dialog_rate_us`, `dialog_pack_name`, `dialog_loading` | Exit `258:18`, Reset `258:41`, Random `258:52`, No internet `258:63`, Delete `258:74`, Color picker `258:106`, Rate us 0–5 sao `258:108` `258:166` `258:186` `258:206` `258:226` `258:246` (section `258:406`). Chưa có: Pack name, Loading (dựng từ khung chung) | xong layout (chưa xem trên máy) |
 | Trạng thái tải / lỗi | `view_error_state`, `item_skeleton_*`, `view_skeleton_image` | Không có frame, dựng từ token và component sẵn có | chưa |
 | Lucky Gift (overlay trong Customize) | `dialog_lucky_gift`, `item_lucky_gift_cell`; nút quà `lucky_gift` / `btn_lucky_gift` trong `fragment_customize`; icon khoá `iv_lock` trong `item_part` | Start `2:551`, Congratulations `10:185`, đếm ngược `2:805`, nút quà `2:628` | xong bản đầu, chưa đối chiếu trên máy; ô khoá chờ Figma |
 
@@ -101,7 +101,7 @@ Ghi chú khi ghép frame:
 Ghi lại quyết định không suy ra được từ code, để phiên làm việc sau không phải hỏi lại.
 
 - Token và component chung (2026-11-09), người dùng đã duyệt:
-  - Dialog chung (Exit / Reset / Delete / Random / No internet, Rate us, Pack name, Loading, Color picker): chờ Figma, tạm dùng kiểu dialog Instruction (11:429). Chưa thêm nút X tròn.
+  - Dialog chung (Exit / Reset / Delete / Random / No internet, Rate us, Pack name, Loading, Color picker): đã có Figma (xem bảng màn hình). Không có nút X tròn.
   - Nút phụ (No / Cancel): làm theo design, Figma chỉ có nút cam nên cả hai nút đều cam, không dùng kiểu xám.
   - Dim mọi dialog 0.5; trạng thái nhấn thu nhỏ 95%, vô hiệu mờ 50%; toast nền cam chữ trắng; nền splash hệ thống `#FED2A5`; skeleton nền sáng `#D3E8F2`.
   - Cỡ chữ tiêu đề màn lấy số đo khi làm từng màn. Chữ tràn nút / tab (Rammetto rộng, nhất là fr) xử lý khi kiểm tra trên máy; tiếng Hindi dùng font hệ thống.
@@ -131,4 +131,9 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
   - Nền trắng của vùng thiết kế là View riêng sau `DecorCanvasView`, để ảnh xuất ra vẫn trong suốt khi nền None (như trước).
 - API ST279 đặt tên decor khác app mẫu (2026-11-10): khoá `sticker` / `speech bubble` và thư mục ảnh `bg/sticker`, `bg/speech bubble` (app mẫu: `stickers` / `speech_bubble`). `DecorConfigDto` đọc cả hai kiểu, `ApiMapper` ghép thư mục theo khoá có dữ liệu. Khi đổi sang API thật thì kiểm tra lại.
 - Successful theo Figma (2026-11-10): Maker là ảnh vuông trắng rộng hết màn; Cosplay là thẻ polaroid trên nền cam có tia sáng, ảnh 208 và 3 sao nằm trong thẻ (bỏ huy hiệu sao và viền nâu cũ). Nút Download rộng 328.
+- Dialog theo Figma (2026-11-10):
+  - Nút dialog là nút viên 124×34 giống tab con editor (style `TabButton`), không phải nút chữ lớn.
+  - Choose color đổi thành Yes (trái, chọn màu) / No (phải, đóng) như Figma, cùng thứ tự với các dialog xác nhận (trước là Cancel / Done).
+  - Pack name và Loading chưa có Figma: Pack name dùng khung dialog chung (`PaperDialogContainer`), ô nhập giống ô nhập chữ Decor editor; Loading dùng thẻ kem chung.
+  - Rate us giữ emoji / chữ / màu sao như cũ (đã khớp Figma), đổi khung sang thẻ kem chung rộng 312.
 - `APP_KEY` `ST279_AnimeOCMaker` chỉ là API mượn tạm vì app chưa có API thật. Chưa cần chạy `probe_api.py`; phải đổi sang API thật và kiểm tra lại trước khi phát hành. (2026-11-09)

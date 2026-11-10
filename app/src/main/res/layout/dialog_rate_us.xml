@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Rate us (Figma 69:339): emoji + tiêu đề + mô tả + 5 sao + Rate / Exit -->
+<!-- Rate us (Figma 258:108 … 258:246, 0–5 sao): thẻ kem chung, emoji + tiêu đề + mô tả + 5 sao + Rate / Exit -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/rate_dialog_width"
+    android:layout_width="@dimen/dialog_width"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_rate_dialog"
+    android:background="@drawable/bg_dialog_card"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingVertical="@dimen/dialog_padding"
+    android:paddingVertical="@dimen/rate_dialog_padding_v"
     tools:ignore="Overdraw">
 
     <ImageView

@@ -26,8 +26,8 @@ class PackNameDialogFragment : BaseDialogFragment<DialogPackNameBinding>(DialogP
             if (actionId == EditorInfo.IME_ACTION_DONE) submit()
             actionId == EditorInfo.IME_ACTION_DONE
         }
-        binding.btnYes.setOnSingleClickListener { submit() }
-        binding.btnNo.setOnSingleClickListener { dismiss() }
+        binding.container.startButton.setOnSingleClickListener { submit() }
+        binding.container.endButton.setOnSingleClickListener { dismiss() }
         updateYesEnabled()
         input.requestFocus()
     }
@@ -42,8 +42,8 @@ class PackNameDialogFragment : BaseDialogFragment<DialogPackNameBinding>(DialogP
 
     private fun updateYesEnabled() {
         val enabled = currentName().isNotEmpty()
-        binding.btnYes.isEnabled = enabled
-        binding.btnYes.alpha = if (enabled) 1f else DISABLED_ALPHA
+        binding.container.startButton.isEnabled = enabled
+        binding.container.startButton.alpha = if (enabled) 1f else DISABLED_ALPHA
     }
 
     private fun submit() {

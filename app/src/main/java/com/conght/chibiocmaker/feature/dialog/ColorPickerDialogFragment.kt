@@ -42,12 +42,13 @@ class ColorPickerDialogFragment : BaseDialogFragment<DialogColorPickerBinding>(D
             hsv[1] = s
             hsv[2] = v
         }
-        binding.container.startButton.setOnSingleClickListener { dismiss() }
-        binding.container.endButton.setOnSingleClickListener {
+        // Figma 258:106: Yes (trái) chọn màu, No (phải) đóng — cùng thứ tự với các dialog xác nhận
+        binding.container.startButton.setOnSingleClickListener {
             val key = requireArguments().getString(ARG_REQUEST_KEY).orEmpty()
             setFragmentResult(key, Bundle().apply { putInt(KEY_COLOR, Color.HSVToColor(hsv)) })
             dismiss()
         }
+        binding.container.endButton.setOnSingleClickListener { dismiss() }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
