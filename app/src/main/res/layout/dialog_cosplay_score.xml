@@ -1,46 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Popup Cosplay (Figma 3:123): thẻ giấy rách + ảnh + "{percent}%" + nút X bên dưới.
-     Dùng chung cho popup ảnh mẫu và popup điểm khi hết giờ. -->
+<!-- Popup Cosplay (Figma 2:416 trong 2:339): thẻ polaroid 240×288 có băng dính, ảnh 208, "{percent}%" ở đáy,
+     nút X 44 cách đáy thẻ 24. Dùng chung cho popup ảnh mẫu và popup điểm khi hết giờ. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dialog_width"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_instruction_paper"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/screen_padding"
-        android:paddingBottom="@dimen/cosplay_card_padding_bottom">
+    <FrameLayout
+        android:layout_width="@dimen/success_card_w"
+        android:layout_height="@dimen/success_card_h_with_shadow"
+        android:background="@drawable/bg_success_card">
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <ImageView
             android:id="@+id/iv_result"
-            android:layout_width="@dimen/cosplay_score_image"
-            android:layout_height="@dimen/cosplay_score_image"
+            android:layout_width="@dimen/success_card_image"
+            android:layout_height="@dimen/success_card_image"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="@dimen/success_card_padding"
             android:background="@color/white"
             android:contentDescription="@string/cd_result_image"
-            android:scaleType="fitCenter"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.ST260ChibiOCMaker.DecorItem" />
+            android:scaleType="centerCrop" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/success_tape_inset"
+            android:layout_marginTop="@dimen/success_tape_inset"
+            android:importantForAccessibility="no"
+            android:src="@drawable/img_success_tape_top" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="@dimen/success_tape_bottom_top"
+            android:layout_marginEnd="@dimen/success_tape_inset"
+            android:importantForAccessibility="no"
+            android:src="@drawable/img_success_tape_bottom" />
 
         <TextView
             android:id="@+id/tv_percent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/cosplay_percent_margin_top"
-            android:textAppearance="@style/Text.DialogTitle"
-            android:textSize="@dimen/cosplay_score_text"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="@dimen/success_stars_top"
+            android:textAppearance="@style/Text.CosplayPercent"
             tools:text="50%" />
-    </LinearLayout>
+    </FrameLayout>
 
     <ImageButton
         android:id="@+id/btn_close"
         style="@style/Widget.ST260ChibiOCMaker.ImageIconButton"
-        android:layout_marginTop="@dimen/screen_padding"
+        android:layout_marginTop="@dimen/cosplay_score_close_gap"
         android:contentDescription="@string/cd_close"
         android:src="@drawable/ic_close" />
 </LinearLayout>

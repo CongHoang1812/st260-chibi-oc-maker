@@ -1,29 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Lucky roll (Figma 3:11 idle / 3:24 kết quả) -->
+<!-- Lucky roll (Figma 2:155 mặc định / 2:169 sau khi Random): ô vuông rộng hết màn, Random 328 có xúc xắc -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:importantForAccessibility="no"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_tavern" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/overlay_20" />
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_tavern">
 
     <com.conght.chibiocmaker.core.widget.ShimmerFrameLayout
         android:id="@+id/shimmer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:shimmerAutoStart="false"
-        app:shimmerTone="dark">
+        app:shimmerTone="light">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/content"
@@ -47,7 +36,6 @@
                 android:layout_marginTop="@dimen/top_bar_top"
                 android:text="@string/edit"
                 android:visibility="gone"
-                app:buttonWidth="@dimen/next_button_w"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="visible" />
@@ -55,9 +43,11 @@
             <!-- Vùng neo luôn còn kích thước: idle_box bị GONE sau khi Random nên không neo error_state vào đó được -->
             <Space
                 android:id="@+id/result_area"
-                android:layout_width="@dimen/character_size"
-                android:layout_height="@dimen/character_size"
-                android:layout_marginTop="@dimen/content_top_lucky_roll"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/lucky_content_top"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintWidth_max="@dimen/success_image_max"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -65,17 +55,18 @@
             <!-- Idle: khung xám + hướng dẫn + mũi tên xoắn chỉ xuống nút Random -->
             <FrameLayout
                 android:id="@+id/idle_box"
-                android:layout_width="@dimen/character_size"
-                android:layout_height="@dimen/character_size"
-                android:layout_marginTop="@dimen/content_top_lucky_roll"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:background="@drawable/bg_lucky_idle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintEnd_toEndOf="@id/result_area"
+                app:layout_constraintStart_toStartOf="@id/result_area"
+                app:layout_constraintTop_toTopOf="@id/result_area"
+                app:layout_constraintBottom_toBottomOf="@id/result_area">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="@dimen/lucky_hint_w"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/lucky_hint_top"
                     android:gravity="center"
                     android:text="@string/lucky_roll_hint"
@@ -94,27 +85,27 @@
             <include
                 android:id="@+id/result_skeleton"
                 layout="@layout/view_skeleton_image"
-                android:layout_width="@dimen/character_size"
-                android:layout_height="@dimen/character_size"
-                android:layout_marginTop="@dimen/content_top_lucky_roll"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="@id/result_area"
+                app:layout_constraintStart_toStartOf="@id/result_area"
+                app:layout_constraintTop_toTopOf="@id/result_area"
+                app:layout_constraintBottom_toBottomOf="@id/result_area" />
 
-            <!-- Kết quả: ảnh nhân vật nền trắng bo 4 -->
+            <!-- Kết quả: ảnh nhân vật nền trắng (Figma 2:170) -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_result"
-                android:layout_width="@dimen/character_size"
-                android:layout_height="@dimen/character_size"
-                android:layout_marginTop="@dimen/content_top_lucky_roll"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:background="@color/white"
                 android:contentDescription="@string/cd_result_image"
                 android:scaleType="fitCenter"
                 android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/result_area"
+                app:layout_constraintStart_toStartOf="@id/result_area"
+                app:layout_constraintTop_toTopOf="@id/result_area"
+                app:layout_constraintBottom_toBottomOf="@id/result_area"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.ST260ChibiOCMaker.DecorItem" />
 
             <com.conght.chibiocmaker.core.widget.ErrorStateView
@@ -127,15 +118,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/result_area" />
 
+            <!-- Random 328 có xúc xắc, cách ô 24 (Figma 2:164) -->
             <com.conght.chibiocmaker.core.widget.WoodButton
                 android:id="@+id/btn_random"
-                style="@style/Widget.ST260ChibiOCMaker.WoodButton"
-                android:layout_marginTop="@dimen/lucky_random_top"
+                style="@style/Widget.ST260ChibiOCMaker.RandomButton"
+                android:layout_marginTop="@dimen/success_download_top"
                 android:text="@string/random"
-                app:buttonWidth="@dimen/wood_button_large_width"
+                app:buttonWidth="@dimen/success_download_w"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/result_area" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.conght.chibiocmaker.core.widget.ShimmerFrameLayout>
 </FrameLayout>

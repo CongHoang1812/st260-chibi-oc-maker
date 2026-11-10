@@ -122,3 +122,11 @@ Logo Splash (`2:1093`) trùng `img_logo.webp` (`21:29`). Vẽ bằng XML: `bg_sp
 | `drawable/ic_language.xml`, `ic_star.xml`, `ic_share_app.xml`, `ic_privacy.xml` | `2:1022`, `2:1026`, `2:1030`, `2:1034` | Icon cam 24 trong hàng Setting |
 
 Thẻ template vẽ bằng `bg_template_item.xml` (`2:463`), không xuất ảnh.
+
+## Cosplay + Lucky roll (2026-11-10)
+
+| File | Node | Ghi chú |
+|---|---|---|
+| `drawable-nodpi/img_dice_random.webp` | ảnh gốc trong `2:196` / `2:167` | Ảnh gốc 2000px, cắt theo khung 40×24 (ảnh 144.51% × 232.82%, lệch -23.82% / -66.41%), 120×72 (@3x), WebP q88 |
+
+Vẽ bằng XML: `bg_timer_pill.xml` (`2:213`), `bg_cosplay_reference.xml` (`39:27`), `bg_dialog_title_tab.xml` (`2:453`). Popup điểm dùng lại `bg_success_card.xml` và băng dính `img_success_tape_*`. Mũi tên Lucky roll `img_lucky_arrow.xml` đã trùng vector `2:158`. Đã bỏ `bg_instruction_paper.webp`, `bg_timer_label.xml`, `progress_timer.xml`.

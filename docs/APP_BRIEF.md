@@ -74,8 +74,8 @@ Tính năng có sẵn nhưng app này không dùng hoặc hoạt động khác. 
 | Decor editor | `fragment_decor_editor`, `item_decor_cell`, `item_none_decor`, `item_sub_tab`, `item_font_chip`, `item_color_chip` | Nền ảnh `2:1182`, nền màu `2:1240`, sticker `2:1296`, speech `2:1358`, text `2:1452` | xong layout (chưa xem trên máy) |
 | Successful | `fragment_success` | Maker `2:1421`, Cosplay `2:280`; thẻ điểm sao `2:321`, `2:330` | xong layout (chưa xem trên máy) |
 | My creation + Detail | `fragment_my_creation`, `fragment_creation_detail`, `item_creation` | Character: rỗng `2:1520`, danh sách `2:1548`, chọn nhiều `2:1656`, chi tiết `2:1746`. Design: rỗng `2:1534`, danh sách `2:1614`, chọn nhiều `2:1705`, chi tiết `2:1775` | xong layout (chưa xem trên máy) |
-| Cosplay | `fragment_cosplay_start`, `fragment_customize` (mode COSPLAY), `dialog_cosplay_score`, `dialog_instruction` | Start `2:186`, Instruction `2:423`, chơi `2:207`, điểm số `2:339` | chưa |
-| Lucky roll | `fragment_lucky_roll` | Mặc định `2:155`, sau khi Random `2:169` | chưa |
+| Cosplay | `fragment_cosplay_start`, `fragment_customize` (mode COSPLAY), `dialog_cosplay_score`, `dialog_instruction` | Start `2:186`, Instruction `2:423`, chơi `2:207`, điểm số `2:339` | xong layout (chưa xem trên máy) |
+| Lucky roll | `fragment_lucky_roll` | Mặc định `2:155`, sau khi Random `2:169` | xong layout (chưa xem trên máy) |
 | Dialog | `view_paper_dialog`, `dialog_confirm` (Exit / Reset / Random / Delete / No internet), `dialog_color_picker`, `dialog_rate_us`, `dialog_pack_name`, `dialog_loading` | Exit `258:18`, Reset `258:41`, Random `258:52`, No internet `258:63`, Delete `258:74`, Color picker `258:106`, Rate us 0–5 sao `258:108` `258:166` `258:186` `258:206` `258:226` `258:246` (section `258:406`). Chưa có: Pack name, Loading (dựng từ khung chung) | xong layout (chưa xem trên máy) |
 | Trạng thái tải / lỗi | `view_error_state`, `item_skeleton_*`, `view_skeleton_image` | Không có frame, dựng từ token và component sẵn có | chưa |
 | Lucky Gift (overlay trong Customize) | `dialog_lucky_gift`, `item_lucky_gift_cell`; nút quà `lucky_gift` / `btn_lucky_gift` trong `fragment_customize`; icon khoá `iv_lock` trong `item_part` | Start `2:551`, Congratulations `10:185`, đếm ngược `2:805`, nút quà `2:628` | xong bản đầu, chưa đối chiếu trên máy; ô khoá chờ Figma |
@@ -148,4 +148,9 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
   - Language từ Setting dùng cùng nền gradient, bỏ lớp tối; vẫn dùng `btn_check`, không thêm nút Save.
   - Tiêu đề Language / Permission (`Text.Title`) đổi sang cam; chữ Intro xanh đậm `#01394D`.
 - Setting / Chọn template theo Figma (2026-11-10): nền gradient chung, bỏ lớp tối. Thẻ template thành ô trắng 160 bo 4, ảnh phủ kín, lưới cách 8 (bỏ khung giấy có bóng cũ).
+- Cosplay / Lucky roll theo Figma (2026-11-10):
+  - Nút Random có ảnh xúc xắc bên trái chữ: `WoodButton` thêm `app:woodIcon` (icon + chữ canh giữa thành một khối), style `RandomButton`.
+  - Màn chơi Cosplay: đồng hồ chỉ còn viên "00:00" như Figma, ẩn thanh tiến trình (`progress_timer` vẫn còn trong layout, ẩn). Ảnh mẫu thành polaroid nhỏ nghiêng -4° lấn ra mép phải, chưa có băng dính như Figma.
+  - Instruction: thẻ kem + tab tiêu đề cam (`bg_dialog_title_tab.xml`), nút X cách thẻ 24. Popup điểm / ảnh mẫu: thẻ polaroid giống Successful Cosplay, % chữ nâu dưới ảnh.
+  - Lucky roll: ô vuông rộng hết màn, Random rộng 328.
 - `APP_KEY` `ST279_AnimeOCMaker` chỉ là API mượn tạm vì app chưa có API thật. Chưa cần chạy `probe_api.py`; phải đổi sang API thật và kiểm tra lại trước khi phát hành. (2026-11-09)

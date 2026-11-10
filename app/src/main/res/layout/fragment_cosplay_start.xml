@@ -1,28 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Cosplay start (Figma 3:41): ảnh tham chiếu + Random / Cosplay -->
+<!-- Cosplay start (Figma 2:186): ảnh tham chiếu vuông trắng rộng hết màn + Random (xúc xắc) / Cosplay 160×44 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:importantForAccessibility="no"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_tavern" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/overlay_20" />
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_tavern">
 
     <com.conght.chibiocmaker.core.widget.ShimmerFrameLayout
         android:id="@+id/shimmer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:shimmerAutoStart="false"
-        app:shimmerTone="dark">
+        app:shimmerTone="light">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/content"
@@ -49,29 +38,40 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Vùng ảnh vuông rộng hết màn (Figma 2:192), co lại khi màn thấp -->
+            <Space
+                android:id="@+id/reference_area"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/cosplay_image_top"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_max="@dimen/success_image_max" />
+
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_reference"
-                android:layout_width="@dimen/character_size"
-                android:layout_height="@dimen/character_size"
-                android:layout_marginTop="@dimen/content_top"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:background="@color/white"
                 android:contentDescription="@string/cd_reference_image"
                 android:scaleType="centerCrop"
                 android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.ST260ChibiOCMaker.DecorItem" />
+                app:layout_constraintBottom_toBottomOf="@id/reference_area"
+                app:layout_constraintEnd_toEndOf="@id/reference_area"
+                app:layout_constraintStart_toStartOf="@id/reference_area"
+                app:layout_constraintTop_toTopOf="@id/reference_area" />
 
             <include
                 android:id="@+id/reference_skeleton"
                 layout="@layout/view_skeleton_image"
-                android:layout_width="@dimen/character_size"
-                android:layout_height="@dimen/character_size"
-                android:layout_marginTop="@dimen/content_top"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/reference_area"
+                app:layout_constraintEnd_toEndOf="@id/reference_area"
+                app:layout_constraintStart_toStartOf="@id/reference_area"
+                app:layout_constraintTop_toTopOf="@id/reference_area" />
 
             <com.conght.chibiocmaker.core.widget.ErrorStateView
                 android:id="@+id/error_state"
@@ -83,32 +83,28 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/reference_skeleton" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guide_center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5" />
-
+            <!-- Random | Cosplay (Figma 2:193 / 2:198): 160×44 cách nhau 8, ngay dưới ảnh 8 -->
             <com.conght.chibiocmaker.core.widget.WoodButton
                 android:id="@+id/btn_random"
-                style="@style/Widget.ST260ChibiOCMaker.WoodButton"
-                android:layout_marginEnd="@dimen/cosplay_buttons_half_gap"
-                android:layout_marginTop="@dimen/cosplay_buttons_top"
+                style="@style/Widget.ST260ChibiOCMaker.RandomButton"
+                android:layout_marginTop="@dimen/grid_gap"
                 android:text="@string/random"
-                app:buttonWidth="@dimen/wood_button_large_width"
-                app:layout_constraintEnd_toStartOf="@id/guide_center"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:buttonWidth="@dimen/cosplay_button_w"
+                app:layout_constraintEnd_toStartOf="@id/btn_cosplay"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/reference_area"
+                app:woodIconGap="@dimen/random_icon_gap_small" />
 
             <com.conght.chibiocmaker.core.widget.WoodButton
                 android:id="@+id/btn_cosplay"
                 style="@style/Widget.ST260ChibiOCMaker.WoodButton"
-                android:layout_marginStart="@dimen/cosplay_buttons_half_gap"
-                android:layout_marginTop="@dimen/cosplay_buttons_top"
+                android:layout_marginStart="@dimen/grid_gap"
                 android:text="@string/cosplay"
-                app:buttonWidth="@dimen/wood_button_large_width"
-                app:layout_constraintStart_toEndOf="@id/guide_center"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:buttonWidth="@dimen/cosplay_button_w"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_random"
+                app:layout_constraintTop_toTopOf="@id/btn_random" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.conght.chibiocmaker.core.widget.ShimmerFrameLayout>
 </FrameLayout>

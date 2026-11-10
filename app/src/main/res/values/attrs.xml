@@ -22,6 +22,13 @@
         </attr>
         <!-- Chiều rộng cố định của nút (bỏ trống = wrap_content theo chữ) -->
         <attr name="buttonWidth" format="dimension" />
+        <!-- Icon bên trái chữ, khối icon + chữ canh giữa (vd. xúc xắc nút Random) -->
+        <attr name="woodIcon" format="reference" />
+        <attr name="woodIconWidth" format="dimension" />
+        <attr name="woodIconHeight" format="dimension" />
+        <attr name="woodIconGap" format="dimension" />
+        <!-- Lề ngang trong nút (bỏ trống = screen_padding) -->
+        <attr name="woodPaddingHorizontal" format="dimension" />
         <!-- Độ dày viền chữ (bỏ trống = wood_button_text_stroke, 0dp = không viền) -->
         <attr name="woodTextStroke" format="dimension" />
     </declare-styleable>

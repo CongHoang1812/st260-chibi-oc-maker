@@ -118,6 +118,8 @@
     <color name="splash_fade_top">#F1C297</color>
     <color name="splash_fade_top_transparent">#00F1C297</color>
     <color name="splash_track">#80FFFFFF</color>
+    <!-- Đỉnh gradient đồng hồ Cosplay (Figma 2:214) -->
+    <color name="timer_top">#FFB580</color>
     <!-- Chữ Intro (Figma 2:1142) -->
     <color name="intro_text">#01394D</color>
 

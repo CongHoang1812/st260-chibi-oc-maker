@@ -1,7 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pill đồng hồ Cosplay (Figma 3:134): nền cam, viền nâu đậm, bo 12 -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/orange_button" />
-    <stroke android:width="@dimen/stroke_thin" android:color="@color/brown_dark" />
-    <corners android:radius="@dimen/radius_large" />
-</shape>
+<!-- Đồng hồ Cosplay (Figma 2:213): khung trắng viền nâu bo 12, lõi gradient #FFB580 → #FF8127 viền #803600 bo 8,
+     bóng trong 2dp (đen 25%) -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/white" />
+            <stroke android:width="@dimen/stroke_thin" android:color="@color/brown_dark" />
+            <corners android:radius="@dimen/radius_large" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/cosplay_timer_inset"
+        android:left="@dimen/cosplay_timer_inset"
+        android:right="@dimen/cosplay_timer_inset"
+        android:top="@dimen/cosplay_timer_inset">
+        <shape>
+            <gradient
+                android:angle="270"
+                android:endColor="@color/orange_button"
+                android:startColor="@color/timer_top" />
+            <stroke android:width="@dimen/stroke_thin" android:color="@color/button_inner_stroke" />
+            <corners android:radius="@dimen/radius_medium" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/cosplay_timer_shade_inset"
+        android:left="@dimen/cosplay_timer_shade_inset"
+        android:right="@dimen/cosplay_timer_shade_inset"
+        android:top="@dimen/cosplay_timer_shade_inset">
+        <shape>
+            <stroke android:width="@dimen/stroke_thin" android:color="@color/button_shade" />
+            <corners android:radius="@dimen/radius_small" />
+        </shape>
+    </item>
+</layer-list>

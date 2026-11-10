@@ -80,9 +80,10 @@
             style="@style/Widget.ST260ChibiOCMaker.WoodButton"
             android:layout_marginEnd="@dimen/screen_padding"
             android:layout_marginTop="@dimen/top_bar_top"
+            android:minWidth="@dimen/next_button_w"
             android:text="@string/next"
             android:textAllCaps="true"
-            app:buttonWidth="@dimen/next_button_w"
+            app:woodPaddingHorizontal="@dimen/next_button_padding_h"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -130,19 +131,16 @@
             tools:text="30:00"
             tools:visibility="visible" />
 
-        <!-- COSPLAY: thanh thời gian giữa top bar (Figma 3:134) -->
+        <!-- COSPLAY: đồng hồ giữa top bar (Figma 2:213). Figma không có thanh tiến trình: progress_timer ẩn -->
         <LinearLayout
             android:id="@+id/timer_bar"
-            android:layout_width="@dimen/cosplay_timer_w"
-            android:layout_height="@dimen/cosplay_timer_h"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/icon_button_large"
             android:layout_marginTop="@dimen/top_bar_top"
             android:background="@drawable/bg_timer_pill"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:paddingStart="@dimen/cosplay_timer_padding"
-            android:paddingTop="@dimen/cosplay_timer_padding"
-            android:paddingEnd="@dimen/cosplay_timer_padding_end"
-            android:paddingBottom="@dimen/cosplay_timer_padding"
+            android:paddingHorizontal="@dimen/cosplay_timer_padding_h"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -151,40 +149,40 @@
 
             <TextView
                 android:id="@+id/tv_timer"
-                android:layout_width="@dimen/cosplay_timer_label_w"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_timer_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textAppearance="@style/Text.Button"
-                tools:text="03:00" />
+                tools:text="00:00" />
 
             <ProgressBar
                 android:id="@+id/progress_timer"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/cosplay_timer_progress_h"
-                android:layout_marginStart="@dimen/cosplay_timer_padding"
-                android:layout_weight="1"
-                android:progressDrawable="@drawable/progress_timer" />
+                android:layout_height="0dp"
+                android:visibility="gone" />
         </LinearLayout>
 
-        <!-- COSPLAY: thumbnail ảnh tham chiếu góc phải dưới canvas (Figma 3:139) -->
+        <!-- COSPLAY: ảnh mẫu dạng polaroid nhỏ nghiêng -4°, lấn ra mép phải, ngay trên panel (Figma 39:26) -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_reference"
-            android:layout_width="@dimen/cosplay_reference"
-            android:layout_height="@dimen/cosplay_reference"
-            android:layout_marginEnd="@dimen/cosplay_reference_end"
-            android:layout_marginBottom="@dimen/cosplay_reference_end"
-            android:background="@color/white"
+            android:layout_width="@dimen/cosplay_reference_w"
+            android:layout_height="@dimen/cosplay_reference_h"
+            android:background="@drawable/bg_cosplay_reference"
             android:contentDescription="@string/cd_reference_image"
-            android:padding="@dimen/stroke_thin"
+            android:elevation="@dimen/cosplay_reference_elevation"
+            android:paddingStart="@dimen/cosplay_reference_padding"
+            android:paddingTop="@dimen/cosplay_reference_padding"
+            android:paddingEnd="@dimen/cosplay_reference_padding"
+            android:paddingBottom="@dimen/cosplay_reference_padding_bottom"
+            android:rotation="@dimen/cosplay_reference_rotation"
             android:scaleType="centerCrop"
+            android:translationX="@dimen/cosplay_reference_offset_x"
+            android:translationY="@dimen/cosplay_reference_offset_y"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/canvas_skeleton"
+            app:layout_constraintBottom_toTopOf="@id/panel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.ST260ChibiOCMaker.DecorItem"
-            app:strokeColor="@color/white"
-            app:strokeWidth="@dimen/cosplay_reference_border" />
+            tools:visibility="visible" />
 
         <!-- Hàng công cụ (Figma 2:479 / 2:485 / 2:491): reset / flip / move nằm ngang, cách nhau 12 -->
         <com.conght.chibiocmaker.core.widget.RoundIconButton

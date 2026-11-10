@@ -32,7 +32,7 @@ class LuckyRollFragment : BaseFragment<FragmentLuckyRollBinding>(FragmentLuckyRo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.content.applyStatusBarPadding()
-        setLightStatusBar(false)
+        setLightStatusBar(true)
         binding.btnBack.setOnSingleClickListener { findNavController().popBackStack() }
         binding.btnRandom.setOnSingleClickListener { requestRoll() }
         binding.errorState.setOnRetryClickListener { viewModel.roll() }

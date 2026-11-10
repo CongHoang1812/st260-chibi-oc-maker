@@ -68,8 +68,8 @@ PART_DIMENS = ["part_item_h", "part_item_icon"]
 # Màn xếp dọc cố định (không cuộn, không co giãn): tổng chiều cao tính từ dưới status bar
 STACKS = {
     "home": ["home_cards_top", "home_card_size", "home_card_gap", "home_card_size"],
-    "lucky_roll": ["lucky_random_top", "wood_button_height"],
-    "cosplay_start": ["cosplay_buttons_top", "wood_button_height"],
+    "lucky_roll": ["lucky_content_top", "success_image_max", "success_download_top", "wood_button_height"],
+    "cosplay_start": ["cosplay_image_top", "success_image_max", "grid_gap", "wood_button_height"],
     "success": ["success_image_top", "success_image_max", "success_download_top", "wood_button_height"],
     "creation_detail": ["success_image_top", "success_image_max", "success_download_top", "wood_button_height"],
     "permission": ["list_top", "permission_image", "screen_padding", "language_item_h", "permission_row_gap",
@@ -95,8 +95,6 @@ def factors(bucket):
 def derived(d, cols):
     return {
         # Nút ngay dưới nhân vật như bản điện thoại (khoảng cách = screen_padding)
-        "cosplay_buttons_top": d["content_top"] + d["character_size"] + d["screen_padding"],
-        "lucky_random_top": d["content_top_lucky_roll"] + d["character_size"] + d["screen_padding"],
         # Rộng lưới = cột × item + khe
         "template_grid_w": cols["template_grid_columns"] * d["template_item_w"]
         + (cols["template_grid_columns"] - 1) * d["template_grid_gap_h"],

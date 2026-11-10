@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Polaroid nhỏ ảnh mẫu ở màn chơi Cosplay (Figma 39:27): kem, viền #FFE5CC 1.33, bo 2.67 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/success_card" />
+    <stroke android:width="@dimen/cosplay_reference_stroke" android:color="@color/success_card_stroke" />
+    <corners android:radius="@dimen/cosplay_reference_radius" />
+</shape>

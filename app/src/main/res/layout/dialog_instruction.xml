@@ -1,40 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Instruction overlay (Figma 3:114): thẻ giấy rách 312×200 + luật chơi + nút X 40 cách thẻ 16.
-     Ảnh nền gồm cả bóng (328×218) nên phần bóng dưới đáy đã chiếm khoảng cách 16 tới nút X. -->
+<!-- Instruction (Figma 11:429 trong 2:423): thẻ kem 312 cao tối thiểu 200, tab tiêu đề cam đè mép trên,
+     luật chơi Inter 14, nút X 44 cách đáy thẻ 24. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/instruction_card_w"
+    android:layout_width="@dimen/dialog_width"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_instruction_paper"
-        android:gravity="center_horizontal"
-        android:minHeight="@dimen/instruction_card_h"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/instruction_card_padding_top"
-        android:paddingBottom="@dimen/screen_padding">
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dialog_title_tab_overlap"
+            android:background="@drawable/bg_dialog_card"
+            android:gravity="center"
+            android:minHeight="@dimen/instruction_card_h"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/instruction_card_padding_top"
+            android:paddingBottom="@dimen/instruction_card_padding_bottom">
+
+            <TextView
+                android:layout_width="@dimen/dialog_text_width"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/instruction_content"
+                android:textAppearance="@style/Text.DialogMessage" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/instruction"
-            android:textAppearance="@style/Text.DialogTitle" />
-
-        <TextView
-            android:layout_width="@dimen/dialog_message_width"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/grid_gap"
+            android:layout_height="@dimen/dialog_title_tab_h"
+            android:layout_gravity="top|center_horizontal"
+            android:background="@drawable/bg_dialog_title_tab"
             android:gravity="center"
-            android:text="@string/instruction_content"
-            android:textAppearance="@style/Text.Caption" />
-    </LinearLayout>
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:minWidth="@dimen/dialog_title_tab_w"
+            android:paddingHorizontal="@dimen/dialog_title_padding_h"
+            android:text="@string/instruction"
+            android:textAppearance="@style/Text.DialogTitle.Tab" />
+    </FrameLayout>
 
     <ImageButton
         android:id="@+id/btn_close"
         style="@style/Widget.ST260ChibiOCMaker.ImageIconButton"
+        android:layout_marginTop="@dimen/dialog_close_gap"
         android:contentDescription="@string/cd_close"
         android:src="@drawable/ic_close" />
 </LinearLayout>

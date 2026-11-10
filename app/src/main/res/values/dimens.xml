@@ -22,7 +22,6 @@
     <dimen name="top_bar_top">16dp</dimen>
     <dimen name="top_bar_action_gap">12dp</dimen> <!-- Figma 2:1662 / 2:1758: nút 44 cách 12 -->
     <dimen name="content_top">72dp</dimen>
-    <dimen name="content_top_lucky_roll">100dp</dimen>
     <dimen name="list_top">80dp</dimen>
     <dimen name="language_list_top">88dp</dimen>
     <dimen name="setting_list_top">84dp</dimen> <!-- Figma 2:1021: hàng đầu ở y 128 --> <!-- Figma 2:1094: hàng đầu ở y 132 -->
@@ -107,7 +106,8 @@
     <dimen name="bottom_panel_height">260dp</dimen> <!-- Figma 2:504 + 2:537: 204 + 56 -->
     <!-- Customize (Figma 3:335): cột tool trái, nút random-all, Move panel (8:24) -->
     <dimen name="tool_gap">8dp</dimen>
-    <dimen name="next_button_w">74dp</dimen> <!-- Figma 2:500 -->
+    <dimen name="next_button_w">74dp</dimen> <!-- Figma 2:500: rộng tối thiểu, nút ôm chữ theo ngôn ngữ -->
+    <dimen name="next_button_padding_h">12dp</dimen> <!-- viền 1 + đệm 4 + viền lõi 1 + 6 -->
     <dimen name="random_all_size">44dp</dimen> <!-- Figma 2:496: nút icon 44, ảnh xúc xắc 32 -->
     <dimen name="random_all_end">4dp</dimen>
     <dimen name="random_all_padding">6dp</dimen>
@@ -134,21 +134,27 @@
     <dimen name="creation_sticker_bar_bottom">8dp</dimen>
 
     <!-- Cosplay (Figma 3:41 start / 3:77 instruction / 3:132 play) -->
-    <dimen name="cosplay_buttons_top">416dp</dimen>
-    <dimen name="cosplay_buttons_half_gap">4dp</dimen>
-    <dimen name="cosplay_timer_w">208dp</dimen>
-    <dimen name="cosplay_timer_h">40dp</dimen>
-    <dimen name="cosplay_timer_label_w">44dp</dimen>
-    <dimen name="cosplay_timer_progress_h">12dp</dimen>
-    <dimen name="cosplay_timer_padding">4dp</dimen>
-    <dimen name="cosplay_timer_padding_end">12dp</dimen>
-    <dimen name="cosplay_reference">80dp</dimen>
-    <dimen name="cosplay_reference_end">4dp</dimen>
-    <dimen name="cosplay_reference_border">2dp</dimen>
-    <dimen name="cosplay_card_padding_bottom">36dp</dimen>
-    <dimen name="cosplay_percent_margin_top">12dp</dimen>
-    <dimen name="cosplay_score_image">280dp</dimen>
-    <dimen name="cosplay_score_text">24sp</dimen>
+    <!-- Cosplay (Figma start 2:186, chơi 2:207, điểm 2:339) -->
+    <dimen name="cosplay_image_top">68dp</dimen> <!-- ảnh mẫu ở y 112 - status bar 44 -->
+    <dimen name="cosplay_button_w">160dp</dimen>
+    <dimen name="random_icon_w">40dp</dimen>
+    <dimen name="random_icon_h">24dp</dimen>
+    <dimen name="random_icon_gap">4dp</dimen>
+    <dimen name="random_icon_gap_small">2dp</dimen>
+    <dimen name="cosplay_timer_inset">4dp</dimen>
+    <dimen name="cosplay_timer_shade_inset">5dp</dimen>
+    <dimen name="cosplay_timer_padding_h">8dp</dimen>
+    <dimen name="cosplay_reference_w">80dp</dimen>
+    <dimen name="cosplay_reference_h">96dp</dimen>
+    <dimen name="cosplay_reference_padding">5.33dp</dimen>
+    <dimen name="cosplay_reference_padding_bottom">21.33dp</dimen>
+    <dimen name="cosplay_reference_stroke">1.33dp</dimen>
+    <dimen name="cosplay_reference_radius">2.67dp</dimen>
+    <dimen name="cosplay_reference_elevation">2dp</dimen>
+    <dimen name="cosplay_reference_offset_x">13dp</dimen> <!-- lấn ra ngoài mép phải như Figma -->
+    <dimen name="cosplay_reference_offset_y">15dp</dimen> <!-- đáy thẻ đè lên panel -->
+    <item name="cosplay_reference_rotation" format="float" type="dimen">-4</item>
+    <dimen name="cosplay_score_close_gap">20dp</dimen> <!-- 24 - 4 bóng thẻ -->
 
     <!-- Thông báo / loading / lỗi (bước 15, tự thiết kế) -->
     <dimen name="app_toast_margin">24dp</dimen>
@@ -158,11 +164,12 @@
     <dimen name="error_icon">48dp</dimen>
 
     <!-- Lucky roll (Figma 3:11) -->
-    <dimen name="lucky_hint_top">63dp</dimen>
+    <dimen name="lucky_content_top">84dp</dimen> <!-- ô ở y 128 - status bar 44 -->
+    <dimen name="lucky_hint_top">88dp</dimen>
+    <dimen name="lucky_hint_w">328dp</dimen>
     <dimen name="lucky_arrow_w">80dp</dimen>
     <dimen name="lucky_arrow_h">128dp</dimen>
-    <dimen name="lucky_arrow_top">135dp</dimen>
-    <dimen name="lucky_random_top">444dp</dimen>
+    <dimen name="lucky_arrow_top">159dp</dimen>
 
     <!-- Successful (Figma 3:1109 maker / 3:223 cosplay) -->
     <!-- Successful (Figma Maker 2:1421, Cosplay 2:280) -->
@@ -293,11 +300,14 @@
 
     <!-- Dialog -->
     <dimen name="dialog_width">312dp</dimen>
-    <dimen name="dialog_message_width">264dp</dimen>
     <!-- Instruction (Figma 3:114): thẻ 312×200; ảnh nền gồm bóng → 328×218, thẻ lệch 2dp từ đỉnh ảnh -->
-    <dimen name="instruction_card_w">328dp</dimen>
-    <dimen name="instruction_card_h">218dp</dimen>
-    <dimen name="instruction_card_padding_top">10dp</dimen>
+    <!-- Instruction (Figma 11:429): thẻ 312×200, chữ từ y 28 -->
+    <dimen name="instruction_card_h">200dp</dimen>
+    <dimen name="instruction_card_padding_top">28dp</dimen>
+    <dimen name="instruction_card_padding_bottom">32dp</dimen>
+    <dimen name="dialog_close_gap">24dp</dimen>
+    <dimen name="dialog_title_tab_shade">4dp</dimen> <!-- viền 1 + bóng đáy 3 -->
+    <dimen name="dialog_title_tab_inner_radius">11dp</dimen>
     <dimen name="dialog_padding">16dp</dimen>
     <!-- Khoảng cách dọc trong PaperDialogContainer (Figma 69:34, 69:101).
          TextView (includeFontPadding=false, 1 dòng) chỉ cao ascent+descent của Londrina (1.183em),
