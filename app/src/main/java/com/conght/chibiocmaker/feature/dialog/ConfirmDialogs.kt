@@ -25,10 +25,10 @@ object ConfirmDialogs {
         requestKey, R.string.dialog_delete_title, R.string.dialog_delete_message, R.string.yes, R.string.no,
     )
 
-    /** Lucky Gift đang đếm ngược: Cancel (trái) | Watch Ad (phải) để quay thêm một lượt ngay. */
+    /** Lucky Gift đang đếm ngược: tiêu đề "Lucky Gift", Cancel (trái) | Watch Ad (phải) để quay thêm một lượt ngay. */
     fun luckyGiftAd(requestKey: String) = ConfirmDialogFragment.newInstance(
         requestKey,
-        R.string.dialog_lucky_ad_title,
+        R.string.lucky_gift_title,
         R.string.dialog_lucky_ad_message,
         confirmText = R.string.watch_ad,
         dismissText = R.string.cancel,

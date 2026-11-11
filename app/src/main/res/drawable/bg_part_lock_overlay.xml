@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lớp phủ ô part khoá (Figma 293:32): đen 20%, bo 8 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/overlay_20" />
+    <corners android:radius="@dimen/radius_medium" />
+</shape>

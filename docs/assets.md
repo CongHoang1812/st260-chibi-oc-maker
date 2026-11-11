@@ -13,7 +13,7 @@ File Figma: `OUCDw6CTtEW3cw3iPNNcqc` (xem `docs/APP_BRIEF.md`). Figma đổi nod
 
 Vẽ bằng XML theo số đo Figma, không xuất ảnh: `bg_lucky_gift_title.xml` (`2:673`, `10:403`), `bg_lucky_gift_button.xml` (`2:628`), `bg_lucky_gift_window.xml` (`2:647`), `bg_lucky_gift_cell.xml`.
 
-Chưa có trong Figma, đang dựng tạm: `drawable/ic_lock.xml` (icon ô khoá).
+Ô part khoá (`2:518`): `drawable/ic_lock.xml` = SVG `293:25` (nét cam 2dp) chép tay sang VectorDrawable, lớp phủ `293:32` vẽ bằng `bg_part_lock_overlay.xml`.
 
 ## Ảnh dùng chung (giai đoạn 3, 2026-11-10)
 
@@ -50,6 +50,7 @@ Chưa làm, để cùng màn tương ứng: `bg_instruction_paper` (làm cùng C
 | File | Node | Ghi chú |
 |---|---|---|
 | `drawable-nodpi/img_home_bg.webp` | `2:1003` (ảnh nền gốc) | Nền biển, giữ kích thước gốc 736×1312 |
+| `drawable/logo.png` | `6:2` (export 512×512) | Icon launcher (`android:icon`, `android:roundIcon` trong Manifest) |
 | `drawable-nodpi/img_logo.webp` | `21:29` (ảnh gốc) | Logo CHIBI OC MAKER 1024×384, layout 360×135 fitCenter. Splash có thể dùng lại |
 | `drawable-nodpi/img_home_maker.webp` | `2:1012` (ảnh gốc) | Cắt theo khung Figma: ảnh 115.01%, lệch -11.25% / -7.43%, ra 480×480 (160dp @3x) |
 | `drawable-nodpi/img_home_cosplay.webp` | `2:1016` (ảnh gốc) | Rộng 100%, cao 128.51%, lấy phần trên |

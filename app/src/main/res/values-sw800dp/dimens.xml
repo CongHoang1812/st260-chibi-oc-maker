@@ -280,8 +280,7 @@
     <dimen name="lucky_gift_button_inner_radius">24dp</dimen>
     <dimen name="lucky_gift_badge">20dp</dimen>
     <dimen name="lucky_gift_badge_margin">2dp</dimen>
-    <dimen name="part_lock_icon">32dp</dimen>
-    <dimen name="part_lock_margin">4dp</dimen>
+    <dimen name="part_lock_icon">40dp</dimen>
     <dimen name="lucky_gift_frame_w">640dp</dimen>
     <dimen name="lucky_gift_frame_h">520dp</dimen>
     <dimen name="lucky_gift_frame_top">76dp</dimen>

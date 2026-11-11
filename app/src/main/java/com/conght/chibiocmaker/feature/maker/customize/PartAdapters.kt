@@ -41,9 +41,9 @@ class PartItemAdapter(
         fun bind(item: Selectable<PartItem>) {
             binding.ivThumbnail.loadImage(item.value.thumbnailUrl, R.color.cell_tan)
             binding.root.isSelected = item.selected
-            // Ô khoá (Lucky Gift): mờ + icon khoá, bấm không có phản hồi gì; ô khoá đang mặc sẵn vẫn hiện chọn
+            // Ô khoá (Lucky Gift): phủ tối + icon khoá giữa ô, bấm không có phản hồi gì; ô khoá đang mặc sẵn vẫn hiện chọn
             val locked = item.locked && !item.selected
-            binding.ivThumbnail.alpha = if (locked) LOCKED_ALPHA else 1f
+            binding.vLockOverlay.isVisible = locked
             binding.ivLock.isVisible = item.locked
             if (locked) {
                 binding.root.setOnClickListener(null)
@@ -104,4 +104,3 @@ class CategoryTabAdapter(
 
 /** Chọn item/màu/tab cần phản hồi nhanh hơn debounce mặc định của điều hướng. */
 private const val CLICK_DEBOUNCE_MS = 150L
-private const val LOCKED_ALPHA = 0.4f

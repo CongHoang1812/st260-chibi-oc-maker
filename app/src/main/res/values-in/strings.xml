@@ -145,6 +145,5 @@
     <string name="dialog_storage_title">Izin penyimpanan</string>
     <string name="dialog_storage_message">Akses penyimpanan ditolak. Buka Setelan untuk mengizinkannya dan menyimpan gambar.</string>
     <string name="go_to_settings">Setelan</string>
-    <string name="dialog_lucky_ad_title">Tonton iklan</string>
-    <string name="dialog_lucky_ad_message">Tonton iklan sampai selesai untuk membuka satu putaran tambahan sekarang, atau tunggu sampai timer selesai.</string>
+    <string name="dialog_lucky_ad_message">Tonton iklan untuk membuka Hadiah Keberuntunganmu!</string>
 </resources>

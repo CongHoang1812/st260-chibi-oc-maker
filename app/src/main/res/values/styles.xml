@@ -67,10 +67,6 @@
         <item name="android:textColor">@color/text_dark</item>
     </style>
 
-    <style name="Text.Caption.White">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
     <!-- Tiêu đề trên tab cam của dialog chung (Figma 2:453): Rammetto 16 trắng -->
     <style name="Text.DialogTitle.Tab">
         <item name="android:textSize">@dimen/text_16</item>
@@ -107,6 +103,15 @@
     <style name="Text.LuckyGiftStart.Timer">
         <item name="android:textSize">@dimen/lucky_gift_spin_timer_text</item>
         <item name="android:lineHeight" tools:targetApi="28">@dimen/lucky_gift_spin_timer_text</item>
+    </style>
+
+    <!-- Lời nhắn Congratulations (Figma 10:415): Inter Medium 14 trắng, dòng 24 -->
+    <style name="Text.LuckyGiftMessage" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/text_14</item>
+        <item name="android:lineHeight" tools:targetApi="28">@dimen/line_24</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <!-- Đếm ngược dưới nút quà (Figma 21:34: Inter Medium 14 đen) -->
@@ -149,6 +154,18 @@
     <style name="Widget.ST260ChibiOCMaker.TextView" parent="Widget.AppCompat.TextView">
         <item name="android:fontFamily">@font/app_font</item>
         <item name="fontFamily">@font/app_font</item>
+    </style>
+
+    <!-- Chữ dùng font hệ thống (Figma Inter / Roboto). fontFamily của textViewStyle và theme (Rammetto) đè lên
+         fontFamily trong textAppearance, nên TextView dùng Text.DialogMessage / Text.Rate… phải đặt thêm style này. -->
+    <style name="Widget.ST260ChibiOCMaker.TextView.SystemFont">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="fontFamily">sans-serif</item>
+    </style>
+
+    <style name="Widget.ST260ChibiOCMaker.TextView.SystemFont.Medium">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
     </style>
 
     <!-- Icon 40dp đã gồm sẵn nền nút (ic_back, ic_settings, ic_download, ic_archive, ic_info, ic_close…) -->

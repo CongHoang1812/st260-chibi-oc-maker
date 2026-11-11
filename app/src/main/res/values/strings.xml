@@ -169,6 +169,5 @@
     <string name="dialog_storage_title">Storage permission</string>
     <string name="dialog_storage_message">Storage access was denied. Open Settings to allow it and save images.</string>
     <string name="go_to_settings">Settings</string>
-    <string name="dialog_lucky_ad_title">Watch an ad</string>
-    <string name="dialog_lucky_ad_message">Watch the full ad to unlock one extra spin now, or wait for the timer to finish.</string>
+    <string name="dialog_lucky_ad_message">Watch an ad to unlock your Lucky Gift!</string>
 </resources>

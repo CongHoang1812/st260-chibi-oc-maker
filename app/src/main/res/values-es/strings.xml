@@ -147,6 +147,5 @@
     <string name="dialog_storage_title">Permiso de almacenamiento</string>
     <string name="dialog_storage_message">Se denegó el acceso al almacenamiento. Abre Ajustes para permitirlo y guardar imágenes.</string>
     <string name="go_to_settings">Ajustes</string>
-    <string name="dialog_lucky_ad_title">Ver un anuncio</string>
-    <string name="dialog_lucky_ad_message">Mira el anuncio completo para desbloquear un giro extra ahora, o espera a que termine el temporizador.</string>
+    <string name="dialog_lucky_ad_message">¡Mira un anuncio para desbloquear tu Regalo de la suerte!</string>
 </resources>

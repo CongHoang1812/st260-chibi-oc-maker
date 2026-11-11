@@ -19,6 +19,7 @@
 
     <TextView
         android:id="@+id/tv_title"
+        style="@style/Widget.ST260ChibiOCMaker.TextView.SystemFont.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dialog_padding"
@@ -28,6 +29,7 @@
 
     <TextView
         android:id="@+id/tv_message"
+        style="@style/Widget.ST260ChibiOCMaker.TextView.SystemFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/rate_title_gap"
@@ -44,6 +46,7 @@
 
     <TextView
         android:id="@+id/btn_rate"
+        style="@style/Widget.ST260ChibiOCMaker.TextView.SystemFont.Medium"
         android:layout_width="@dimen/rate_button_w"
         android:layout_height="@dimen/rate_button_h"
         android:layout_marginTop="@dimen/rate_buttons_gap"
@@ -55,6 +58,7 @@
 
     <TextView
         android:id="@+id/btn_exit"
+        style="@style/Widget.ST260ChibiOCMaker.TextView.SystemFont.Medium"
         android:layout_width="@dimen/rate_button_w"
         android:layout_height="@dimen/rate_button_h"
         android:background="?attr/selectableItemBackground"

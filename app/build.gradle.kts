@@ -55,10 +55,10 @@ android {
     }
 }
 
-// Tên file APK/AAB: ST260_ST260_Chibi_OC_Makerv<version><MM.dd.yyyy>
+// Tên file APK/AAB: ST260_Chibi_OC_Makerv<version><MM.dd.yyyy>
 val formattedDate: String = SimpleDateFormat("MM.dd.yyyy").format(Date())
 base {
-    archivesName = "ST260_ST260_Chibi_OC_Makerv${android.defaultConfig.versionName}$formattedDate"
+    archivesName = "ST260_Chibi_OC_Makerv${android.defaultConfig.versionName}$formattedDate"
 }
 
 dependencies {

@@ -348,8 +348,7 @@
     <dimen name="lucky_gift_button_inner_radius">12dp</dimen>
     <dimen name="lucky_gift_badge">10dp</dimen>
     <dimen name="lucky_gift_badge_margin">1dp</dimen>
-    <dimen name="part_lock_icon">16dp</dimen>
-    <dimen name="part_lock_margin">2dp</dimen>
+    <dimen name="part_lock_icon">20dp</dimen> <!-- Figma 293:25 -->
     <!-- Overlay vòng quay (Figma 2:634): tiêu đề 42 đè lên khung 320×260 từ y 38 -->
     <dimen name="lucky_gift_frame_w">320dp</dimen>
     <dimen name="lucky_gift_frame_h">260dp</dimen>

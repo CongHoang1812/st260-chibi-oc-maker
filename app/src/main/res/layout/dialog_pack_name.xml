@@ -16,6 +16,7 @@
         android:layout_height="@dimen/editor_input_h"
         android:autofillHints=""
         android:background="@drawable/bg_text_input"
+        android:fontFamily="sans-serif"
         android:hint="@string/pack_name_hint"
         android:imeOptions="actionDone"
         android:importantForAutofill="no"

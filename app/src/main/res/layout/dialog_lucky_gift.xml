@@ -157,13 +157,13 @@
             android:orientation="horizontal" />
 
         <TextView
+            style="@style/Widget.ST260ChibiOCMaker.TextView.SystemFont.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/lucky_gift_message_top"
             android:gravity="center"
             android:text="@string/lucky_gift_unlocked_message"
-            android:textAppearance="@style/Text.Caption.White"
-            android:textSize="@dimen/text_12" />
+            android:textAppearance="@style/Text.LuckyGiftMessage" />
 
         <com.conght.chibiocmaker.core.widget.WoodButton
             android:id="@+id/btn_collect"

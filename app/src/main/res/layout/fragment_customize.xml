@@ -121,6 +121,7 @@
 
         <TextView
             android:id="@+id/tv_lucky_gift_timer"
+            style="@style/Widget.ST260ChibiOCMaker.TextView.SystemFont.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/Text.LuckyGiftTimer"

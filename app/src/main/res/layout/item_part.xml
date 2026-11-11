@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Ô item phụ kiện: khung giấy (chọn = trắng) + thumbnail. Part khoá (Lucky Gift): thumbnail mờ + icon khoá -->
+<!-- Ô item phụ kiện: khung (chọn = viền cam) + thumbnail. Part khoá (Lucky Gift, Figma 2:518): phủ đen 20% + icon khoá giữa ô -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,12 +15,19 @@
         android:scaleType="fitCenter"
         tools:ignore="ContentDescription" />
 
+    <View
+        android:id="@+id/v_lock_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_part_lock_overlay"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <ImageView
         android:id="@+id/iv_lock"
         android:layout_width="@dimen/part_lock_icon"
         android:layout_height="@dimen/part_lock_icon"
-        android:layout_gravity="top|end"
-        android:layout_margin="@dimen/part_lock_margin"
+        android:layout_gravity="center"
         android:contentDescription="@string/cd_locked"
         android:src="@drawable/ic_lock"
         android:visibility="gone"

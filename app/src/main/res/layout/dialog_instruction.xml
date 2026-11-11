@@ -23,6 +23,7 @@
             android:paddingBottom="@dimen/instruction_card_padding_bottom">
 
             <TextView
+                style="@style/Widget.ST260ChibiOCMaker.TextView.SystemFont"
                 android:layout_width="@dimen/dialog_text_width"
                 android:layout_height="wrap_content"
                 android:gravity="center"

@@ -146,6 +146,5 @@
     <string name="dialog_storage_title">स्टोरेज अनुमति</string>
     <string name="dialog_storage_message">स्टोरेज की अनुमति नहीं दी गई। इमेज सेव करने के लिए सेटिंग्स खोलकर अनुमति दें।</string>
     <string name="go_to_settings">सेटिंग्स</string>
-    <string name="dialog_lucky_ad_title">विज्ञापन देखें</string>
-    <string name="dialog_lucky_ad_message">अभी एक अतिरिक्त स्पिन पाने के लिए पूरा विज्ञापन देखें, या टाइमर खत्म होने तक इंतज़ार करें।</string>
+    <string name="dialog_lucky_ad_message">अपना लकी गिफ्ट अनलॉक करने के लिए एक विज्ञापन देखें!</string>
 </resources>

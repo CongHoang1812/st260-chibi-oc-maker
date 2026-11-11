@@ -147,6 +147,5 @@
     <string name="dialog_storage_title">Autorisation de stockage</string>
     <string name="dialog_storage_message">L\'accès au stockage a été refusé. Ouvrez les Paramètres pour l\'autoriser et enregistrer les images.</string>
     <string name="go_to_settings">Paramètres</string>
-    <string name="dialog_lucky_ad_title">Regarder une pub</string>
-    <string name="dialog_lucky_ad_message">Regardez la pub en entier pour débloquer un tour supplémentaire maintenant, ou attendez la fin du minuteur.</string>
+    <string name="dialog_lucky_ad_message">Regardez une pub pour débloquer votre Cadeau chance !</string>
 </resources>

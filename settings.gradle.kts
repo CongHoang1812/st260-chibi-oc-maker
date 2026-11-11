@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ST260_ST260_Chibi OC Maker"
+rootProject.name = "ST260_Chibi OC Maker"
 include(":app")
  
