@@ -13,7 +13,8 @@ enum class EditorTab(val packType: DecorType?) {
     TEXT(null),
 }
 
-enum class ElementType { STICKER, SPEECH, TEXT }
+/** [CHARACTER] = ảnh nhân vật từ Customize: luôn nằm dưới cùng, chỉnh được vị trí / cỡ / lật nhưng không xoá. */
+enum class ElementType { CHARACTER, STICKER, SPEECH, TEXT }
 
 /**
  * Một phần tử trên canvas. Toạ độ tâm [x], [y] là tỉ lệ 0..1 theo kích thước canvas
@@ -47,7 +48,6 @@ data class EditorData(
     val background: DecorBackground = DecorBackground(),
     val elements: List<DecorElement> = emptyList(),
     val selectedId: String? = null,
-    val recentImages: List<String> = emptyList(),
     val mainTab: EditorTab = EditorTab.BACKGROUND,
     /** Tab con theo từng tab chính (index trong hàng tab con). */
     val subTabs: Map<EditorTab, Int> = emptyMap(),
@@ -68,6 +68,9 @@ data class EditorData(
 
     companion object {
         const val DEFAULT_TEXT_COLOR = -0x1 // trắng (Figma: chữ "Hello" trắng)
+
+        /** id cố định của phần tử nhân vật. */
+        const val CHARACTER_ID = "character"
     }
 }
 

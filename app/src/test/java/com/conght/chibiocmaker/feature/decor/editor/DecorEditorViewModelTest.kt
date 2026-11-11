@@ -3,6 +3,7 @@ package com.conght.chibiocmaker.feature.decor.editor
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
+import com.conght.chibiocmaker.core.common.NetworkMonitor
 import com.conght.chibiocmaker.core.common.Resource
 import com.conght.chibiocmaker.data.model.CharacterConfig
 import com.conght.chibiocmaker.data.model.Creation
@@ -52,7 +53,27 @@ class DecorEditorViewModelTest {
     fun tearDown() = Dispatchers.resetMain()
 
     private fun viewModel(handle: SavedStateHandle = SavedStateHandle()) =
-        DecorEditorViewModel(decorRepository, creationRepository, Gson(), handle)
+        DecorEditorViewModel(decorRepository, creationRepository, network, Gson(), handle)
+
+    private val network = object : NetworkMonitor { override val isOnline = flowOf(true) }
+
+    @Test
+    fun openedFromCustomize_characterIsBottomElementNotSelected_cannotBeDeleted() {
+        val vm = viewModel(SavedStateHandle(mapOf(DecorEditorFragment.ARG_CHARACTER_PATH to "/cache/character.png")))
+        assertNull(vm.data.value.selectedId)
+        val character = vm.data.value.elements.single()
+        assertEquals(ElementType.CHARACTER, character.type)
+        assertEquals("/cache/character.png", character.imageUrl)
+        assertFalse(vm.data.value.isDirty)
+
+        vm.addSticker("s1")
+        assertEquals(character.id, vm.data.value.elements.first().id)
+
+        vm.flip(character.id)
+        assertTrue(vm.data.value.elements.first().flipped)
+        vm.delete(character.id)
+        assertEquals(2, vm.data.value.elements.size)
+    }
 
     @Test
     fun background_colorThenNone() {

@@ -22,6 +22,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -47,15 +48,21 @@ import com.conght.chibiocmaker.databinding.FragmentDecorEditorBinding
 import com.conght.chibiocmaker.feature.dialog.ColorPickerDialogFragment
 import com.conght.chibiocmaker.feature.dialog.ConfirmDialogFragment
 import com.conght.chibiocmaker.feature.dialog.ConfirmDialogs
+import com.conght.chibiocmaker.feature.dialog.NoInternetDialogFragment
 import com.conght.chibiocmaker.feature.dialog.setLoadingVisible
 import com.conght.chibiocmaker.feature.success.SuccessFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 /**
  * Decor editor (Figma: nền ảnh 2:1182, nền màu 2:1240, sticker 2:1296, speech 2:1358, text 2:1452).
- * Local làm đầy đủ: Image (Photo Picker), Color, Text, font, màu chữ. Pack (API) → skeleton.
+ * Background: tab Image = ô thêm ảnh từ máy + item của pack đầu tiên; Color; các pack còn lại
+ * (mỗi pack cũng có ô thêm ảnh ở đầu).
+ * Ảnh chọn từ máy chỉ đặt làm nền, không thêm ô vào lưới.
  * Ô None chỉ có ở lưới Background; Sticker / Speech không có, xoá phần tử bằng handle trên canvas.
+ * Nhân vật là phần tử dưới cùng, chạm vào mới hiện khung (thu phóng / xoay / lật, không xoá).
+ * Mất mạng: bấm ô trong lưới hoặc Download → dialog No Internet, Try again có mạng thì làm tiếp.
  */
 @AndroidEntryPoint
 class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDecorEditorBinding::inflate) {
@@ -70,6 +77,8 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
     private lateinit var cellAdapter: DecorCellAdapter
     private lateinit var gridLoading: ConcatAdapter
     private lateinit var gridReady: ConcatAdapter
+    /** Tab Image / pack nền khi pack đang tải: None + ô thêm ảnh + skeleton. */
+    private lateinit var gridImageLoading: ConcatAdapter
     private lateinit var gridSkeleton: SkeletonAdapter
     private lateinit var subTabAdapter: SubTabAdapter
     private lateinit var subTabsWithLoading: ConcatAdapter
@@ -89,11 +98,13 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
     private var editingSpeechId: String? = null
     private var renderedInputFontId: String? = null
 
+    /** Việc bấm lúc mất mạng, làm tiếp khi Try again và đã có mạng. */
+    private var pendingOnlineAction: (() -> Unit)? = null
+
     private data class GridKey(
         val tab: EditorTab,
         val subTab: Int,
         val background: DecorBackground,
-        val recentImages: List<String>,
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,6 +113,7 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
         renderedPacks = null
         editingSpeechId = null
         renderedInputFontId = null
+        pendingOnlineAction = null
         binding.content.applyStatusBarPadding()
         setLightStatusBar(true)
 
@@ -114,8 +126,10 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
 
         binding.btnBack.setOnSingleClickListener { onBack() }
         binding.btnDownload.setOnSingleClickListener {
-            // exportBitmap() không vẽ viền chọn / handle nên không cần bỏ chọn trước
-            viewModel.save(binding.canvas.exportBitmap())
+            runWhenOnline {
+                // exportBitmap() không vẽ viền chọn / handle nên không cần bỏ chọn trước
+                viewModel.save(binding.canvas.exportBitmap())
+            }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() = onBack()
@@ -157,7 +171,6 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
     // ---------- Setup ----------
 
     private fun setupCanvas() {
-        binding.canvas.setCharacter(viewModel.characterPath)
         binding.canvas.listener = object : DecorCanvasView.Listener {
             override fun onSelect(id: String?) = viewModel.select(id)
             override fun onTransform(id: String, x: Float, y: Float, scale: Float, rotation: Float) =
@@ -194,11 +207,12 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
         val gap = resources.getDimensionPixelSize(R.dimen.grid_gap)
         val columns = resources.getInteger(R.integer.decor_grid_columns)
 
-        noneAdapter = NoneAdapter(R.layout.item_none_decor) { viewModel.setBackgroundNone() }
+        noneAdapter = NoneAdapter(R.layout.item_none_decor) { runWhenOnline { viewModel.setBackgroundNone() } }
         cellAdapter = DecorCellAdapter(::onCellClick)
         gridSkeleton = SkeletonAdapter(R.layout.item_skeleton_decor, SKELETON_CELLS)
         gridLoading = noneFirst(noneAdapter, gridSkeleton)
         gridReady = noneFirst(noneAdapter, cellAdapter)
+        gridImageLoading = noneFirst(noneAdapter, cellAdapter, gridSkeleton)
         binding.rvGrid.layoutManager = GridLayoutManager(requireContext(), columns)
         binding.rvGrid.addItemDecoration(GridSpacingItemDecoration(columns, gap, gap))
 
@@ -269,6 +283,12 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
         childFragmentManager.setFragmentResultListener(KEY_EXIT, viewLifecycleOwner) { _, result ->
             if (ConfirmDialogFragment.isConfirmed(result)) findNavController().popBackStack()
         }
+        childFragmentManager.setFragmentResultListener(KEY_NO_INTERNET, viewLifecycleOwner) { _, _ ->
+            pendingOnlineAction?.let { action ->
+                pendingOnlineAction = null
+                runWhenOnline(action)
+            }
+        }
         childFragmentManager.setFragmentResultListener(KEY_BG_COLOR, viewLifecycleOwner) { _, result ->
             viewModel.setBackgroundColor(ColorPickerDialogFragment.color(result))
         }
@@ -322,7 +342,7 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
             binding.etText.typeface = ResourcesCompat.getFont(requireContext(), DecorFonts.of(fontId).fontRes)
         }
 
-        val gridKey = GridKey(tab, data.subTab, data.background, data.recentImages)
+        val gridKey = GridKey(tab, data.subTab, data.background)
         if (gridKey != renderedGridKey || packs !== renderedPacks) {
             renderedGridKey = gridKey
             renderedPacks = packs
@@ -341,21 +361,24 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
             return null
         }
         val resource = packs[type] ?: Resource.Loading
-        val fixed = if (tab == EditorTab.BACKGROUND) {
+        val background = tab == EditorTab.BACKGROUND
+        val fixed = if (background) {
             listOf(getString(R.string.tab_image), getString(R.string.tab_color))
         } else {
             emptyList()
         }
         val packList = (resource as? Resource.Success)?.data.orEmpty()
-        val titles = fixed + packList.mapIndexed { i, p -> p.name.ifBlank { getString(R.string.tab_pack_number, i + 1) } }
+        val packTitles = packList.mapIndexed { i, p -> p.name.ifBlank { getString(R.string.tab_pack_number, i + 1) } }
+        // Background: pack 1 nằm trong tab Image nên không có tab riêng
+        val titles = fixed + if (background) packTitles.drop(1) else packTitles
         subTabAdapter.submitList(titles.mapIndexed { i, title -> SubTabAdapter.Tab(i, title, i == data.subTab) })
         binding.rvSubTabs.swapAdapter(if (resource is Resource.Success) subTabAdapter else subTabsWithLoading)
         // Figma Sticker / Speech không có hàng tab con: chỉ hiện khi có từ 2 pack để chọn
         binding.rvSubTabs.isVisible = fixed.isNotEmpty() || (resource is Resource.Success && titles.size > 1)
 
-        val packIndex = data.subTab - fixed.size
+        val packIndex = packIndexOf(data)
         return when {
-            packIndex < 0 -> null
+            packIndex == null -> null
             resource is Resource.Success -> resource.data.getOrNull(packIndex)?.let { Resource.Success(it) }
                 ?: Resource.Success(DecorPack("", "", type, emptyList()))
 
@@ -374,14 +397,14 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
                     showCells(listOf(DecorCell.ColorWheel(customColor)) + backgroundColors.map { DecorCell.Color(it, it == bg.color) })
                 }
 
-                SUB_IMAGE -> {
-                    noneAdapter.isSelected = bg.isNone
-                    showCells(listOf(DecorCell.AddImage) + data.recentImages.map { DecorCell.Image(it, it, it == bg.imagePath) })
-                }
-
+                // Image và mọi pack nền: None + ô thêm ảnh từ máy + item của pack
                 else -> {
                     noneAdapter.isSelected = bg.isNone
-                    showPack(pack) { it.imageUrl == bg.imagePath }
+                    val items = (pack as? Resource.Success)?.data?.items
+                    val cells = listOf(DecorCell.AddImage) +
+                        items.orEmpty().map { DecorCell.Image(it.id, it.thumbnailUrl, it.imageUrl == bg.imagePath) }
+                    cellAdapter.submitList(cells)
+                    binding.rvGrid.swapAdapter(if (pack is Resource.Success) gridReady else gridImageLoading)
                 }
             }
 
@@ -406,7 +429,10 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
 
     // ---------- Hành động ----------
 
-    private fun onCellClick(cell: DecorCell) {
+    /** Mọi ô trong lưới (kể cả None) đều cần mạng: mất mạng thì hiện dialog No Internet. */
+    private fun onCellClick(cell: DecorCell) = runWhenOnline { applyCell(cell) }
+
+    private fun applyCell(cell: DecorCell) {
         val data = viewModel.data.value
         when (cell) {
             is DecorCell.ColorWheel -> showColorPicker(KEY_BG_COLOR)
@@ -430,9 +456,32 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
     private fun currentPackItems(): List<DecorItem> {
         val data = viewModel.data.value
         val type = data.mainTab.packType ?: return emptyList()
-        val fixed = if (data.mainTab == EditorTab.BACKGROUND) 2 else 0
+        val index = packIndexOf(data) ?: return emptyList()
         val list = (packs[type] as? Resource.Success)?.data ?: return emptyList()
-        return list.getOrNull(data.subTab - fixed)?.items.orEmpty()
+        return list.getOrNull(index)?.items.orEmpty()
+    }
+
+    /**
+     * Pack ứng với tab con đang chọn; null = tab không phải pack (Color).
+     * Background: Image = pack 0, Color, rồi pack 1, 2…
+     */
+    private fun packIndexOf(data: EditorData): Int? = when {
+        data.mainTab != EditorTab.BACKGROUND -> data.subTab
+        data.subTab == SUB_IMAGE -> 0
+        data.subTab == SUB_COLOR -> null
+        else -> data.subTab - 1
+    }
+
+    /** Có mạng → làm [action]; không → giữ lại và hiện dialog No Internet. */
+    private fun runWhenOnline(action: () -> Unit) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (viewModel.isOnline()) {
+                action()
+            } else {
+                pendingOnlineAction = action
+                NoInternetDialogFragment.showOnce(childFragmentManager, KEY_NO_INTERNET)
+            }
+        }
     }
 
     private fun EditText.setTextAndMoveCursor(value: String) {
@@ -505,6 +554,7 @@ class DecorEditorFragment : BaseFragment<FragmentDecorEditorBinding>(FragmentDec
         private const val KEY_EXIT = "editor_exit"
         private const val KEY_BG_COLOR = "editor_bg_color"
         private const val KEY_TEXT_COLOR = "editor_text_color"
+        private const val KEY_NO_INTERNET = "editor_no_internet"
         private const val SUB_IMAGE = 0
         private const val SUB_COLOR = 1
         private const val SKELETON_CELLS = 14

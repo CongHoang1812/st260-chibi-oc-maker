@@ -7,6 +7,7 @@ import androidx.annotation.ColorInt
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.conght.chibiocmaker.core.common.NetworkMonitor
 import com.conght.chibiocmaker.core.common.Resource
 import com.conght.chibiocmaker.data.model.CreationType
 import com.conght.chibiocmaker.data.model.DecorPack
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -43,6 +45,7 @@ sealed interface DecorEditorEvent {
 class DecorEditorViewModel @Inject constructor(
     decorRepository: DecorRepository,
     private val creationRepository: CreationRepository,
+    private val networkMonitor: NetworkMonitor,
     private val gson: Gson,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -51,7 +54,7 @@ class DecorEditorViewModel @Inject constructor(
 
     private val _data = MutableStateFlow(
         savedStateHandle.get<String>(KEY_DATA)?.let { runCatching { gson.fromJson(it, EditorData::class.java) }.getOrNull() }
-            ?: EditorData(),
+            ?: initialData(),
     )
     val data: StateFlow<EditorData> = _data.asStateFlow()
 
@@ -68,6 +71,15 @@ class DecorEditorViewModel @Inject constructor(
 
     private val current get() = _data.value
 
+    /** Mở từ Customize: nhân vật là phần tử dưới cùng, chưa chọn (chạm vào mới hiện khung). */
+    private fun initialData(): EditorData {
+        val path = characterPath ?: return EditorData()
+        val character = DecorElement(EditorData.CHARACTER_ID, ElementType.CHARACTER, imageUrl = path)
+        return EditorData(elements = listOf(character))
+    }
+
+    suspend fun isOnline(): Boolean = networkMonitor.isOnline.first()
+
     // ---------- Tab ----------
 
     fun selectMainTab(tab: EditorTab) = update(dirty = false) { it.copy(mainTab = tab) }
@@ -82,17 +94,12 @@ class DecorEditorViewModel @Inject constructor(
 
     fun setBackgroundImage(path: String) = update { it.copy(background = DecorBackground(imagePath = path)) }
 
-    /** Ảnh từ Photo Picker: copy vào internal storage, thêm vào "gần đây" và đặt làm nền. */
+    /** Ảnh từ Photo Picker: copy vào internal storage rồi đặt làm nền (không thêm ô vào lưới). */
     fun importBackground(uri: Uri) {
         viewModelScope.launch {
             try {
                 val path = creationRepository.importImage(uri)
-                update {
-                    it.copy(
-                        background = DecorBackground(imagePath = path),
-                        recentImages = (listOf(path) + it.recentImages).distinct().take(MAX_RECENTS),
-                    )
-                }
+                update { it.copy(background = DecorBackground(imagePath = path)) }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -144,6 +151,7 @@ class DecorEditorViewModel @Inject constructor(
     fun flip(id: String) = updateElement(id) { it.copy(flipped = !it.flipped) }
 
     fun delete(id: String) = update {
+        if (id == EditorData.CHARACTER_ID) return@update it
         it.copy(elements = it.elements.filterNot { e -> e.id == id }, selectedId = it.selectedId.takeIf { s -> s != id })
     }
 
@@ -200,7 +208,6 @@ class DecorEditorViewModel @Inject constructor(
         const val TAG = "DecorEditorViewModel"
         const val KEY_DATA = "editor_data"
         const val STOP_TIMEOUT_MS = 5_000L
-        const val MAX_RECENTS = 18
         const val MIN_SCALE = 0.3f
         const val MAX_SCALE = 4f
         const val FULL_TURN = 360f

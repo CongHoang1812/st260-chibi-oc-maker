@@ -3,6 +3,7 @@ package com.conght.chibiocmaker.feature.creation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.conght.chibiocmaker.core.common.NetworkMonitor
 import com.conght.chibiocmaker.data.model.Creation
 import com.conght.chibiocmaker.data.model.CreationType
 import com.conght.chibiocmaker.data.model.PACK_NAME_MAX_LENGTH
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -58,7 +60,10 @@ class MyCreationViewModel @Inject constructor(
     private val creationRepository: CreationRepository,
     private val stickerRepository: StickerRepository,
     private val savedStateHandle: SavedStateHandle,
+    private val networkMonitor: NetworkMonitor,
 ) : ViewModel() {
+
+    suspend fun isOnline(): Boolean = networkMonitor.isOnline.first()
 
     private val tab = savedStateHandle.getStateFlow(KEY_TAB, CreationType.CHARACTER.name)
     private val selectionMode = savedStateHandle.getStateFlow(KEY_SELECTION_MODE, false)

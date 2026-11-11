@@ -55,7 +55,7 @@ Những thứ app mẫu chưa có. Mỗi dòng một việc; Claude lập kế h
 
 Tính năng có sẵn nhưng app này không dùng hoặc hoạt động khác. Để trống nghĩa là giữ nguyên.
 
--
+- Decor editor: tab Background > Image gồm ô thêm ảnh + item pack 1 (pack 1 không có tab riêng); mọi pack nền khác cũng có ô thêm ảnh ở đầu lưới; ảnh chọn từ máy chỉ đặt làm nền, không thêm ô vào lưới. Nhân vật là phần tử chạm vào mới hiện khung (kéo, thu phóng, xoay, lật; không xoá). Mất mạng: bấm ô bất kỳ trong lưới hoặc Download → dialog No Internet. Chữ ở tab Text không có bóng (bong bóng Speech vẫn giữ).
 
 ## Bảng màn hình ↔ Figma
 

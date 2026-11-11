@@ -20,17 +20,16 @@ import androidx.core.graphics.drawable.toDrawable
 import com.bumptech.glide.Glide
 import com.conght.chibiocmaker.R
 import com.conght.chibiocmaker.core.ui.loadImage
-import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
 
 /**
- * Canvas editor vuông: nền (màu / ảnh) → ảnh nhân vật → các phần tử sticker / speech / text.
+ * Canvas editor vuông: nền (màu / ảnh) → các phần tử nhân vật / sticker / speech / text.
  *
  * Phần tử đang chọn có viền nét đứt `brown_primary` + 3 handle: flip (trên-phải), delete (dưới-trái),
- * resize/rotate (dưới-phải). Kéo thân để di chuyển, 2 ngón để scale/xoay, chạm 2 lần vào
+ * resize/rotate (dưới-phải). Nhân vật không có handle delete. Kéo thân để di chuyển, 2 ngón để scale/xoay, chạm 2 lần vào
  * speech/text để sửa chữ, chạm vùng trống để bỏ chọn. Mọi thay đổi báo qua [listener]
  * (state nằm ở ViewModel, canvas chỉ hiển thị).
  */
@@ -51,7 +50,6 @@ class DecorCanvasView @JvmOverloads constructor(
     var listener: Listener? = null
 
     private val backgroundView = ImageView(context).apply { scaleType = ImageView.ScaleType.CENTER_CROP }
-    private val characterView = ImageView(context).apply { scaleType = ImageView.ScaleType.FIT_CENTER }
     private val elementLayer = FrameLayout(context)
     private val elementViews = LinkedHashMap<String, DecorElementView>()
 
@@ -84,6 +82,7 @@ class DecorCanvasView @JvmOverloads constructor(
     private val iconResize: Drawable? = ContextCompat.getDrawable(context, R.drawable.ic_move)
     private val path = Path()
     private val rect = RectF()
+    private val bounds = RectF()
 
     /** 4 góc (TL, TR, BR, BL) dạng x,y liên tiếp – dùng lại mỗi frame để không cấp phát khi vẽ / chạm. */
     private val corners = FloatArray(CORNER_COUNT * 2)
@@ -105,13 +104,8 @@ class DecorCanvasView @JvmOverloads constructor(
     init {
         val match = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         addView(backgroundView, match)
-        addView(characterView, LayoutParams(match))
         addView(elementLayer, LayoutParams(match))
         setWillNotDraw(false)
-    }
-
-    fun setCharacter(path: String?) {
-        characterView.loadImage(path, R.color.transparent, forExport = true)
     }
 
     fun render(data: EditorData) {
@@ -185,19 +179,30 @@ class DecorCanvasView @JvmOverloads constructor(
      * false = phần tử chưa đo xong nên chưa có khung.
      */
     private fun computeCorners(e: DecorElement): Boolean {
-        val view = elementViews[e.id] ?: return false
-        if (view.width == 0) return false
+        if (!scaledBounds(e)) return false
         val cx = e.x * width
         val cy = e.y * height
-        val hw = view.width * e.scale / 2 + selectionPadding
-        val hh = view.height * e.scale / 2 + selectionPadding
+        val l = bounds.left - selectionPadding
+        val t = bounds.top - selectionPadding
+        val r = bounds.right + selectionPadding
+        val b = bounds.bottom + selectionPadding
         val rad = Math.toRadians(e.rotation.toDouble())
         val cos = cos(rad).toFloat()
         val sin = sin(rad).toFloat()
-        setCorner(0, cx, cy, -hw, -hh, cos, sin)
-        setCorner(1, cx, cy, hw, -hh, cos, sin)
-        setCorner(2, cx, cy, hw, hh, cos, sin)
-        setCorner(3, cx, cy, -hw, hh, cos, sin)
+        setCorner(0, cx, cy, l, t, cos, sin)
+        setCorner(1, cx, cy, r, t, cos, sin)
+        setCorner(2, cx, cy, r, b, cos, sin)
+        setCorner(3, cx, cy, l, b, cos, sin)
+        return true
+    }
+
+    /** Vùng nội dung của [e] quanh tâm, đã scale và lật (chưa xoay), ghi vào [bounds]. */
+    private fun scaledBounds(e: DecorElement): Boolean {
+        val view = elementViews[e.id] ?: return false
+        if (view.width == 0) return false
+        view.contentBounds(bounds)
+        if (e.flipped) bounds.set(-bounds.right, bounds.top, -bounds.left, bounds.bottom)
+        bounds.set(bounds.left * e.scale, bounds.top * e.scale, bounds.right * e.scale, bounds.bottom * e.scale)
         return true
     }
 
@@ -211,13 +216,13 @@ class DecorCanvasView @JvmOverloads constructor(
         hypot(corners[corner * 2] - x, corners[corner * 2 + 1] - y) <= handleSize
 
     private fun hit(e: DecorElement, x: Float, y: Float): Boolean {
-        val view = elementViews[e.id] ?: return false
+        if (!scaledBounds(e)) return false
         val rad = Math.toRadians(-e.rotation.toDouble())
         val dx = x - e.x * width
         val dy = y - e.y * height
         val lx = (dx * cos(rad) - dy * sin(rad)).toFloat()
         val ly = (dx * sin(rad) + dy * cos(rad)).toFloat()
-        return abs(lx) <= view.width * e.scale / 2 && abs(ly) <= view.height * e.scale / 2
+        return bounds.contains(lx, ly)
     }
 
     // ---------- Vẽ khung chọn ----------
@@ -236,7 +241,7 @@ class DecorCanvasView @JvmOverloads constructor(
         canvas.drawPath(path, borderPaint)
         drawHandle(canvas, corners[2], corners[3], iconFlip)
         drawHandle(canvas, corners[4], corners[5], iconResize)
-        drawHandle(canvas, corners[6], corners[7], iconDelete)
+        if (e.deletable) drawHandle(canvas, corners[6], corners[7], iconDelete)
     }
 
     private fun drawHandle(canvas: Canvas, px: Float, py: Float, icon: Drawable?) {
@@ -286,7 +291,7 @@ class DecorCanvasView @JvmOverloads constructor(
                         return
                     }
 
-                    touchesHandle(CORNER_DELETE, x, y) -> return listener?.onDelete(e.id) ?: Unit
+                    e.deletable && touchesHandle(CORNER_DELETE, x, y) -> return listener?.onDelete(e.id) ?: Unit
                 }
             }
         }
@@ -297,7 +302,7 @@ class DecorCanvasView @JvmOverloads constructor(
             return
         }
         val now = System.currentTimeMillis()
-        if (target.id == lastTapId && now - lastTapTime <= doubleTapTimeout && target.type != ElementType.STICKER) {
+        if (target.id == lastTapId && now - lastTapTime <= doubleTapTimeout && target.hasText) {
             listener?.onEditText(target.id)
         }
         lastTapId = target.id
@@ -345,6 +350,9 @@ class DecorCanvasView @JvmOverloads constructor(
             Mode.NONE -> Unit
         }
     }
+
+    private val DecorElement.deletable get() = type != ElementType.CHARACTER
+    private val DecorElement.hasText get() = type == ElementType.SPEECH || type == ElementType.TEXT
 
     private fun angle(x1: Float, y1: Float, x2: Float, y2: Float): Float =
         Math.toDegrees(atan2((y2 - y1).toDouble(), (x2 - x1).toDouble())).toFloat()

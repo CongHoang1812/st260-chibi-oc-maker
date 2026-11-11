@@ -11,6 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,10 +39,12 @@ import com.conght.chibiocmaker.data.model.WHATSAPP_PACK_MIN_STICKERS
 import com.conght.chibiocmaker.databinding.FragmentMyCreationBinding
 import com.conght.chibiocmaker.feature.dialog.ConfirmDialogFragment
 import com.conght.chibiocmaker.feature.dialog.ConfirmDialogs
+import com.conght.chibiocmaker.feature.dialog.NoInternetDialogFragment
 import com.conght.chibiocmaker.feature.dialog.PackNameDialogFragment
 import com.conght.chibiocmaker.feature.dialog.setLoadingVisible
 import com.conght.chibiocmaker.feature.maker.customize.CustomizeFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 /**
  * My creation (Figma 3:1228): 2 tab Character / Design, dữ liệu thật từ Room.
@@ -103,6 +106,9 @@ class MyCreationFragment : BaseFragment<FragmentMyCreationBinding>(FragmentMyCre
         binding.btnTelegram.setOnSingleClickListener { viewModel.exportStickers(StickerTarget.TELEGRAM) }
         binding.btnWhatsapp.setOnSingleClickListener { viewModel.exportStickers(StickerTarget.WHATSAPP) }
 
+        childFragmentManager.setFragmentResultListener(KEY_NO_INTERNET, viewLifecycleOwner) { _, _ ->
+            pendingEdit?.let(::openEdit)
+        }
         childFragmentManager.setFragmentResultListener(KEY_DELETE, viewLifecycleOwner) { _, result ->
             viewModel.onDeleteConfirmed(ConfirmDialogFragment.isConfirmed(result))
         }
@@ -222,11 +228,23 @@ class MyCreationFragment : BaseFragment<FragmentMyCreationBinding>(FragmentMyCre
         }
     }
 
+    /** Nhân vật bấm Edit lúc mất mạng, mở lại khi Try again có mạng. */
+    private var pendingEdit: Creation? = null
+
+    /** Customize tải part từ API nên cần mạng: mất mạng → dialog No Internet. */
     private fun openEdit(creation: Creation) {
-        navigateSafe(
-            R.id.action_myCreation_to_customize,
-            Bundle().apply { putString(CustomizeFragment.ARG_CONFIG_JSON, creation.configJson) },
-        )
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (!viewModel.isOnline()) {
+                pendingEdit = creation
+                NoInternetDialogFragment.showOnce(childFragmentManager, KEY_NO_INTERNET)
+                return@launch
+            }
+            pendingEdit = null
+            navigateSafe(
+                R.id.action_myCreation_to_customize,
+                Bundle().apply { putString(CustomizeFragment.ARG_CONFIG_JSON, creation.configJson) },
+            )
+        }
     }
 
     private fun onBack() {
@@ -236,6 +254,7 @@ class MyCreationFragment : BaseFragment<FragmentMyCreationBinding>(FragmentMyCre
     companion object {
         private const val KEY_DELETE = "creation_delete"
         private const val KEY_PACK_NAME = "creation_pack_name"
+        private const val KEY_NO_INTERNET = "creation_no_internet"
         private const val DISABLED_ALPHA = 0.5f
         private const val TAG = "MyCreation"
         private const val EXTRA_VALIDATION_ERROR = "validation_error"

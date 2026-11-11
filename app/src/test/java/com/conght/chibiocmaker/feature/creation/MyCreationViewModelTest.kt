@@ -3,6 +3,7 @@ package com.conght.chibiocmaker.feature.creation
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
+import com.conght.chibiocmaker.core.common.NetworkMonitor
 import com.conght.chibiocmaker.data.model.CharacterConfig
 import com.conght.chibiocmaker.data.model.Creation
 import com.conght.chibiocmaker.data.model.CreationType
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -76,12 +78,13 @@ class MyCreationViewModelTest {
     }
 
     private val stickers = FakeStickerRepo()
+    private val onlineMonitor = object : NetworkMonitor { override val isOnline = flowOf(true) }
 
     private fun TestScope.viewModel(
         repo: FakeRepo,
         handle: SavedStateHandle = SavedStateHandle(mapOf("tab" to "CHARACTER")),
     ) =
-        MyCreationViewModel(repo, stickers, handle).also { vm ->
+        MyCreationViewModel(repo, stickers, handle, onlineMonitor).also { vm ->
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { vm.state.collect {} }
         }
 
