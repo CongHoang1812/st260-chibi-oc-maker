@@ -69,10 +69,7 @@ class MyCreationFragment : BaseFragment<FragmentMyCreationBinding>(FragmentMyCre
     }
 
     private val adapter = CreationAdapter(object : CreationAdapter.Listener {
-        override fun onOpen(creation: Creation) = navigateSafe(
-            R.id.action_myCreation_to_creationDetail,
-            Bundle().apply { putLong(CreationDetailFragment.ARG_CREATION_ID, creation.id) },
-        )
+        override fun onOpen(creation: Creation) = openDetail(creation)
 
         override fun onLongPress(creation: Creation) = viewModel.startSelection(creation.id)
         override fun onToggle(creation: Creation) = viewModel.toggle(creation.id)
@@ -107,7 +104,7 @@ class MyCreationFragment : BaseFragment<FragmentMyCreationBinding>(FragmentMyCre
         binding.btnWhatsapp.setOnSingleClickListener { viewModel.exportStickers(StickerTarget.WHATSAPP) }
 
         childFragmentManager.setFragmentResultListener(KEY_NO_INTERNET, viewLifecycleOwner) { _, _ ->
-            pendingEdit?.let(::openEdit)
+            pendingOnline?.invoke()
         }
         childFragmentManager.setFragmentResultListener(KEY_DELETE, viewLifecycleOwner) { _, result ->
             viewModel.onDeleteConfirmed(ConfirmDialogFragment.isConfirmed(result))
@@ -228,23 +225,36 @@ class MyCreationFragment : BaseFragment<FragmentMyCreationBinding>(FragmentMyCre
         }
     }
 
-    /** Nhân vật bấm Edit lúc mất mạng, mở lại khi Try again có mạng. */
-    private var pendingEdit: Creation? = null
+    /** Việc bấm lúc mất mạng (Edit), làm lại khi Try again có mạng. */
+    private var pendingOnline: (() -> Unit)? = null
 
-    /** Customize tải part từ API nên cần mạng: mất mạng → dialog No Internet. */
-    private fun openEdit(creation: Creation) {
+    /** Mất mạng → dialog No Internet, giữ [action] để Try again làm lại. */
+    private fun runWhenOnline(action: () -> Unit) {
         viewLifecycleOwner.lifecycleScope.launch {
             if (!viewModel.isOnline()) {
-                pendingEdit = creation
+                pendingOnline = { runWhenOnline(action) }
                 NoInternetDialogFragment.showOnce(childFragmentManager, KEY_NO_INTERNET)
                 return@launch
             }
-            pendingEdit = null
-            navigateSafe(
-                R.id.action_myCreation_to_customize,
-                Bundle().apply { putString(CustomizeFragment.ARG_CONFIG_JSON, creation.configJson) },
-            )
+            pendingOnline = null
+            action()
         }
+    }
+
+    /** Xem ảnh đã lưu ở internal storage: không cần mạng. */
+    private fun openDetail(creation: Creation) {
+        navigateSafe(
+            R.id.action_myCreation_to_creationDetail,
+            Bundle().apply { putLong(CreationDetailFragment.ARG_CREATION_ID, creation.id) },
+        )
+    }
+
+    /** Customize tải part từ API nên cần mạng. */
+    private fun openEdit(creation: Creation) = runWhenOnline {
+        navigateSafe(
+            R.id.action_myCreation_to_customize,
+            Bundle().apply { putString(CustomizeFragment.ARG_CONFIG_JSON, creation.configJson) },
+        )
     }
 
     private fun onBack() {

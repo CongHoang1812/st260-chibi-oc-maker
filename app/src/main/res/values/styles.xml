@@ -318,6 +318,8 @@
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textAppearance">@style/Text.HomeCard</item>
+        <item name="textOutlineColor">@color/home_card_label_outline</item>
+        <item name="textOutlineWidth">@dimen/stroke_thin</item>
     </style>
 
     <style name="Widget.ST260ChibiOCMaker.HomeCard" parent="Widget.Material3.CardView.Filled">
@@ -328,6 +330,8 @@
         <item name="cardBackgroundColor">@color/transparent</item>
         <item name="strokeColor">@color/white</item>
         <item name="strokeWidth">@dimen/stroke_thin</item>
+        <!-- Viền chữ của nhãn (OutlinedTextView) vẽ tràn ra ngoài view nhãn -->
+        <item name="android:clipChildren">false</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>

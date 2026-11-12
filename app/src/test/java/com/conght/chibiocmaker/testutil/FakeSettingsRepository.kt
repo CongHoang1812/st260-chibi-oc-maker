@@ -15,11 +15,6 @@ class FakeSettingsRepository : SettingsRepository {
         onboardingDone.value = done
     }
 
-    override val cosplayInstructionShown = MutableStateFlow(false)
-    override suspend fun setCosplayInstructionShown() {
-        cosplayInstructionShown.value = true
-    }
-
     override val appRated = MutableStateFlow(false)
     override suspend fun setAppRated() {
         appRated.value = true
@@ -27,4 +22,9 @@ class FakeSettingsRepository : SettingsRepository {
 
     var homeBackCount = 0
     override suspend fun incrementHomeBackCount(): Int = ++homeBackCount
+
+    override val templateCount = MutableStateFlow<Int?>(null)
+    override suspend fun setTemplateCount(count: Int) {
+        templateCount.value = count
+    }
 }

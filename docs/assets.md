@@ -50,7 +50,7 @@ Chưa làm, để cùng màn tương ứng: `bg_instruction_paper` (làm cùng C
 | File | Node | Ghi chú |
 |---|---|---|
 | `drawable-nodpi/img_home_bg.webp` | `2:1003` (ảnh nền gốc) | Nền biển, giữ kích thước gốc 736×1312 |
-| `drawable/logo.png` | `6:2` (export 512×512) | Icon launcher (`android:icon`, `android:roundIcon` trong Manifest) |
+| `drawable/logo.png` | `6:2` (export 512×512) | Ảnh icon launcher: `mipmap-anydpi-v26/ic_launcher.xml` (icon thích ứng, lớp nền `drawable/ic_launcher_art.xml` thụt 12%) và `mipmap/ic_launcher.xml` (Android 7-). Manifest trỏ `@mipmap/ic_launcher` |
 | `drawable-nodpi/img_logo.webp` | `21:29` (ảnh gốc) | Logo CHIBI OC MAKER 1024×384, layout 360×135 fitCenter. Splash có thể dùng lại |
 | `drawable-nodpi/img_home_maker.webp` | `2:1012` (ảnh gốc) | Cắt theo khung Figma: ảnh 115.01%, lệch -11.25% / -7.43%, ra 480×480 (160dp @3x) |
 | `drawable-nodpi/img_home_cosplay.webp` | `2:1016` (ảnh gốc) | Rộng 100%, cao 128.51%, lấy phần trên |
@@ -63,7 +63,6 @@ Chưa làm, để cùng màn tương ứng: `bg_instruction_paper` (làm cùng C
 
 | File | Node | Ghi chú |
 |---|---|---|
-| `drawable/ic_home_button.xml` | glyph `2:474`, nền `2:471` | Nút Back của Customize (glyph Home như Figma) |
 | `drawable/ic_flip_tool.xml`, `drawable/ic_move_tool.xml` | `2:488`, `2:494` | Glyph hàng công cụ; tên riêng để không đổi tay nắm sticker (`ic_flip` / `ic_move`) |
 | `drawable/ic_arrow_up/down/left/right.xml` | `2:952`, `2:960`, `2:956`, `2:948` | Chỉ phần mũi tên trắng của SVG, khung 48 = lõi nút 56; nền xanh do `WoodButtonDrawable.blue` vẽ |
 | `drawable/ic_rotate_left.xml`, `drawable/ic_rotate_right_button.xml` | `10:421`, `10:427` | Glyph 24 trắng |

@@ -49,7 +49,7 @@ Những thứ app mẫu chưa có. Mỗi dòng một việc; Claude lập kế h
 
 | Tính năng / màn | Mô tả (mở từ đâu, làm gì, lưu gì) | Figma node | Dữ liệu (API / local) | Trạng thái |
 |---|---|---|---|---|
-| Lucky Gift (vòng quay trong Customize) | 2/3 item của mỗi tab part bị khoá. Bấm nút quà ở Customize mở overlay LUCKY GIFT, quay để mở khoá part bất kỳ thuộc tab bất kỳ. Quay luôn, chưa cần xem quảng cáo. Sau khi quay đếm ngược 30:00, vẫn chạy tiếp khi thoát app. Code chưa có phần này và chưa có khái niệm khoá / mở phụ kiện | Start `2:551`, Congratulations `10:185`, Free `2:677` (có icon video, hiện chưa dùng quảng cáo), đếm ngược `2:805`; ảnh khung `9:184`, nền sáng `9:99`; đếm ngược ở nút quà cũng có trong `2:931` | Item lấy từ API có sẵn; part đã mở (theo template) và mốc quay kế tiếp lưu DataStore (`settings`) | xong logic + test; chưa chạy trên máy; ô khoá chờ Figma |
+| Lucky Gift (vòng quay trong Customize) | 2/3 item của mỗi tab part bị khoá. Bấm nút quà ở Customize mở overlay LUCKY GIFT; lần vào Customize (Maker) đầu tiên của mỗi phiên app (thoát hẳn rồi mở lại là phiên mới) tự mở overlay khi template tải xong, trừ khi đang đếm ngược (lượt đó vẫn tính là đã dùng), quay để mở khoá part bất kỳ thuộc tab bất kỳ. Quay luôn, chưa cần xem quảng cáo. Sau khi quay đếm ngược 30:00, vẫn chạy tiếp khi thoát app. Code chưa có phần này và chưa có khái niệm khoá / mở phụ kiện | Start `2:551`, Congratulations `10:185`, Free `2:677` (có icon video, hiện chưa dùng quảng cáo), đếm ngược `2:805`; ảnh khung `9:184`, nền sáng `9:99`; đếm ngược ở nút quà cũng có trong `2:931` | Item lấy từ API có sẵn; part đã mở (theo template) và mốc quay kế tiếp lưu DataStore (`settings`) | xong logic + test; chưa chạy trên máy; ô khoá chờ Figma |
 
 ## Bỏ hoặc đổi so với app mẫu
 
@@ -76,7 +76,7 @@ Tính năng có sẵn nhưng app này không dùng hoặc hoạt động khác. 
 | My creation + Detail | `fragment_my_creation`, `fragment_creation_detail`, `item_creation` | Character: rỗng `2:1520`, danh sách `2:1548`, chọn nhiều `2:1656`, chi tiết `2:1746`. Design: rỗng `2:1534`, danh sách `2:1614`, chọn nhiều `2:1705`, chi tiết `2:1775` | xong layout (chưa xem trên máy) |
 | Cosplay | `fragment_cosplay_start`, `fragment_customize` (mode COSPLAY), `dialog_cosplay_score`, `dialog_instruction` | Start `2:186`, Instruction `2:423`, chơi `2:207`, điểm số `2:339` | xong layout (chưa xem trên máy) |
 | Lucky roll | `fragment_lucky_roll` | Mặc định `2:155`, sau khi Random `2:169` | xong layout (chưa xem trên máy) |
-| Dialog | `view_paper_dialog`, `dialog_confirm` (Exit / Reset / Random / Delete / No internet), `dialog_color_picker`, `dialog_rate_us`, `dialog_pack_name`, `dialog_loading` | Exit `258:18`, Reset `258:41`, Random `258:52`, No internet `258:63`, Delete `258:74`, Color picker `258:106`, Rate us 0–5 sao `258:108` `258:166` `258:186` `258:206` `258:226` `258:246` (section `258:406`). Chưa có: Pack name, Loading (dựng từ khung chung) | xong layout (chưa xem trên máy) |
+| Dialog | `view_paper_dialog`, `dialog_confirm` (Exit / Reset / Random / Delete / No internet), `dialog_color_picker`, `dialog_rate_us`, `dialog_pack_name`, `dialog_loading` | Exit `258:18`, Reset `258:41`, Random `258:52`, Unlock item `325:95`, No internet `258:63`, Delete `258:74`, Color picker `258:106`, Rate us 0–5 sao `258:108` `258:166` `258:186` `258:206` `258:226` `258:246` (section `258:406`). Chưa có: Pack name, Loading (dựng từ khung chung) | xong layout (chưa xem trên máy) |
 | Trạng thái tải / lỗi | `view_error_state`, `item_skeleton_*`, `view_skeleton_image` | Không có frame, dựng từ token và component sẵn có | chưa |
 | Lucky Gift (overlay trong Customize) | `dialog_lucky_gift`, `item_lucky_gift_cell`; nút quà `lucky_gift` / `btn_lucky_gift` trong `fragment_customize`; icon khoá `iv_lock` trong `item_part` | Start `2:551`, Congratulations `10:185`, đếm ngược `2:805`, nút quà `2:628` | xong bản đầu, chưa đối chiếu trên máy; ô khoá chờ Figma |
 
@@ -100,6 +100,9 @@ Ghi chú khi ghép frame:
 
 Ghi lại quyết định không suy ra được từ code, để phiên làm việc sau không phải hỏi lại.
 
+- Part khoá ở Customize (2026-11-12): bấm vào hiện dialog "Unlock Item" (Figma `325:95`, Cancel | Watch ad, cùng khung `ConfirmDialogs.random`). Chưa có Ads SDK nên Watch Ad chỉ đóng dialog, part vẫn khoá (người dùng chốt, đã bỏ bản mở khoá luôn). Khi gắn quảng cáo: xem hết thì mở khoá (`LuckyGiftRepository.unlockParts`, lưu chung chỗ với part trúng Lucky Gift, không đổi đồng hồ quay) rồi tự chọn part đó, xem TODO(ADS) trong `CustomizeViewModel.onUnlockPartResult`. Mất mạng thì hiện No internet trước (như mọi lần chọn part).
+- Đổi ngôn ngữ không relaunch Activity (2026-11-12): relaunch làm cả màn hình nháy đen (đo trên Xiaomi Android 16, cả lần đầu lẫn từ Setting; đổi `windowBackground` không hết vì cửa sổ bị ẩn hẳn). `MainActivity` khai báo `configChanges="locale|layoutDirection"` và tự inflate lại fragment đang hiện trong `onConfigurationChanged`. Không bỏ khai báo này.
+
 - Token và component chung (2026-11-09), người dùng đã duyệt:
   - Dialog chung (Exit / Reset / Delete / Random / No internet, Rate us, Pack name, Loading, Color picker): đã có Figma (xem bảng màn hình). Không có nút X tròn.
   - Nút phụ (No / Cancel): làm theo design, Figma chỉ có nút cam nên cả hai nút đều cam, không dùng kiểu xám.
@@ -112,7 +115,7 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
   - Bỏ nút zoom +/-; zoom bằng hai ngón tay trên nhân vật.
   - Thêm nút RESET: đưa vị trí / góc xoay / cỡ của bộ phận đang chọn về mặc định (`CustomizeViewModel.resetPartTransform`).
   - Đang Move vẫn hiện Home, NEXT, hàng công cụ, Random và nút quà như Figma.
-  - Nút Back ở Customize dùng glyph Home như Figma, hành vi vẫn là quay lại (hỏi Exit nếu đã sửa).
+  - Nút Back ở Customize: Figma dùng glyph Home, người dùng đổi sang icon Back (`ic_back`) như các màn khác (2026-11-12). Hành vi vẫn là quay lại (hỏi Exit nếu đã sửa).
 - Quy tắc Lucky Gift (2026-11-09):
   - Mỗi lượt mở 5 part.
   - Mỗi tab mở 1/3 đầu danh sách, khoá 2/3 sau; part mặc định luôn mở.
@@ -153,6 +156,7 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
   - Nút Random có ảnh xúc xắc bên trái chữ: `WoodButton` thêm `app:woodIcon` (icon + chữ canh giữa thành một khối), style `RandomButton`.
   - Màn chơi Cosplay: đồng hồ chỉ còn viên "00:00" như Figma, ẩn thanh tiến trình (`progress_timer` vẫn còn trong layout, ẩn). Ảnh mẫu thành polaroid 80×96 nghiêng -4° lấn ra mép phải, có băng dính hồng góc trên-trái / dưới-phải (Figma `39:26`).
   - Instruction: thẻ kem + tab tiêu đề cam (`bg_dialog_title_tab.xml`), nút X cách thẻ 24. Popup điểm / ảnh mẫu: thẻ polaroid giống Successful Cosplay, % chữ nâu dưới ảnh.
+  - Instruction không tự hiện khi vào màn Cosplay (kể cả lần đầu), chỉ mở bằng nút (i). (2026-11-12)
   - Lucky roll: ô vuông rộng hết màn, Random rộng 328.
 - Quyền (2026-11-10, đổi 3 lần, đây là bản chốt):
   - Màn Permission: Android 12 trở xuống chỉ dòng Storage, Android 13 trở lên chỉ dòng Notification. Bỏ quyền `READ_MEDIA_*` khỏi manifest (app không đọc ảnh máy).

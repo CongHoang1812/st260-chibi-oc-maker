@@ -36,16 +36,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Nền trắng sau canvas: tách khỏi DecorCanvasView để ảnh xuất ra vẫn trong suốt khi nền None -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/editor_bg"
-            app:layout_constraintBottom_toBottomOf="@id/canvas"
-            app:layout_constraintEnd_toEndOf="@id/canvas"
-            app:layout_constraintStart_toStartOf="@id/canvas"
-            app:layout_constraintTop_toTopOf="@id/canvas" />
-
         <!-- Vùng thiết kế vuông rộng hết màn (Figma 2:1188), co lại khi màn thấp -->
         <com.conght.chibiocmaker.feature.decor.editor.DecorCanvasView
             android:id="@+id/canvas"

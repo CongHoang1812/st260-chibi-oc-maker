@@ -191,6 +191,8 @@
     <dimen name="success_card_padding">16dp</dimen>
     <dimen name="success_card_image">208dp</dimen>
     <dimen name="success_stars_top">234dp</dimen> <!-- tính từ đỉnh thẻ -->
+    <dimen name="cosplay_score_caption_top">224dp</dimen> <!-- dải dưới ảnh: 16 + 208 → hết viền đáy (288 - 4) -->
+    <dimen name="cosplay_score_caption_h">60dp</dimen>
     <dimen name="success_star_small">32dp</dimen>
     <dimen name="success_star_big">44dp</dimen>
     <dimen name="success_star_gap">16dp</dimen>

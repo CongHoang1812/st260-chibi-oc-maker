@@ -16,7 +16,6 @@
     <color name="color_bar_bg">#95CBE6</color>
     <color name="cell_tan">#FFFFFF</color>
     <!-- Vùng canvas của editor / chi tiết / Successful (Figma: trắng) -->
-    <color name="editor_bg">#FFFFFF</color>
     <!-- Nền My creation (Figma 2:1554) -->
     <color name="cream">#95CBE6</color>
     <!-- Đáy gradient nền chung (Figma #E7F1E5 → #95CBE5) -->
@@ -75,6 +74,7 @@
     <color name="intro_fade_transparent">#00ABD2E2</color>
     <!-- Chữ nội dung dialog (Inter #333) -->
     <color name="text_dark">#333333</color>
+    <color name="home_card_label_outline">#4D4D4D</color> <!-- Viền nhãn thẻ Home (Figma 2:1013, stroke Outside 1) -->
 
     <!-- Phụ (lấy từ Figma) -->
     <color name="brown_text_60">#99B25324</color> <!-- Mô tả Rate us (Figma rgba(178,83,36,0.6)) -->

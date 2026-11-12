@@ -147,6 +147,8 @@
     <dimen name="success_card_padding">32dp</dimen>
     <dimen name="success_card_image">416dp</dimen>
     <dimen name="success_stars_top">468dp</dimen>
+    <dimen name="cosplay_score_caption_top">448dp</dimen>
+    <dimen name="cosplay_score_caption_h">120dp</dimen>
     <dimen name="success_star_small">64dp</dimen>
     <dimen name="success_star_big">88dp</dimen>
     <dimen name="success_star_gap">32dp</dimen>

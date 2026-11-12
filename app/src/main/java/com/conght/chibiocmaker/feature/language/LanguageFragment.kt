@@ -53,7 +53,7 @@ class LanguageFragment : BaseFragment<FragmentLanguageBinding>(FragmentLanguageB
         } else {
             nav.navigate(R.id.action_language_to_intro)
         }
-        // Đổi locale sau khi điều hướng: Activity recreate sẽ khôi phục đúng màn đích
+        // Đổi locale sau khi điều hướng: MainActivity inflate lại màn đích theo ngôn ngữ mới (không recreate)
         AppLanguage.apply(language)
     }
 

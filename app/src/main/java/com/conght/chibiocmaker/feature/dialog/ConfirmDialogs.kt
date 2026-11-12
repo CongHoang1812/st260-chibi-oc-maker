@@ -36,6 +36,17 @@ object ConfirmDialogs {
         watchAd = true,
     )
 
+    /** Bấm part đang khoá ở Customize: Cancel (trái) | Watch Ad (phải) để mở khoá part đó. */
+    fun unlockPart(requestKey: String) = ConfirmDialogFragment.newInstance(
+        requestKey,
+        R.string.dialog_unlock_part_title,
+        R.string.dialog_unlock_part_message,
+        confirmText = R.string.watch_ad,
+        dismissText = R.string.cancel,
+        confirmOnStart = false,
+        watchAd = true,
+    )
+
     /** Download bị từ chối quyền bộ nhớ 2 lần (Android 9 trở xuống): Settings mở trang cài đặt app. */
     fun storageSettings(requestKey: String) = ConfirmDialogFragment.newInstance(
         requestKey,

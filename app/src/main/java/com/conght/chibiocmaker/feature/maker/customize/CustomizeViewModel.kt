@@ -1,7 +1,6 @@
 package com.conght.chibiocmaker.feature.maker.customize
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -30,7 +29,6 @@ import com.conght.chibiocmaker.feature.maker.move.MoveLimits
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -49,7 +47,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val MIN_SCALE = 0.5f
@@ -142,12 +139,21 @@ data class LuckyGiftState(
 
 sealed interface CustomizeEvent {
     data class OpenEditor(val characterPath: String, val configJson: String) : CustomizeEvent
-    data class OpenCosplaySuccess(val creationId: Long, val stars: Int) : CustomizeEvent
+    data class OpenCosplaySuccess(val imagePath: String, val stars: Int) : CustomizeEvent
     data object SaveFailed : CustomizeEvent
     data object NoInternet : CustomizeEvent
 
+    /** Có mạng: Fragment chụp ảnh nhân vật rồi gọi [CustomizeViewModel.saveAndContinue]. */
+    data object SaveAndContinue : CustomizeEvent
+
     /** Có mạng: hiện dialog xác nhận Random cả nhân vật. */
     data object ConfirmRandomAll : CustomizeEvent
+
+    /** Bấm part đang khoá: hỏi xem quảng cáo để mở khoá (part chờ lưu ở SavedStateHandle). */
+    data object ConfirmUnlockPart : CustomizeEvent
+
+    /** Mở Lucky Gift: lần vào Customize (Maker) đầu tiên của phiên app hoặc bấm nút quà khi có mạng. */
+    data object ShowLuckyGift : CustomizeEvent
 
     /** Vừa random: cuộn lưới item và thanh màu tới lựa chọn mới của category đang mở. */
     data class ScrollToSelection(val selection: PartSelection) : CustomizeEvent
@@ -329,6 +335,7 @@ class CustomizeViewModel @Inject constructor(
             startCountdown()
             finishWhenComplete()
         }
+        if (locksEnabled) showLuckyGiftOnFirstVisit()
         retryWhenBackOnline(networkMonitor, isError = { current.detail is Resource.Error }, retry = ::retry)
     }
 
@@ -347,6 +354,21 @@ class CustomizeViewModel @Inject constructor(
                     savedStateHandle[KEY_REMAINING] = (remaining.value - 1).coerceAtLeast(0)
                 }
                 if (score.value == null) finishCosplay()
+            }
+        }
+    }
+
+    /**
+     * Lần vào Customize đầu tiên của phiên app: chờ template tải xong rồi mở Lucky Gift, trừ khi đang đếm ngược
+     * (lượt đó vẫn tính là đã dùng). Cờ trong SavedStateHandle: màn khôi phục sau process death không mở lại.
+     */
+    private fun showLuckyGiftOnFirstVisit() {
+        if (savedStateHandle.get<Boolean>(KEY_GIFT_AUTO_CHECKED) == true) return
+        savedStateHandle[KEY_GIFT_AUTO_CHECKED] = true
+        viewModelScope.launch {
+            val gift = state.first { it.luckyGift != null }.luckyGift ?: return@launch
+            if (luckyGiftRepository.consumeSessionAutoShow() && gift.canSpin) {
+                _events.send(CustomizeEvent.ShowLuckyGift)
             }
         }
     }
@@ -407,29 +429,15 @@ class CustomizeViewModel @Inject constructor(
     /** Đang lưu (Next / kết quả cosplay) → hiện LoadingDialog. */
     val saving: StateFlow<Boolean> = _saving.asStateFlow()
 
-    /** Đóng popup điểm: lưu vào My creation (CHARACTER + config) rồi mở Successful. */
+    /**
+     * Đóng popup điểm: mở Successful với ảnh kết quả (cacheDir). Kết quả Cosplay không lưu vào
+     * My creation; Download ở Successful mới ghi ra Gallery.
+     */
     fun saveCosplayResult() {
         val percent = score.value ?: return
         val path = resultPath.value ?: return
-        val config = current.config ?: return
-        if (_saving.value) return
-        _saving.value = true
-        viewModelScope.launch {
-            try {
-                val bitmap = withContext(Dispatchers.IO) { BitmapFactory.decodeFile(path) }
-                    ?: error("Không đọc được ảnh kết quả")
-                val id = creationRepository.save(CreationType.CHARACTER, bitmap, config)
-                savedStateHandle[KEY_DIRTY] = false
-                _events.send(CustomizeEvent.OpenCosplaySuccess(id, StarRating.fromPercent(percent)))
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Lưu kết quả cosplay lỗi", e)
-                _events.send(CustomizeEvent.SaveFailed)
-            } finally {
-                _saving.value = false
-            }
-        }
+        savedStateHandle[KEY_DIRTY] = false
+        viewModelScope.launch { _events.send(CustomizeEvent.OpenCosplaySuccess(path, StarRating.fromPercent(percent))) }
     }
 
     private fun onDetailLoaded(detail: TemplateDetail) {
@@ -484,6 +492,12 @@ class CustomizeViewModel @Inject constructor(
         }
     }
 
+    /** Nút quà (gọi qua [runWhenOnline]: mất mạng thì hiện No Internet thay vì mở Lucky Gift). */
+    fun requestLuckyGift() {
+        if (current.luckyGift == null) return
+        viewModelScope.launch { _events.send(CustomizeEvent.ShowLuckyGift) }
+    }
+
     /** Try again trên dialog No Internet. */
     fun retryPendingAction() {
         val action = pendingOnlineAction ?: return
@@ -508,12 +522,28 @@ class CustomizeViewModel @Inject constructor(
             }
         } else {
             val item = category.items.firstOrNull { it.id == itemId } ?: return
-            // Part khoá: không chọn được; riêng part đang mặc sẵn (Edit nhân vật cũ) thì giữ
-            if (current.isLocked(category.id, itemId) && current.selection?.itemId != itemId) return
+            // Part khoá: hỏi xem quảng cáo để mở khoá; riêng part đang mặc sẵn (Edit nhân vật cũ) thì giữ
+            if (current.isLocked(category.id, itemId) && current.selection?.itemId != itemId) {
+                savedStateHandle[KEY_PENDING_UNLOCK] = arrayListOf(category.id, itemId)
+                viewModelScope.launch { _events.send(CustomizeEvent.ConfirmUnlockPart) }
+                return
+            }
             val keepColor = current.selection?.colorId?.takeIf { c -> item.colors.any { it.id == c } }
             PartSelection(itemId, keepColor ?: item.colors.firstOrNull()?.id)
         }
         updateConfig { it.copy(selections = it.selections + (category.id to newSelection)) }
+    }
+
+    /**
+     * Kết quả dialog Unlock Item. Chưa gắn quảng cáo nên Watch Ad chỉ đóng dialog, part vẫn khoá
+     * (người dùng chốt 2026-11-12). [confirmed] = false (Cancel): bỏ part đang chờ.
+     */
+    fun onUnlockPartResult(confirmed: Boolean) {
+        val pending = savedStateHandle.remove<ArrayList<String>>(KEY_PENDING_UNLOCK)
+        if (pending == null || !confirmed) return
+        // TODO(ADS): chỉ tới đây khi đã xem hết quảng cáo. Mở khoá: luckyGiftRepository.unlockParts(templateId,
+        //  setOf(PartLocks.key(categoryId, itemId))), chờ state hết khoá part đó rồi selectItem(itemId) nếu vẫn
+        //  đang ở category đó ([pending] = [categoryId, itemId]).
     }
 
     fun selectColor(colorId: String) {
@@ -585,6 +615,11 @@ class CustomizeViewModel @Inject constructor(
             _events.send(CustomizeEvent.ScrollToSelection(selection))
             prepareRandomCategory(categoryId)
         }
+    }
+
+    /** Bấm Next (đã qua [runWhenOnline]: mất mạng thì hiện No Internet thay vì lưu). */
+    fun requestNext() {
+        viewModelScope.launch { _events.send(CustomizeEvent.SaveAndContinue) }
     }
 
     /** Bấm nút Random cả nhân vật (đã qua [runWhenOnline]) → Fragment hiện dialog xác nhận. */
@@ -743,6 +778,8 @@ class CustomizeViewModel @Inject constructor(
         const val KEY_RESULT_PATH = "cosplay_result_path"
         const val KEY_GIFT_GRID = "lucky_gift_grid"
         const val KEY_GIFT_RESULT = "lucky_gift_result"
+        const val KEY_PENDING_UNLOCK = "pending_unlock_part"
+        const val KEY_GIFT_AUTO_CHECKED = "lucky_gift_auto_checked"
         const val MS_PER_SECOND = 1_000L
         const val COSPLAY_SECONDS = 1 * 60
         const val COMPLETE_PERCENT = 100

@@ -21,11 +21,12 @@ import com.conght.chibiocmaker.databinding.FragmentTemplateSelectBinding
 import com.conght.chibiocmaker.feature.dialog.NoInternetDialogFragment
 import com.conght.chibiocmaker.feature.maker.customize.CustomizeFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 /**
  * Maker – chọn nhân vật gốc (Figma 3:278). Không có ô None.
- * Chờ API: hiện [PLACEHOLDER_COUNT] thẻ khung giấy thật (ô ảnh shimmer), chưa bấm được; tải xong mới sang Customize.
+ * Chờ API: hiện số thẻ khung giấy bằng số template lần tải trước (ô ảnh shimmer), chưa bấm được; tải xong mới sang Customize.
  */
 @AndroidEntryPoint
 class TemplateSelectFragment : BaseFragment<FragmentTemplateSelectBinding>(FragmentTemplateSelectBinding::inflate) {
@@ -58,11 +59,11 @@ class TemplateSelectFragment : BaseFragment<FragmentTemplateSelectBinding>(Fragm
         binding.rvTemplates.itemAnimator = null
         binding.errorState.setOnRetryClickListener { viewModel.retry() }
 
-        collectWhenStarted(viewModel.state) { resource ->
+        collectWhenStarted(combine(viewModel.state, viewModel.placeholderCount, ::Pair)) { (resource, placeholders) ->
             binding.rvTemplates.isVisible = resource !is Resource.Error
             binding.errorState.isVisible = resource is Resource.Error
             when (resource) {
-                Resource.Loading -> adapter.submitList(List(PLACEHOLDER_COUNT) { TemplateCell(it, null) })
+                Resource.Loading -> adapter.submitList(List(placeholders ?: 0) { TemplateCell(it, null) })
                 is Resource.Success -> adapter.submitList(resource.data.mapIndexed { i, t -> TemplateCell(i, t) })
                 is Resource.Error -> binding.errorState.setError(resource.throwable)
             }
@@ -89,7 +90,6 @@ class TemplateSelectFragment : BaseFragment<FragmentTemplateSelectBinding>(Fragm
     }
 
     private companion object {
-        const val PLACEHOLDER_COUNT = 10
         const val KEY_NO_INTERNET = "template_no_internet"
     }
 }

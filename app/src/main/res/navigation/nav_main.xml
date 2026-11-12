@@ -212,7 +212,13 @@
         tools:layout="@layout/fragment_success">
         <argument
             android:name="creationId"
+            android:defaultValue="-1L"
             app:argType="long" />
+        <argument
+            android:name="imagePath"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
         <argument
             android:name="source"
             android:defaultValue="MAKER"

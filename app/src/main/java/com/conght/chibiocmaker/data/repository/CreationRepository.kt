@@ -38,6 +38,9 @@ interface CreationRepository {
     /** Lưu ảnh ra thư viện máy (Gallery). */
     suspend fun download(ids: List<Long>): Result<Unit>
 
+    /** Lưu một file ảnh chưa có trong My creation (vd. kết quả Cosplay ở cacheDir) ra Gallery. */
+    suspend fun downloadFile(path: String): Result<Unit> = Result.failure(UnsupportedOperationException())
+
     /** Ảnh tạm truyền giữa các màn (cacheDir, internal), trả về đường dẫn. */
     suspend fun saveTemp(bitmap: Bitmap, fileName: String): String
 
@@ -95,8 +98,14 @@ class CreationRepositoryImpl @Inject constructor(
     override suspend fun importImage(uri: Uri): String = fileStore.importImage(uri)
 
     override suspend fun download(ids: List<Long>): Result<Unit> = withContext(dispatchers.io) {
+        copyToGallery(dao.getByIds(ids).map { it.imagePath })
+    }
+
+    override suspend fun downloadFile(path: String): Result<Unit> = copyToGallery(listOf(path))
+
+    private suspend fun copyToGallery(paths: List<String>): Result<Unit> = withContext(dispatchers.io) {
         try {
-            dao.getByIds(ids).forEach { fileStore.copyToGallery(it.imagePath) }
+            paths.forEach { fileStore.copyToGallery(it) }
             Result.success(Unit)
         } catch (e: CancellationException) {
             throw e

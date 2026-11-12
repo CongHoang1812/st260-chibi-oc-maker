@@ -26,7 +26,6 @@ class SettingsDataStore @Inject constructor(
 
     val languageCode: Flow<String?> = dataStore.data.map { it[KEY_LANGUAGE] }
     val onboardingDone: Flow<Boolean> = dataStore.data.map { it[KEY_ONBOARDING_DONE] ?: false }
-    val cosplayInstructionShown: Flow<Boolean> = dataStore.data.map { it[KEY_COSPLAY_INSTRUCTION] ?: false }
     val appRated: Flow<Boolean> = dataStore.data.map { it[KEY_APP_RATED] ?: false }
 
     suspend fun setLanguage(code: String) {
@@ -37,12 +36,15 @@ class SettingsDataStore @Inject constructor(
         dataStore.edit { it[KEY_ONBOARDING_DONE] = done }
     }
 
-    suspend fun setCosplayInstructionShown() {
-        dataStore.edit { it[KEY_COSPLAY_INSTRUCTION] = true }
-    }
-
     suspend fun setAppRated() {
         dataStore.edit { it[KEY_APP_RATED] = true }
+    }
+
+    /** Số template lần tải gần nhất (số thẻ chờ ở màn chọn template); null = chưa tải lần nào. */
+    val templateCount: Flow<Int?> = dataStore.data.map { it[KEY_TEMPLATE_COUNT] }
+
+    suspend fun setTemplateCount(count: Int) {
+        dataStore.edit { it[KEY_TEMPLATE_COUNT] = count }
     }
 
     /** Tăng số lần bấm Back ở Home, trả về giá trị mới. */
@@ -74,6 +76,14 @@ class SettingsDataStore @Inject constructor(
         }
     }
 
+    /** Mở khoá part ngoài vòng quay (xem quảng cáo ở ô part khoá). */
+    suspend fun unlockLuckyGiftParts(templateId: String, parts: Set<String>) {
+        dataStore.edit {
+            val key = keyLuckyGiftUnlocked(templateId)
+            it[key] = it[key].orEmpty() + parts
+        }
+    }
+
     private fun keyLuckyGiftUnlocked(templateId: String) = stringSetPreferencesKey("lucky_gift_unlocked_$templateId")
 
     private companion object {
@@ -81,8 +91,8 @@ class SettingsDataStore @Inject constructor(
         val KEY_LUCKY_GIFT_AD_USED_FOR = longPreferencesKey("lucky_gift_ad_used_for")
         val KEY_LANGUAGE = stringPreferencesKey("language_code")
         val KEY_ONBOARDING_DONE = booleanPreferencesKey("onboarding_done")
-        val KEY_COSPLAY_INSTRUCTION = booleanPreferencesKey("cosplay_instruction_shown")
         val KEY_APP_RATED = booleanPreferencesKey("app_rated")
         val KEY_HOME_BACK_COUNT = intPreferencesKey("home_back_count")
+        val KEY_TEMPLATE_COUNT = intPreferencesKey("template_count")
     }
 }

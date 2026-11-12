@@ -41,16 +41,11 @@ class PartItemAdapter(
         fun bind(item: Selectable<PartItem>) {
             binding.ivThumbnail.loadImage(item.value.thumbnailUrl, R.color.cell_tan)
             binding.root.isSelected = item.selected
-            // Ô khoá (Lucky Gift): phủ tối + icon khoá giữa ô, bấm không có phản hồi gì; ô khoá đang mặc sẵn vẫn hiện chọn
-            val locked = item.locked && !item.selected
-            binding.vLockOverlay.isVisible = locked
+            // Ô khoá (Lucky Gift): phủ tối + icon khoá giữa ô; ô khoá đang mặc sẵn vẫn hiện chọn.
+            // Vẫn bấm được: ViewModel hỏi xem quảng cáo để mở khoá (dialog Unlock Item)
+            binding.vLockOverlay.isVisible = item.locked && !item.selected
             binding.ivLock.isVisible = item.locked
-            if (locked) {
-                binding.root.setOnClickListener(null)
-                binding.root.isClickable = false
-            } else {
-                binding.root.setOnSingleClickListener(intervalMs = CLICK_DEBOUNCE_MS, haptic = true) { onClick(item.value) }
-            }
+            binding.root.setOnSingleClickListener(intervalMs = CLICK_DEBOUNCE_MS, haptic = true) { onClick(item.value) }
         }
     }
 }

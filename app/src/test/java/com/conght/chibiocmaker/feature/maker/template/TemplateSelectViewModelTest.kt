@@ -9,6 +9,7 @@ import com.conght.chibiocmaker.data.model.CharacterTemplate
 import com.conght.chibiocmaker.data.model.PartSelection
 import com.conght.chibiocmaker.data.model.TemplateDetail
 import com.conght.chibiocmaker.data.repository.MakerRepository
+import com.conght.chibiocmaker.testutil.FakeSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -51,7 +52,7 @@ class TemplateSelectViewModelTest {
     @Test
     fun errorThenRetry_emitsSuccess() = runTest {
         val repo = FakeMakerRepository()
-        val viewModel = TemplateSelectViewModel(repo, onlineMonitor)
+        val viewModel = TemplateSelectViewModel(repo, onlineMonitor, FakeSettingsRepository())
 
         viewModel.state.test {
             assertTrue(awaitItem() is Resource.Error)
@@ -68,7 +69,7 @@ class TemplateSelectViewModelTest {
     @Test
     fun resubscribe_keepsSuccessWithoutReloading() = runTest {
         val repo = FakeMakerRepository().apply { fail = false }
-        val viewModel = TemplateSelectViewModel(repo, onlineMonitor)
+        val viewModel = TemplateSelectViewModel(repo, onlineMonitor, FakeSettingsRepository())
 
         viewModel.state.test {
             val first = awaitItem().let { if (it == Resource.Loading) awaitItem() else it }

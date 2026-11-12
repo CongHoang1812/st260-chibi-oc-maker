@@ -2,6 +2,7 @@ package com.conght.chibiocmaker.feature.maker.customize
 
 import android.graphics.Bitmap
 import android.net.Uri
+import app.cash.turbine.test
 import androidx.lifecycle.SavedStateHandle
 import com.conght.chibiocmaker.core.common.NetworkMonitor
 import com.conght.chibiocmaker.core.common.PartLocks
@@ -87,7 +88,8 @@ class LuckyGiftTest {
         override suspend fun importImage(uri: Uri) = ""
     }
 
-    private val online = object : NetworkMonitor { override val isOnline = flowOf(true) }
+    private val network = MutableStateFlow(true)
+    private val online = object : NetworkMonitor { override val isOnline = network }
 
     /** Lưu như DataStore: part đã mở + mốc quay kế tiếp; đồng hồ là thời gian ảo của test. */
     private class FakeLuckyGiftRepository(private val clock: () -> Long) : LuckyGiftRepository {
@@ -104,6 +106,12 @@ class LuckyGiftTest {
             unlocked.value = unlocked.value + parts
             adSpinUsedForMs.value = cooldownEndMs
         }
+        override suspend fun unlockParts(templateId: String, parts: Set<String>) {
+            unlocked.value = unlocked.value + parts
+        }
+        /** true = phiên app mới, lần vào Customize kế tiếp sẽ tự mở Lucky Gift. */
+        var sessionAutoShow = false
+        override fun consumeSessionAutoShow() = sessionAutoShow.also { sessionAutoShow = false }
     }
 
     private val gson = Gson()
@@ -134,6 +142,96 @@ class LuckyGiftTest {
         assertNull(vm.state.value.selection?.itemId)
         vm.selectItem("h2")
         assertEquals("h2", vm.state.value.selection?.itemId)
+    }
+
+    @Test
+    fun maker_firstVisitOfSession_showsLuckyGiftOnce() = runTest {
+        val repository = repository().apply { sessionAutoShow = true }
+        viewModel(repository).events.test {
+            assertEquals(CustomizeEvent.ShowLuckyGift, awaitItem())
+        }
+        // Vào lại trong cùng phiên: không mở
+        viewModel(repository).events.test { expectNoEvents() }
+
+        // Thoát hẳn app rồi mở lại: phiên mới, mở lại
+        repository.sessionAutoShow = true
+        viewModel(repository).events.test {
+            assertEquals(CustomizeEvent.ShowLuckyGift, awaitItem())
+        }
+    }
+
+    @Test
+    fun maker_firstVisitOfSession_countingDown_doesNotShow() = runTest {
+        val repository = repository().apply {
+            sessionAutoShow = true
+            nextSpinAtMs.value = 10 * 60 * 1000L
+        }
+        viewModel(repository).events.test { expectNoEvents() }
+        assertFalse(repository.sessionAutoShow)
+    }
+
+    @Test
+    fun maker_restoredAfterProcessDeath_doesNotShowAgain() = runTest {
+        val repository = repository().apply { sessionAutoShow = true }
+        val restored = mapOf(
+            CustomizeFragment.ARG_TEMPLATE_ID to "t",
+            "lucky_gift_auto_checked" to true, // CustomizeViewModel.KEY_GIFT_AUTO_CHECKED
+        )
+        viewModel(repository, restored).events.test { expectNoEvents() }
+    }
+
+    @Test
+    fun giftButton_offline_showsNoInternet_thenOpensAfterRetryOnline() = runTest {
+        val vm = viewModel(repository())
+        network.value = false
+        vm.events.test {
+            vm.runWhenOnline { requestLuckyGift() }
+            assertEquals(CustomizeEvent.NoInternet, awaitItem())
+
+            network.value = true
+            vm.retryPendingAction()
+            assertEquals(CustomizeEvent.ShowLuckyGift, awaitItem())
+        }
+    }
+
+    @Test
+    fun lockedItem_click_asksToWatchAd_butWatchAdDoesNotUnlockYet() = runTest {
+        val repository = repository()
+        val vm = viewModel(repository)
+        vm.selectCategory("hair")
+        vm.events.test {
+            vm.selectItem("h4")
+            assertEquals(CustomizeEvent.ConfirmUnlockPart, awaitItem())
+        }
+        // Chưa gắn quảng cáo: Watch Ad chỉ đóng dialog
+        vm.onUnlockPartResult(confirmed = true)
+        assertTrue(repository.unlocked.value.isEmpty())
+        assertTrue(vm.state.value.isLocked("hair", "h4"))
+        assertNull(vm.state.value.selection?.itemId)
+    }
+
+    @Test
+    fun lockedItem_cancel_keepsLocked() = runTest {
+        val repository = repository()
+        val vm = viewModel(repository)
+        vm.selectCategory("hair")
+        vm.selectItem("h4")
+        vm.onUnlockPartResult(confirmed = false)
+        // Kết quả đến lần nữa (vd. xoay màn) cũng không mở vì part chờ đã bị bỏ
+        vm.onUnlockPartResult(confirmed = true)
+        assertTrue(repository.unlocked.value.isEmpty())
+        assertTrue(vm.state.value.isLocked("hair", "h4"))
+    }
+
+    @Test
+    fun cosplay_neverAutoShowsLuckyGift() = runTest {
+        val repository = repository().apply { sessionAutoShow = true }
+        viewModel(
+            repository,
+            mapOf(CustomizeFragment.ARG_TEMPLATE_ID to "t", CustomizeFragment.ARG_MODE to CustomizeMode.COSPLAY.name),
+        ).events.test { expectNoEvents() }
+        // Cosplay không dùng lượt của phiên: vào Maker sau đó vẫn mở
+        assertTrue(repository.sessionAutoShow)
     }
 
     @Test

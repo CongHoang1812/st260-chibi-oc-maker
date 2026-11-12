@@ -43,10 +43,12 @@
         <TextView
             android:id="@+id/tv_percent"
             style="@style/Widget.ST260ChibiOCMaker.TextView.SystemFont.Medium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|center_horizontal"
-            android:layout_marginTop="@dimen/success_stars_top"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/cosplay_score_caption_h"
+            android:layout_gravity="top"
+            android:layout_marginTop="@dimen/cosplay_score_caption_top"
+            android:gravity="center"
+            android:includeFontPadding="false"
             android:textAppearance="@style/Text.CosplayPercent"
             tools:text="50%" />
     </FrameLayout>

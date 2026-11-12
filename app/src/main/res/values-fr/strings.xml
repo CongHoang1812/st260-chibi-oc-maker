@@ -148,4 +148,6 @@
     <string name="dialog_storage_message">L\'accès au stockage a été refusé. Ouvrez les Paramètres pour l\'autoriser et enregistrer les images.</string>
     <string name="go_to_settings">Paramètres</string>
     <string name="dialog_lucky_ad_message">Regardez une pub pour débloquer votre Cadeau chance !</string>
+    <string name="dialog_unlock_part_title">Débloquer l\'objet</string>
+    <string name="dialog_unlock_part_message">Regardez une courte pub pour débloquer cet objet.</string>
 </resources>

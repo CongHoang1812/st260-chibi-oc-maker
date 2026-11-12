@@ -75,7 +75,7 @@ Ghi đè đúng tên file:
 | Icon liền nền | `ic_back`, `ic_settings`, `ic_download`, `ic_archive`, `ic_info`, `ic_close`, `ic_arrow_*`, `ic_rotate_*`, `ic_zoom_*` | `drawable-xxhdpi` |
 | Trạng thái | `img_empty_character`, `img_rate_0..5`, `img_star_*`, `img_dice_gift`, `img_add_image` | `drawable-nodpi` |
 | Icon vector | `ic_*.xml`, `img_lucky_arrow.xml` | `drawable` |
-| Logo, launcher | `logo.png`, `ic_launcher_*`, `mipmap-*` | Manifest dùng `@drawable/logo` làm icon |
+| Logo, launcher | `logo.png`, `ic_launcher_*`, `mipmap-*` | Manifest dùng `@mipmap/ic_launcher`: icon thích ứng (`mipmap-anydpi-v26`) lấy `logo.png` làm lớp nền, thay ảnh `logo.png` là đủ. Đừng trỏ thẳng PNG vào `android:icon`: launcher Android 8+ thu nhỏ và đặt lên nền trắng |
 
 Thường giữ nguyên: `ic_flag_*`, `img_color_wheel`.
 

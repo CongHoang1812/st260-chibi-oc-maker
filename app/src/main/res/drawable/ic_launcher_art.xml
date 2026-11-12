@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ảnh logo làm lớp nền icon thích ứng (108dp, launcher chỉ hiện ~72dp ở giữa). Thụt 12% < 16.7% phần mask cắt
+     mỗi cạnh: ảnh vẫn phủ kín icon nhưng thấy được nhiều hình hơn. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/logo"
+    android:inset="12%" />

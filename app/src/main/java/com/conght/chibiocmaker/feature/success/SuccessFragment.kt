@@ -13,6 +13,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.conght.chibiocmaker.R
 import com.conght.chibiocmaker.core.ui.applyStatusBarPadding
@@ -29,8 +30,10 @@ import com.conght.chibiocmaker.core.ui.shareImages
 import com.conght.chibiocmaker.databinding.FragmentSuccessBinding
 import com.conght.chibiocmaker.feature.maker.customize.CustomizeFragment
 import com.conght.chibiocmaker.feature.maker.customize.CustomizeMode
+import com.conght.chibiocmaker.feature.dialog.NoInternetDialogFragment
 import com.conght.chibiocmaker.feature.dialog.setLoadingVisible
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 /**
  * Successful (Figma 3:1109 maker / 3:223 cosplay).
@@ -55,6 +58,7 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>(FragmentSuccessBind
         setupSource()
 
         binding.btnReEdit.setOnSingleClickListener { reEdit() }
+        childFragmentManager.setFragmentResultListener(KEY_NO_INTERNET, viewLifecycleOwner) { _, _ -> reEdit() }
         binding.btnShare.setOnSingleClickListener { share() }
         // My Creation mở ở tab Character (mặc định)
         binding.btnMyCreation.setOnSingleClickListener { navigateSafe(R.id.action_success_to_myCreation) }
@@ -64,10 +68,10 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>(FragmentSuccessBind
             override fun handleOnBackPressed() = goHome()
         })
 
-        collectWhenStarted(viewModel.creation) { creation ->
-            binding.ivResult.loadImage(creation?.imagePath, R.color.white)
-            binding.btnShare.isEnabled = creation != null
-            binding.btnDownload.isEnabled = creation != null
+        collectWhenStarted(viewModel.imagePath) { path ->
+            binding.ivResult.loadImage(path, R.color.white)
+            binding.btnShare.isEnabled = path != null
+            binding.btnDownload.isEnabled = path != null
         }
         collectWhenStarted(viewModel.downloading) {
             binding.btnDownload.alpha = if (it) DISABLED_ALPHA else 1f
@@ -137,7 +141,7 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>(FragmentSuccessBind
     }
 
     private fun share() {
-        val path = viewModel.creation.value?.imagePath ?: return
+        val path = viewModel.imagePath.value ?: return
         if (!requireContext().shareImages(listOf(path), getString(R.string.cd_share))) {
             showAppToast(R.string.error_generic)
         }
@@ -146,8 +150,19 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>(FragmentSuccessBind
     /**
      * MAKER: quay lại Decor editor. COSPLAY: Success đã thay chỗ màn chơi trong back stack
      * nên mở lại màn chơi với đúng đề bài vừa chơi (bắt đầu lại từ đầu).
+     * Editor tải dữ liệu từ API nên mất mạng → dialog No Internet, Try again gọi lại hàm này.
      */
     private fun reEdit() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (viewModel.isOnline()) {
+                openEditor()
+            } else {
+                NoInternetDialogFragment.showOnce(childFragmentManager, KEY_NO_INTERNET)
+            }
+        }
+    }
+
+    private fun openEditor() {
         val templateId = viewModel.cosplayTemplateId
         val challengeJson = viewModel.cosplayChallengeJson
         if (viewModel.source != Source.COSPLAY || templateId == null || challengeJson == null) {
@@ -174,8 +189,11 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>(FragmentSuccessBind
         private const val BURST_PULSE_MS = 1_600L
         private const val BURST_PULSE_SCALE = 1.08f
 
-        /** Id creation vừa lưu (Long). */
+        /** Id creation vừa lưu (Long), nguồn MAKER. */
         const val ARG_CREATION_ID = "creationId"
+
+        /** Đường dẫn ảnh kết quả chưa lưu vào My creation (String), nguồn COSPLAY. */
+        const val ARG_IMAGE_PATH = "imagePath"
 
         /** [Source] name. */
         const val ARG_SOURCE = "source"
@@ -184,5 +202,6 @@ class SuccessFragment : BaseFragment<FragmentSuccessBinding>(FragmentSuccessBind
         const val ARG_STARS = "stars"
 
         private const val DISABLED_ALPHA = 0.5f
+        private const val KEY_NO_INTERNET = "success_no_internet"
     }
 }

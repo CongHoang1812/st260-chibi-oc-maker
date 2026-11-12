@@ -94,7 +94,7 @@
     <string name="dialog_reset_message">Do you want to reset all?</string>
     <string name="dialog_random_title">Random</string>
     <string name="dialog_random_message">Watch a short ad to generate a random character.</string>
-    <string name="watch_ad">Watch Ad</string>
+    <string name="watch_ad">Watch ad</string>
     <string name="dialog_delete_title">Delete</string>
     <string name="dialog_delete_message">Are you sure want to delete this item?</string>
     <string name="dialog_no_internet_title">No Internet Connection</string>
@@ -170,4 +170,6 @@
     <string name="dialog_storage_message">Storage access was denied. Open Settings to allow it and save images.</string>
     <string name="go_to_settings">Settings</string>
     <string name="dialog_lucky_ad_message">Watch an ad to unlock your Lucky Gift!</string>
+    <string name="dialog_unlock_part_title">Unlock Item</string>
+    <string name="dialog_unlock_part_message">Watch a short ad to unlock this item.</string>
 </resources>

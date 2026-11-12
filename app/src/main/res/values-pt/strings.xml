@@ -148,4 +148,6 @@
     <string name="dialog_storage_message">O acesso ao armazenamento foi negado. Abra as Configurações para permitir e salvar imagens.</string>
     <string name="go_to_settings">Configurações</string>
     <string name="dialog_lucky_ad_message">Assista a um anúncio para desbloquear seu Presente da sorte!</string>
+    <string name="dialog_unlock_part_title">Desbloquear item</string>
+    <string name="dialog_unlock_part_message">Assista a um anúncio curto para desbloquear este item.</string>
 </resources>

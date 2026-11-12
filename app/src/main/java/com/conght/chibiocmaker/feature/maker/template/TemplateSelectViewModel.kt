@@ -7,6 +7,7 @@ import com.conght.chibiocmaker.core.common.retryWhenBackOnline
 import com.conght.chibiocmaker.core.common.Resource
 import com.conght.chibiocmaker.data.model.CharacterTemplate
 import com.conght.chibiocmaker.data.repository.MakerRepository
+import com.conght.chibiocmaker.data.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +15,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -21,6 +24,7 @@ import javax.inject.Inject
 class TemplateSelectViewModel @Inject constructor(
     private val makerRepository: MakerRepository,
     private val networkMonitor: NetworkMonitor,
+    private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
 
     /** Template vừa bấm lúc mất mạng: Try again có mạng thì mở tiếp (sống qua xoay màn). */
@@ -36,7 +40,16 @@ class TemplateSelectViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val state: StateFlow<Resource<List<CharacterTemplate>>> = reloadKey
         .flatMapLatest { makerRepository.templates() }
+        .onEach { if (it is Resource.Success) settingsRepository.setTemplateCount(it.data.size) }
         .stateIn(viewModelScope, SharingStarted.Lazily, Resource.Loading)
+
+    /**
+     * Số thẻ chờ khi đang tải = số template lần tải gần nhất (lần đầu chưa biết thì [DEFAULT_PLACEHOLDER_COUNT]).
+     * null = chưa đọc xong DataStore: chưa hiện thẻ nào, tránh hiện số mặc định rồi co lại.
+     */
+    val placeholderCount: StateFlow<Int?> = settingsRepository.templateCount
+        .map { it ?: DEFAULT_PLACEHOLDER_COUNT }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     init {
         retryWhenBackOnline(networkMonitor, isError = { state.value is Resource.Error }, retry = ::retry)
@@ -47,4 +60,8 @@ class TemplateSelectViewModel @Inject constructor(
     }
 
     suspend fun isOnline(): Boolean = networkMonitor.isOnline.first()
+
+    private companion object {
+        const val DEFAULT_PLACEHOLDER_COUNT = 10
+    }
 }

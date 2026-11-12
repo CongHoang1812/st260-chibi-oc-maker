@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
+import com.conght.chibiocmaker.core.common.NetworkMonitor
 import com.conght.chibiocmaker.data.model.CharacterConfig
 import com.conght.chibiocmaker.data.model.Creation
 import com.conght.chibiocmaker.data.model.CreationType
@@ -12,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -34,6 +36,11 @@ class SuccessViewModelTest {
             downloaded += ids
             return if (fail) Result.failure(IllegalStateException()) else Result.success(Unit)
         }
+        val downloadedFiles = mutableListOf<String>()
+        override suspend fun downloadFile(path: String): Result<Unit> {
+            downloadedFiles += path
+            return Result.success(Unit)
+        }
         override suspend fun saveTemp(bitmap: Bitmap, fileName: String) = ""
         override suspend fun importImage(uri: Uri) = ""
     }
@@ -50,23 +57,23 @@ class SuccessViewModelTest {
 
     @Test
     fun readsArgsAndLoadsCreation() {
-        val vm = SuccessViewModel(FakeRepo(), handle(source = "COSPLAY", stars = 9))
+        val vm = SuccessViewModel(FakeRepo(), handle(source = "COSPLAY", stars = 9), onlineMonitor)
         assertEquals(SuccessFragment.Source.COSPLAY, vm.source)
         assertEquals(3, vm.stars)
-        assertEquals("/files/creations/7.png", vm.creation.value?.imagePath)
+        assertEquals("/files/creations/7.png", vm.imagePath.value)
     }
 
     @Test
     fun download_success_and_failure_emitEvents() = runTest {
         val ok = FakeRepo()
-        val vm = SuccessViewModel(ok, handle())
+        val vm = SuccessViewModel(ok, handle(), onlineMonitor)
         vm.events.test {
             vm.download()
             assertEquals(SuccessEvent.Downloaded, awaitItem())
         }
         assertEquals(listOf(listOf(7L)), ok.downloaded)
 
-        val failing = SuccessViewModel(FakeRepo(fail = true), handle())
+        val failing = SuccessViewModel(FakeRepo(fail = true), handle(), onlineMonitor)
         failing.events.test {
             failing.download()
             assertEquals(SuccessEvent.DownloadFailed, awaitItem())
@@ -76,7 +83,26 @@ class SuccessViewModelTest {
     @Test
     fun missingId_doesNotDownload() {
         val repo = FakeRepo()
-        SuccessViewModel(repo, SavedStateHandle()).download()
+        SuccessViewModel(repo, SavedStateHandle(), onlineMonitor).download()
+        assertEquals(emptyList<List<Long>>(), repo.downloaded)
+    }
+
+    @Test
+    fun cosplayImage_notFromMyCreation_downloadsFile() = runTest {
+        val repo = FakeRepo()
+        val vm = SuccessViewModel(
+            repo,
+            SavedStateHandle(mapOf(SuccessFragment.ARG_IMAGE_PATH to "/cache/cosplay_result.png", SuccessFragment.ARG_SOURCE to "COSPLAY")),
+            onlineMonitor,
+        )
+        assertEquals("/cache/cosplay_result.png", vm.imagePath.value)
+        vm.events.test {
+            vm.download()
+            assertEquals(SuccessEvent.Downloaded, awaitItem())
+        }
+        assertEquals(listOf("/cache/cosplay_result.png"), repo.downloadedFiles)
         assertEquals(emptyList<List<Long>>(), repo.downloaded)
     }
 }
+
+private val onlineMonitor = object : NetworkMonitor { override val isOnline = flowOf(true) }

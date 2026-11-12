@@ -116,7 +116,7 @@ class DecorCanvasView @JvmOverloads constructor(
             Glide.with(backgroundView).clear(backgroundView)
             when {
                 bg.color != null -> backgroundView.setImageDrawable(bg.color.toDrawable())
-                bg.imagePath != null -> backgroundView.loadImage(bg.imagePath, R.color.white, forExport = true)
+                bg.imagePath != null -> backgroundView.loadImage(bg.imagePath, R.color.transparent, forExport = true)
                 else -> backgroundView.setImageDrawable(null)
             }
         }

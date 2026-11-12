@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Cosplay start (Figma 3:41). Đang tải đề: ảnh tham chiếu là skeleton shimmer, nút Cosplay mờ.
- * Random gọi lại đề; (i) mở luật chơi (tự hiện lần đầu).
+ * Random gọi lại đề; (i) mở luật chơi (không tự hiện khi vào màn).
  * Mất mạng: Random / Cosplay hiện dialog No Internet, Try again làm lại đúng nút vừa bấm.
  */
 @AndroidEntryPoint
@@ -39,21 +39,12 @@ class CosplayStartFragment : BaseFragment<FragmentCosplayStartBinding>(FragmentC
         setLightStatusBar(true)
 
         binding.btnBack.setOnSingleClickListener { findNavController().popBackStack() }
-        binding.btnInfo.setOnSingleClickListener {
-            viewModel.markInstructionSeen()
-            showInstruction()
-        }
+        binding.btnInfo.setOnSingleClickListener { showInstruction() }
         binding.btnRandom.setOnSingleClickListener { onRandomClick() }
         binding.errorState.setOnRetryClickListener { viewModel.random() }
         binding.btnCosplay.setOnSingleClickListener { onCosplayClick() }
         childFragmentManager.setFragmentResultListener(KEY_NO_INTERNET_RANDOM, viewLifecycleOwner) { _, _ -> onRandomClick() }
         childFragmentManager.setFragmentResultListener(KEY_NO_INTERNET_COSPLAY, viewLifecycleOwner) { _, _ -> onCosplayClick() }
-
-        if (savedInstanceState == null) {
-            viewLifecycleOwner.lifecycleScope.launch {
-                if (viewModel.shouldShowInstructionOnce()) showInstruction()
-            }
-        }
 
         collectWhenStarted(viewModel.challenge) { resource ->
             val ready = resource is Resource.Success

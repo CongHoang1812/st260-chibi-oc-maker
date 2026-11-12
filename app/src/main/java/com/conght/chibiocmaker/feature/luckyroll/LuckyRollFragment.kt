@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.conght.chibiocmaker.R
 import com.conght.chibiocmaker.core.common.AppConfig
@@ -18,8 +19,10 @@ import com.conght.chibiocmaker.core.ui.setOnSingleClickListener
 import com.conght.chibiocmaker.databinding.FragmentLuckyRollBinding
 import com.conght.chibiocmaker.feature.dialog.ConfirmDialogFragment
 import com.conght.chibiocmaker.feature.dialog.ConfirmDialogs
+import com.conght.chibiocmaker.feature.dialog.NoInternetDialogFragment
 import com.conght.chibiocmaker.feature.maker.customize.CustomizeFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 /**
  * Lucky roll (Figma 3:11 / 3:24): Idle → Random → Loading (shimmer) → kết quả + Edit.
@@ -36,14 +39,8 @@ class LuckyRollFragment : BaseFragment<FragmentLuckyRollBinding>(FragmentLuckyRo
         binding.btnBack.setOnSingleClickListener { findNavController().popBackStack() }
         binding.btnRandom.setOnSingleClickListener { requestRoll() }
         binding.errorState.setOnRetryClickListener { viewModel.roll() }
-        binding.btnEdit.setOnSingleClickListener {
-            val result = (viewModel.state.value as? LuckyRollUiState.Rolled)?.result as? Resource.Success
-                ?: return@setOnSingleClickListener
-            navigateSafe(
-                R.id.action_luckyRoll_to_customize,
-                Bundle().apply { putString(CustomizeFragment.ARG_CONFIG_JSON, viewModel.configJson(result.data)) },
-            )
-        }
+        binding.btnEdit.setOnSingleClickListener { openEdit() }
+        childFragmentManager.setFragmentResultListener(KEY_NO_INTERNET, viewLifecycleOwner) { _, _ -> openEdit() }
 //        childFragmentManager.setFragmentResultListener(KEY_RANDOM, viewLifecycleOwner) { _, bundle ->
 //            if (ConfirmDialogFragment.isConfirmed(bundle)) viewModel.roll()
 //        }
@@ -56,6 +53,22 @@ class LuckyRollFragment : BaseFragment<FragmentLuckyRollBinding>(FragmentLuckyRo
             ConfirmDialogs.random(KEY_RANDOM).show(childFragmentManager, ConfirmDialogFragment.TAG)
         } else {
             viewModel.roll()
+        }
+    }
+
+    /** Customize tải part từ API nên cần mạng: mất mạng → dialog No Internet, Try again gọi lại hàm này. */
+    private fun openEdit() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val result = (viewModel.state.value as? LuckyRollUiState.Rolled)?.result as? Resource.Success
+                ?: return@launch
+            if (!viewModel.isOnline()) {
+                NoInternetDialogFragment.showOnce(childFragmentManager, KEY_NO_INTERNET)
+                return@launch
+            }
+            navigateSafe(
+                R.id.action_luckyRoll_to_customize,
+                Bundle().apply { putString(CustomizeFragment.ARG_CONFIG_JSON, viewModel.configJson(result.data)) },
+            )
         }
     }
 
@@ -75,5 +88,6 @@ class LuckyRollFragment : BaseFragment<FragmentLuckyRollBinding>(FragmentLuckyRo
 
     private companion object {
         const val KEY_RANDOM = "lucky_roll_random"
+        const val KEY_NO_INTERNET = "lucky_roll_no_internet"
     }
 }

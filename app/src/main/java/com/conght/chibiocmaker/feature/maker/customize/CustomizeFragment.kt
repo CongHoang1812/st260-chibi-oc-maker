@@ -122,7 +122,7 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
                 is CustomizeEvent.OpenCosplaySuccess -> navigateSafe(
                     R.id.action_cosplayPlay_to_success,
                     Bundle().apply {
-                        putLong(SuccessFragment.ARG_CREATION_ID, event.creationId)
+                        putString(SuccessFragment.ARG_IMAGE_PATH, event.imagePath)
                         putString(SuccessFragment.ARG_SOURCE, SuccessFragment.Source.COSPLAY.name)
                         putInt(SuccessFragment.ARG_STARS, event.stars)
                         // Re-edit ở Success mở lại đúng đề bài này
@@ -137,8 +137,16 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
                 CustomizeEvent.ConfirmRandomAll ->
                     ConfirmDialogs.random(KEY_RANDOM).show(childFragmentManager, ConfirmDialogFragment.TAG)
 
+                CustomizeEvent.SaveAndContinue -> saveAndContinue()
+
                 CustomizeEvent.NoInternet ->
                     NoInternetDialogFragment.showOnce(childFragmentManager, KEY_NO_INTERNET)
+
+                CustomizeEvent.ConfirmUnlockPart ->
+                    ConfirmDialogs.unlockPart(KEY_UNLOCK_PART).show(childFragmentManager, ConfirmDialogFragment.TAG)
+
+                CustomizeEvent.ShowLuckyGift ->
+                    LuckyGiftDialogFragment.showOnce(childFragmentManager)
 
                 is CustomizeEvent.ScrollToSelection -> {
                     pendingScroll = event.selection
@@ -177,7 +185,7 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
         binding.btnNext.setOnSingleClickListener {
             // Chưa xong layer mới (vừa random) → ảnh export sẽ là nhân vật cũ
             if (!viewModel.state.value.isReady || !binding.canvas.isSettled) return@setOnSingleClickListener
-            viewModel.saveAndContinue(binding.canvas.exportBitmap())
+            viewModel.runWhenOnline { requestNext() }
         }
         binding.referenceCard.setOnSingleClickListener { showReferenceDialog() }
         // Ảnh nhân vật chưa lên đủ (mới vào, đổi bộ phận, random) → khoá Next
@@ -194,9 +202,7 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
         binding.btnFlip.setOnSingleClickListener { viewModel.flip() }
         binding.btnMove.setOnSingleClickListener { viewModel.setPanel(PanelMode.MOVE) }
         binding.btnRandomAll.setOnSingleClickListener { viewModel.runWhenOnline { requestRandomAll() } }
-        binding.btnLuckyGift.setOnSingleClickListener {
-            if (viewModel.state.value.luckyGift != null) LuckyGiftDialogFragment.showOnce(childFragmentManager)
-        }
+        binding.btnLuckyGift.setOnSingleClickListener { viewModel.runWhenOnline { requestLuckyGift() } }
         binding.errorState.setOnRetryClickListener { viewModel.retry() }
 
         binding.movePanel.listener = object : MovePanelView.Listener {
@@ -223,6 +229,9 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
         }
         childFragmentManager.setFragmentResultListener(CosplayScoreDialogFragment.REQUEST_KEY, viewLifecycleOwner) { _, _ ->
             viewModel.saveCosplayResult()
+        }
+        childFragmentManager.setFragmentResultListener(KEY_UNLOCK_PART, viewLifecycleOwner) { _, result ->
+            viewModel.onUnlockPartResult(ConfirmDialogFragment.isConfirmed(result))
         }
         childFragmentManager.setFragmentResultListener(KEY_NO_INTERNET, viewLifecycleOwner) { _, _ ->
             viewModel.retryPendingAction()
@@ -394,6 +403,12 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
     }
 
     /** Đã nộp bài: chụp nhân vật cho popup → hiện popup điểm (một lần, sống qua xoay màn). */
+    /** Next đã qua kiểm tra mạng: layer vẫn phải lên đủ thì ảnh export mới đúng nhân vật hiện tại. */
+    private fun saveAndContinue() {
+        if (!viewModel.state.value.isReady || !binding.canvas.isSettled) return
+        viewModel.saveAndContinue(binding.canvas.exportBitmap())
+    }
+
     /** Next chỉ bấm được khi đã có dữ liệu và mọi layer của nhân vật đã hiện xong. */
     private fun updateNextEnabled(ready: Boolean = viewModel.state.value.isReady) {
         val enabled = ready && binding.canvas.isSettled
@@ -440,6 +455,7 @@ class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomi
         private const val KEY_RESET = "customize_reset"
         private const val KEY_RANDOM = "customize_random"
         private const val KEY_NO_INTERNET = "customize_no_internet"
+        private const val KEY_UNLOCK_PART = "customize_unlock_part"
         private const val SKELETON_PARTS = 18
         private const val SKELETON_COLORS = 8
         private const val SKELETON_TABS = 6

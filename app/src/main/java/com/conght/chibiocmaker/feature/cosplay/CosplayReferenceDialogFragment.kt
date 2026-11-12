@@ -23,6 +23,7 @@ class CosplayReferenceDialogFragment : BaseDialogFragment<DialogCosplayScoreBind
         binding.btnClose.setOnSingleClickListener { dismiss() }
     }
 
+
     companion object {
         const val TAG = "CosplayReferenceDialog"
 

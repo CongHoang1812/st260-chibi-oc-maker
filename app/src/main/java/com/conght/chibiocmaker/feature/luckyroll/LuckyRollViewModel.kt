@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -33,7 +34,7 @@ class LuckyRollViewModel @Inject constructor(
     private val luckyRollRepository: LuckyRollRepository,
     private val gson: Gson,
     private val savedStateHandle: SavedStateHandle,
-    networkMonitor: NetworkMonitor,
+    private val networkMonitor: NetworkMonitor,
 ) : ViewModel() {
 
     /** Số lần bấm Random; 0 = Idle. Lưu để xoay màn không quay về Idle. */
@@ -61,6 +62,9 @@ class LuckyRollViewModel @Inject constructor(
     fun roll() {
         savedStateHandle[KEY_ROLL_COUNT] = rollCount.value + 1
     }
+
+    /** Edit mở Customize (tải part từ API) nên cần mạng. */
+    suspend fun isOnline(): Boolean = networkMonitor.isOnline.first()
 
     fun configJson(result: LuckyRollResult): String = gson.toJson(result.config)
 

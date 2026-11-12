@@ -146,4 +146,6 @@
     <string name="dialog_storage_message">Akses penyimpanan ditolak. Buka Setelan untuk mengizinkannya dan menyimpan gambar.</string>
     <string name="go_to_settings">Setelan</string>
     <string name="dialog_lucky_ad_message">Tonton iklan untuk membuka Hadiah Keberuntunganmu!</string>
+    <string name="dialog_unlock_part_title">Buka item</string>
+    <string name="dialog_unlock_part_message">Tonton iklan singkat untuk membuka item ini.</string>
 </resources>
