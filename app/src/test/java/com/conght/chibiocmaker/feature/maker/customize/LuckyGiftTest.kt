@@ -195,7 +195,7 @@ class LuckyGiftTest {
     }
 
     @Test
-    fun lockedItem_click_asksToWatchAd_butWatchAdDoesNotUnlockYet() = runTest {
+    fun lockedItem_click_asksToWatchAd_thenWatchAdUnlocksAndSelects() = runTest {
         val repository = repository()
         val vm = viewModel(repository)
         vm.selectCategory("hair")
@@ -203,11 +203,11 @@ class LuckyGiftTest {
             vm.selectItem("h4")
             assertEquals(CustomizeEvent.ConfirmUnlockPart, awaitItem())
         }
-        // Chưa gắn quảng cáo: Watch Ad chỉ đóng dialog
-        vm.onUnlockPartResult(confirmed = true)
-        assertTrue(repository.unlocked.value.isEmpty())
-        assertTrue(vm.state.value.isLocked("hair", "h4"))
         assertNull(vm.state.value.selection?.itemId)
+        vm.onUnlockPartResult(confirmed = true)
+        assertEquals(setOf(PartLocks.key("hair", "h4")), repository.unlocked.value)
+        assertFalse(vm.state.value.isLocked("hair", "h4"))
+        assertEquals("h4", vm.state.value.selection?.itemId)
     }
 
     @Test

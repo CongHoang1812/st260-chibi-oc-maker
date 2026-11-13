@@ -535,15 +535,20 @@ class CustomizeViewModel @Inject constructor(
     }
 
     /**
-     * Kết quả dialog Unlock Item. Chưa gắn quảng cáo nên Watch Ad chỉ đóng dialog, part vẫn khoá
-     * (người dùng chốt 2026-11-12). [confirmed] = false (Cancel): bỏ part đang chờ.
+     * Kết quả dialog Unlock Item. Watch Ad: mở khoá part đang chờ ngay (chưa gắn quảng cáo, người dùng chốt
+     * 2026-11-13) rồi chọn luôn part đó nếu vẫn đang ở category của nó. [confirmed] = false (Cancel): bỏ part chờ.
      */
     fun onUnlockPartResult(confirmed: Boolean) {
         val pending = savedStateHandle.remove<ArrayList<String>>(KEY_PENDING_UNLOCK)
         if (pending == null || !confirmed) return
-        // TODO(ADS): chỉ tới đây khi đã xem hết quảng cáo. Mở khoá: luckyGiftRepository.unlockParts(templateId,
-        //  setOf(PartLocks.key(categoryId, itemId))), chờ state hết khoá part đó rồi selectItem(itemId) nếu vẫn
-        //  đang ở category đó ([pending] = [categoryId, itemId]).
+        val id = templateId ?: return
+        val (categoryId, itemId) = pending.takeIf { it.size == 2 } ?: return
+        // TODO(ADS): gọi phần dưới sau khi người dùng xem hết quảng cáo.
+        viewModelScope.launch {
+            luckyGiftRepository.unlockParts(id, setOf(PartLocks.key(categoryId, itemId)))
+            state.first { !it.isLocked(categoryId, itemId) }
+            if (current.selectedCategoryId == categoryId) selectItem(itemId)
+        }
     }
 
     fun selectColor(colorId: String) {
