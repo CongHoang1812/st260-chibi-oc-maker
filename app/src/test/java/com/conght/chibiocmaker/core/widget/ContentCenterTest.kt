@@ -1,4 +1,4 @@
-package com.conght.chibiocmaker.core.widget
+package com.chibi.dream.cute.core.widget
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

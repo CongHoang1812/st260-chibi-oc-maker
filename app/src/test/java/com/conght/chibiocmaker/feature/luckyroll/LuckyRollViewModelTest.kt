@@ -1,12 +1,12 @@
-package com.conght.chibiocmaker.feature.luckyroll
+package com.chibi.dream.cute.feature.luckyroll
 
 import androidx.lifecycle.SavedStateHandle
-import com.conght.chibiocmaker.core.common.NetworkMonitor
-import com.conght.chibiocmaker.core.common.Resource
-import com.conght.chibiocmaker.data.model.CharacterConfig
-import com.conght.chibiocmaker.data.model.LuckyRollResult
-import com.conght.chibiocmaker.data.model.PartSelection
-import com.conght.chibiocmaker.data.repository.LuckyRollRepository
+import com.chibi.dream.cute.core.common.NetworkMonitor
+import com.chibi.dream.cute.core.common.Resource
+import com.chibi.dream.cute.data.model.CharacterConfig
+import com.chibi.dream.cute.data.model.LuckyRollResult
+import com.chibi.dream.cute.data.model.PartSelection
+import com.chibi.dream.cute.data.repository.LuckyRollRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

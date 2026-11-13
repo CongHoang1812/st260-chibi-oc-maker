@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Create Package Name: đặt tên gói sticker trước khi thêm vào WhatsApp.
      Figma chưa có frame: dựng theo khung dialog chung (258:18), ô nhập giống ô nhập chữ của Decor editor (2:1454). -->
-<com.conght.chibiocmaker.core.widget.PaperDialogContainer xmlns:android="http://schemas.android.com/apk/res/android"
+<com.chibi.dream.cute.core.widget.PaperDialogContainer xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="@dimen/dialog_width"
@@ -26,4 +26,4 @@
         android:paddingHorizontal="@dimen/radius_large"
         android:textAppearance="@style/Text.DialogMessage"
         android:textColorHint="@color/hint_gray" />
-</com.conght.chibiocmaker.core.widget.PaperDialogContainer>
+</com.chibi.dream.cute.core.widget.PaperDialogContainer>

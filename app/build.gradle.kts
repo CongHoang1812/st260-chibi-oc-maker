@@ -8,13 +8,13 @@ plugins {
 }
 
 android {
-    namespace = "com.conght.chibiocmaker"
+    namespace = "com.chibi.dream.cute"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.conght.chibiocmaker"
+        applicationId = "com.chibi.dream.cute"
         minSdk = 24
         targetSdk = 37
             versionCode = 1
@@ -58,7 +58,7 @@ android {
 // Tên file APK/AAB: ST260_Chibi_OC_Makerv<version><MM.dd.yyyy>
 val formattedDate: String = SimpleDateFormat("MM.dd.yyyy").format(Date())
 base {
-    archivesName = "ST260_Chibi_OC_Makerv${android.defaultConfig.versionName}$formattedDate"
+    archivesName = "ST260_Chibi_Dream_Doll_Dress_Up_v${android.defaultConfig.versionName}$formattedDate"
 }
 
 dependencies {

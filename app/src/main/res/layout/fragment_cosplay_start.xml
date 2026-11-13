@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_tavern">
 
-    <com.conght.chibiocmaker.core.widget.ShimmerFrameLayout
+    <com.chibi.dream.cute.core.widget.ShimmerFrameLayout
         android:id="@+id/shimmer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -73,7 +73,7 @@
                 app:layout_constraintStart_toStartOf="@id/reference_area"
                 app:layout_constraintTop_toTopOf="@id/reference_area" />
 
-            <com.conght.chibiocmaker.core.widget.ErrorStateView
+            <com.chibi.dream.cute.core.widget.ErrorStateView
                 android:id="@+id/error_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                 app:layout_constraintTop_toTopOf="@id/reference_skeleton" />
 
             <!-- Random | Cosplay (Figma 2:193 / 2:198): 160×44 cách nhau 8, ngay dưới ảnh 8 -->
-            <com.conght.chibiocmaker.core.widget.WoodButton
+            <com.chibi.dream.cute.core.widget.WoodButton
                 android:id="@+id/btn_random"
                 style="@style/Widget.ST260ChibiOCMaker.RandomButton"
                 android:layout_marginTop="@dimen/grid_gap"
@@ -96,7 +96,7 @@
                 app:layout_constraintTop_toBottomOf="@id/reference_area"
                 app:woodIconGap="@dimen/random_icon_gap_small" />
 
-            <com.conght.chibiocmaker.core.widget.WoodButton
+            <com.chibi.dream.cute.core.widget.WoodButton
                 android:id="@+id/btn_cosplay"
                 style="@style/Widget.ST260ChibiOCMaker.WoodButton"
                 android:layout_marginStart="@dimen/grid_gap"
@@ -106,5 +106,5 @@
                 app:layout_constraintStart_toEndOf="@id/btn_random"
                 app:layout_constraintTop_toTopOf="@id/btn_random" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.conght.chibiocmaker.core.widget.ShimmerFrameLayout>
+    </com.chibi.dream.cute.core.widget.ShimmerFrameLayout>
 </FrameLayout>

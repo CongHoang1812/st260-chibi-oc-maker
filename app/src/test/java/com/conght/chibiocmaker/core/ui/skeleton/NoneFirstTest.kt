@@ -1,6 +1,6 @@
-package com.conght.chibiocmaker.core.ui.skeleton
+package com.chibi.dream.cute.core.ui.skeleton
 
-import com.conght.chibiocmaker.R
+import com.chibi.dream.cute.R
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
 import org.junit.Test

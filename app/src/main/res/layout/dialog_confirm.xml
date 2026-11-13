@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Exit / Reset / Delete / Random (Figma 258:18, 258:41, 258:74, 258:52) -->
-<com.conght.chibiocmaker.core.widget.PaperDialogContainer xmlns:android="http://schemas.android.com/apk/res/android"
+<com.chibi.dream.cute.core.widget.PaperDialogContainer xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container"
     android:layout_width="@dimen/dialog_width"
     android:layout_height="wrap_content" />

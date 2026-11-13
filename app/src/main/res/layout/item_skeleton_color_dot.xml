@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Skeleton chấm màu 32dp -->
-<com.conght.chibiocmaker.core.widget.SkeletonView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.chibi.dream.cute.core.widget.SkeletonView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/part_color_dot"
     android:layout_height="@dimen/part_color_dot"

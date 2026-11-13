@@ -16,26 +16,26 @@
         android:layout_marginTop="@dimen/move_panel_top"
         android:orientation="horizontal">
 
-        <com.conght.chibiocmaker.core.widget.WoodButton
+        <com.chibi.dream.cute.core.widget.WoodButton
             android:id="@+id/btn_reset_part"
             style="@style/Widget.ST260ChibiOCMaker.MoveTextButton"
             android:text="@string/move_reset"
             app:variant="blue" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_rotate_left"
             style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
             android:contentDescription="@string/cd_rotate_left"
             app:icon="@drawable/ic_rotate_left" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_up"
             style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
             android:contentDescription="@string/cd_move_up"
             app:icon="@drawable/ic_arrow_up"
             app:iconSize="@dimen/move_arrow_glyph" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_rotate_right"
             style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
             android:contentDescription="@string/cd_rotate_right"
@@ -49,27 +49,27 @@
         android:layout_marginTop="@dimen/move_button_gap"
         android:orientation="horizontal">
 
-        <com.conght.chibiocmaker.core.widget.WoodButton
+        <com.chibi.dream.cute.core.widget.WoodButton
             android:id="@+id/btn_exit"
             style="@style/Widget.ST260ChibiOCMaker.MoveTextButton"
             android:text="@string/exit"
             app:variant="red" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_left"
             style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
             android:contentDescription="@string/cd_move_left"
             app:icon="@drawable/ic_arrow_left"
             app:iconSize="@dimen/move_arrow_glyph" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_down"
             style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
             android:contentDescription="@string/cd_move_down"
             app:icon="@drawable/ic_arrow_down"
             app:iconSize="@dimen/move_arrow_glyph" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_right"
             style="@style/Widget.ST260ChibiOCMaker.MoveIconButton"
             android:contentDescription="@string/cd_move_right"

@@ -1,0 +1,466 @@
+package com.chibi.dream.cute.feature.maker.customize
+
+import android.os.Bundle
+import android.view.View
+import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isGone
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.chibi.dream.cute.R
+import com.chibi.dream.cute.core.common.Resource
+import com.chibi.dream.cute.data.model.CharacterConfig
+import com.chibi.dream.cute.data.model.PartSelection
+import com.chibi.dream.cute.data.model.TemplateDetail
+import com.chibi.dream.cute.core.ui.GridSpacingItemDecoration
+import com.chibi.dream.cute.core.ui.ImagePrefetcher
+import com.chibi.dream.cute.core.ui.LinearSpacingItemDecoration
+import com.chibi.dream.cute.core.ui.applyStatusBarPadding
+import com.chibi.dream.cute.core.ui.base.BaseFragment
+import com.chibi.dream.cute.core.ui.collectWhenStarted
+import com.chibi.dream.cute.core.ui.loadImage
+import com.chibi.dream.cute.core.ui.navigateSafe
+import com.chibi.dream.cute.core.ui.setLightStatusBar
+import com.chibi.dream.cute.core.ui.setOnSingleClickListener
+import com.chibi.dream.cute.core.ui.showAppToast
+import com.chibi.dream.cute.core.ui.skeleton.NoneAdapter
+import com.chibi.dream.cute.core.ui.skeleton.SkeletonAdapter
+import com.chibi.dream.cute.core.ui.skeleton.noneFirst
+import com.chibi.dream.cute.databinding.FragmentCustomizeBinding
+import com.chibi.dream.cute.feature.decor.editor.DecorEditorFragment
+import com.chibi.dream.cute.feature.cosplay.CosplayReferenceDialogFragment
+import com.chibi.dream.cute.feature.cosplay.CosplayScoreDialogFragment
+import com.chibi.dream.cute.feature.dialog.ConfirmDialogFragment
+import com.chibi.dream.cute.feature.dialog.ConfirmDialogs
+import com.chibi.dream.cute.feature.dialog.NoInternetDialogFragment
+import com.chibi.dream.cute.feature.dialog.setLoadingVisible
+import com.chibi.dream.cute.feature.maker.move.MovePanelView
+import com.chibi.dream.cute.feature.success.SuccessFragment
+import dagger.hilt.android.AndroidEntryPoint
+
+/**
+ * Customize nhân vật (Figma 3:335) + chế độ Move (8:24).
+ * Args: [ARG_TEMPLATE_ID] hoặc [ARG_CONFIG_JSON] (Edit), [ARG_MODE] (MAKER | COSPLAY).
+ * Chưa có API → luôn Loading: canvas / thanh màu / lưới / tab là skeleton, riêng ô None & Xúc xắc là ô thật.
+ */
+@AndroidEntryPoint
+class CustomizeFragment : BaseFragment<FragmentCustomizeBinding>(FragmentCustomizeBinding::inflate) {
+
+    private val viewModel: CustomizeViewModel by viewModels()
+
+    private val isCosplay: Boolean
+        get() = arguments?.getString(ARG_MODE) == CustomizeMode.COSPLAY.name
+
+    /** Ảnh tham chiếu đã load (tránh load lại mỗi giây khi đồng hồ chạy). */
+    private var referenceUrl: String? = null
+
+    /** Category đã tải trước ảnh (tránh tính lại mỗi lần render). */
+    private var prefetchedCategoryId: String? = null
+
+    /** Đầu vào của 3 danh sách ở lần render trước: kéo / zoom / đếm giờ không đổi gì thì khỏi submit lại. */
+    private var listsDetail: TemplateDetail? = null
+    private var listsCategoryId: String? = null
+    private var listsSelections: Map<String, PartSelection>? = null
+    private var listsLocked: Set<String>? = null
+
+    /** Lựa chọn vừa random, chờ 2 danh sách cập nhật xong (DiffUtil chạy nền) rồi mới cuộn tới. */
+    private var pendingScroll: PartSelection? = null
+
+    private lateinit var noneAdapter: NoneAdapter
+    private lateinit var partAdapter: PartItemAdapter
+    private lateinit var colorAdapter: ColorDotAdapter
+    private lateinit var tabAdapter: CategoryTabAdapter
+    private lateinit var loadingParts: ConcatAdapter
+    private lateinit var readyParts: ConcatAdapter
+    private lateinit var loadingColors: SkeletonAdapter
+    private lateinit var loadingTabs: SkeletonAdapter
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.setCountdownPaused(false)
+    }
+
+    override fun onStop() {
+        viewModel.setCountdownPaused(true)
+        super.onStop()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        referenceUrl = null
+        prefetchedCategoryId = null
+        listsDetail = null
+        binding.content.applyStatusBarPadding()
+        setLightStatusBar(false)
+
+        setupLists()
+        setupActions()
+        setupDialogResults()
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = onBack()
+        })
+
+        collectWhenStarted(viewModel.state, ::render)
+        collectWhenStarted(viewModel.saving) { setLoadingVisible(it) }
+        collectWhenStarted(viewModel.prefetchUrls) { ImagePrefetcher.prefetch(requireContext(), it) }
+        collectWhenStarted(viewModel.events) { event ->
+            when (event) {
+                is CustomizeEvent.OpenEditor -> navigateSafe(
+                    R.id.action_customize_to_decorEditor,
+                    Bundle().apply {
+                        putString(DecorEditorFragment.ARG_CHARACTER_PATH, event.characterPath)
+                        putString(DecorEditorFragment.ARG_CONFIG_JSON, event.configJson)
+                    },
+                )
+
+                is CustomizeEvent.OpenCosplaySuccess -> navigateSafe(
+                    R.id.action_cosplayPlay_to_success,
+                    Bundle().apply {
+                        putString(SuccessFragment.ARG_IMAGE_PATH, event.imagePath)
+                        putString(SuccessFragment.ARG_SOURCE, SuccessFragment.Source.COSPLAY.name)
+                        putInt(SuccessFragment.ARG_STARS, event.stars)
+                        // Re-edit ở Success mở lại đúng đề bài này
+                        putString(ARG_TEMPLATE_ID, requireArguments().getString(ARG_TEMPLATE_ID))
+                        putString(ARG_CHALLENGE_JSON, requireArguments().getString(ARG_CHALLENGE_JSON))
+                    },
+                )
+
+                CustomizeEvent.SaveFailed ->
+                    showAppToast(R.string.save_failed)
+
+                CustomizeEvent.ConfirmRandomAll ->
+                    ConfirmDialogs.random(KEY_RANDOM).show(childFragmentManager, ConfirmDialogFragment.TAG)
+
+                CustomizeEvent.SaveAndContinue -> saveAndContinue()
+
+                CustomizeEvent.NoInternet ->
+                    NoInternetDialogFragment.showOnce(childFragmentManager, KEY_NO_INTERNET)
+
+                CustomizeEvent.ConfirmUnlockPart ->
+                    ConfirmDialogs.unlockPart(KEY_UNLOCK_PART).show(childFragmentManager, ConfirmDialogFragment.TAG)
+
+                CustomizeEvent.ShowLuckyGift ->
+                    LuckyGiftDialogFragment.showOnce(childFragmentManager)
+
+                is CustomizeEvent.ScrollToSelection -> {
+                    pendingScroll = event.selection
+                    scrollToPendingSelection()
+                }
+            }
+        }
+    }
+
+    private fun setupLists() {
+        val gap = resources.getDimensionPixelSize(R.dimen.grid_gap)
+        val columns = resources.getInteger(R.integer.part_grid_columns)
+        noneAdapter = NoneAdapter(R.layout.item_none_part) { viewModel.runWhenOnline { selectItem(null) } }
+        val diceAdapter = NoneAdapter(R.layout.item_dice_part) { viewModel.runWhenOnline { randomCategory() } }
+        partAdapter = PartItemAdapter { viewModel.runWhenOnline { selectItem(it.id) } }
+        loadingParts = noneFirst(noneAdapter, diceAdapter, SkeletonAdapter(R.layout.item_skeleton_part, SKELETON_PARTS))
+        readyParts = noneFirst(noneAdapter, diceAdapter, partAdapter)
+        binding.rvParts.layoutManager = GridLayoutManager(requireContext(), columns)
+        binding.rvParts.addItemDecoration(GridSpacingItemDecoration(columns, gap, gap))
+
+        colorAdapter = ColorDotAdapter { viewModel.runWhenOnline { selectColor(it.id) } }
+        loadingColors = SkeletonAdapter(R.layout.item_skeleton_color_dot, SKELETON_COLORS)
+        binding.rvColors.addItemDecoration(
+            LinearSpacingItemDecoration(resources.getDimensionPixelSize(R.dimen.color_dot_gap)),
+        )
+
+        tabAdapter = CategoryTabAdapter { viewModel.runWhenOnline { selectCategory(it.id) } }
+        loadingTabs = SkeletonAdapter(R.layout.item_skeleton_category_tab, SKELETON_TABS)
+        binding.rvTabs.addItemDecoration(
+            LinearSpacingItemDecoration(resources.getDimensionPixelSize(R.dimen.category_tab_gap)),
+        )
+    }
+
+    private fun setupActions() {
+        binding.btnBack.setOnSingleClickListener { onBack() }
+        binding.btnNext.setOnSingleClickListener {
+            // Chưa xong layer mới (vừa random) → ảnh export sẽ là nhân vật cũ
+            if (!viewModel.state.value.isReady || !binding.canvas.isSettled) return@setOnSingleClickListener
+            viewModel.runWhenOnline { requestNext() }
+        }
+        binding.referenceCard.setOnSingleClickListener { showReferenceDialog() }
+        // Ảnh nhân vật chưa lên đủ (mới vào, đổi bộ phận, random) → khoá Next
+        binding.canvas.onSettledChanged = { updateNextEnabled() }
+        // Nộp bài lúc layer cuối còn đang tải: chờ tải xong mới chụp ảnh kết quả
+        binding.canvas.onSettled = {
+            if (view != null && lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                viewModel.state.value.cosplay?.let(::handleCosplayResult)
+            }
+        }
+        binding.btnReset.setOnSingleClickListener {
+            ConfirmDialogs.reset(KEY_RESET).show(childFragmentManager, ConfirmDialogFragment.TAG)
+        }
+        binding.btnFlip.setOnSingleClickListener { viewModel.flip() }
+        binding.btnMove.setOnSingleClickListener { viewModel.setPanel(PanelMode.MOVE) }
+        binding.btnRandomAll.setOnSingleClickListener { viewModel.runWhenOnline { requestRandomAll() } }
+        binding.btnLuckyGift.setOnSingleClickListener { viewModel.runWhenOnline { requestLuckyGift() } }
+        binding.errorState.setOnRetryClickListener { viewModel.retry() }
+
+        binding.movePanel.listener = object : MovePanelView.Listener {
+            override fun onExit() = viewModel.setPanel(PanelMode.EDIT)
+            override fun onMove(dxDp: Float, dyDp: Float) = viewModel.move(dxDp, dyDp)
+            override fun onRotate(degrees: Float) = viewModel.rotate(degrees)
+            override fun onResetPart() = viewModel.resetPartTransform()
+        }
+        binding.canvas.onGesture = { dx, dy, scale ->
+            if (dx != 0f || dy != 0f) viewModel.move(dx, dy)
+            if (scale != 1f) viewModel.zoomBy(scale)
+        }
+    }
+
+    private fun setupDialogResults() {
+        childFragmentManager.setFragmentResultListener(KEY_EXIT, viewLifecycleOwner) { _, result ->
+            if (ConfirmDialogFragment.isConfirmed(result)) findNavController().popBackStack()
+        }
+        childFragmentManager.setFragmentResultListener(KEY_RESET, viewLifecycleOwner) { _, result ->
+            if (ConfirmDialogFragment.isConfirmed(result)) viewModel.reset()
+        }
+        childFragmentManager.setFragmentResultListener(KEY_RANDOM, viewLifecycleOwner) { _, result ->
+            if (ConfirmDialogFragment.isConfirmed(result)) viewModel.randomAll()
+        }
+        childFragmentManager.setFragmentResultListener(CosplayScoreDialogFragment.REQUEST_KEY, viewLifecycleOwner) { _, _ ->
+            viewModel.saveCosplayResult()
+        }
+        childFragmentManager.setFragmentResultListener(KEY_UNLOCK_PART, viewLifecycleOwner) { _, result ->
+            viewModel.onUnlockPartResult(ConfirmDialogFragment.isConfirmed(result))
+        }
+        childFragmentManager.setFragmentResultListener(KEY_NO_INTERNET, viewLifecycleOwner) { _, _ ->
+            viewModel.retryPendingAction()
+        }
+    }
+
+    private fun onBack() {
+        val state = viewModel.state.value
+        when {
+            state.panel == PanelMode.MOVE -> viewModel.setPanel(PanelMode.EDIT)
+            state.cosplay?.isFinished == true -> Unit // đang chấm điểm / popup điểm
+            state.isDirty || isCosplay -> ConfirmDialogs.exit(KEY_EXIT).show(childFragmentManager, ConfirmDialogFragment.TAG)
+            else -> findNavController().popBackStack()
+        }
+    }
+
+    private fun render(state: CustomizeUiState) {
+        val detail = state.templateDetail
+        val config = state.config
+        val ready = detail != null && config != null
+
+        // Loading / Error / Success
+        if (state.detail is Resource.Loading) binding.shimmer.startShimmer() else binding.shimmer.stopShimmer()
+        binding.errorState.isVisible = state.detail is Resource.Error
+        (state.detail as? Resource.Error)?.let { binding.errorState.setError(it.throwable) }
+        binding.canvasSkeleton.root.isInvisible = ready || state.detail is Resource.Error
+        binding.canvas.isInvisible = !ready
+        updateNextEnabled(ready)
+        binding.rvParts.swapAdapter(if (ready) readyParts else loadingParts)
+        binding.rvColors.swapAdapter(if (ready) colorAdapter else loadingColors)
+        binding.rvTabs.swapAdapter(if (ready) tabAdapter else loadingTabs)
+
+        // Panel Edit / Move
+        val moving = state.panel == PanelMode.MOVE
+        binding.editPanel.isVisible = !moving
+        binding.movePanel.isVisible = moving
+        binding.canvas.gesturesEnabled = moving
+        // Figma 2:931: đang Move vẫn hiện Home, NEXT, hàng công cụ, Random và nút quà
+        // COSPLAY: không có nút Next / Done (Figma 3:132), bài tự nộp khi đạt 100% hoặc hết giờ
+        binding.btnNext.isInvisible = isCosplay
+        // COSPLAY: bỏ hàng công cụ + random-all (ô xúc xắc trong lưới vẫn giữ)
+        listOf(binding.btnReset, binding.btnFlip, binding.btnRandomAll).forEach {
+            it.isVisible = !isCosplay
+        }
+        binding.btnMove.isVisible = !isCosplay && state.canMovePart
+        binding.movePanel.setLimits(state.moveLimits)
+        renderCosplay(state.cosplay)
+        renderLuckyGift(state.luckyGift)
+
+        if (!ready) {
+            noneAdapter.isSelected = false
+            // Chưa có detail: chưa chọn tab = đang ở layer đầu tiên → ẩn None luôn để khỏi nháy
+            noneAdapter.isVisible = state.selectedCategoryId != null
+            binding.colorBar.isInvisible = false
+            listsDetail = null
+            return
+        }
+        binding.canvas.render(detail, config)
+        renderLists(state, detail, config)
+        prefetchImages(detail, state.selectedCategoryId)
+
+        state.cosplay?.let(::handleCosplayResult)
+    }
+
+    /** Tab / lưới item / chấm màu: chỉ dựng lại khi template, tab đang chọn hoặc lựa chọn đổi. */
+    private fun renderLists(state: CustomizeUiState, detail: TemplateDetail, config: CharacterConfig) {
+        if (detail === listsDetail && state.selectedCategoryId == listsCategoryId &&
+            config.selections == listsSelections && state.lockedParts == listsLocked
+        ) return
+        listsDetail = detail
+        listsCategoryId = state.selectedCategoryId
+        listsSelections = config.selections
+        listsLocked = state.lockedParts
+
+        val selection = state.selection
+        // Layer đầu tiên (tab đầu) không có ô None
+        noneAdapter.isVisible = state.selectedCategoryId != detail.categories.firstOrNull()?.id
+        noneAdapter.isSelected = selection?.itemId == null
+        tabAdapter.submitList(detail.categories.map { Selectable(it, it.id == state.selectedCategoryId) })
+        val categoryId = state.selectedCategoryId.orEmpty()
+        partAdapter.submitList(
+            state.selectedCategory?.items.orEmpty().map {
+                Selectable(it, it.id == selection?.itemId, locked = state.isLocked(categoryId, it.id))
+            },
+        ) {
+            scrollToPendingSelection()
+        }
+
+        // Đang None → vẫn hiện bảng màu của tab (không chấm nào được chọn).
+        // Tab không có màu → bỏ hẳn thanh màu, lưới dâng lên chiếm chỗ.
+        val colors = state.selectedItem?.colors
+            ?: state.selectedCategory?.items?.firstOrNull { it.colors.isNotEmpty() }?.colors.orEmpty()
+        binding.colorBar.isGone = colors.isEmpty()
+        colorAdapter.submitList(colors.map { Selectable(it, it.id == selection?.colorId) }) {
+            scrollToPendingSelection()
+        }
+    }
+
+    /** Cuộn khi cả 2 danh sách đã hiện đúng lựa chọn [pendingScroll]; chưa thì chờ lần cập nhật danh sách sau. */
+    private fun scrollToPendingSelection() {
+        val target = pendingScroll ?: return
+        if (view == null) return
+        val itemIndex = partAdapter.currentList.indexOfFirst { it.selected && it.value.id == target.itemId }
+        val colorIndex = colorAdapter.currentList.indexOfFirst { it.selected && it.value.id == target.colorId }
+        if ((target.itemId != null && itemIndex < 0) || (target.colorId != null && colorIndex < 0)) return
+        pendingScroll = null
+        // None → ô đầu lưới; item nằm sau các ô cố định (None, Xúc xắc)
+        val fixedCells = readyParts.itemCount - partAdapter.itemCount
+        binding.rvParts.smoothScrollToPosition(if (itemIndex < 0) 0 else fixedCells + itemIndex)
+        if (colorIndex >= 0) binding.rvColors.smoothScrollToPosition(colorIndex)
+    }
+
+    /**
+     * Tải trước vào disk cache: icon mọi tab + thumbnail của tab đang chọn và [PREFETCH_NEIGHBORS] tab
+     * mỗi bên → bấm sang tab kế bên ảnh hiện ngay thay vì chờ mạng.
+     */
+    private fun prefetchImages(detail: TemplateDetail, selectedCategoryId: String?) {
+        if (selectedCategoryId == null || selectedCategoryId == prefetchedCategoryId) return
+        prefetchedCategoryId = selectedCategoryId
+        val categories = detail.categories.ifEmpty { return }
+        val index = categories.indexOfFirst { it.id == selectedCategoryId }.coerceAtLeast(0)
+        // Thứ tự gửi = thứ tự ưu tiên: tab đang chọn trước, rồi icon tab, rồi các tab lân cận
+        val nearby = (1..PREFETCH_NEIGHBORS).flatMap { d -> listOfNotNull(categories.getOrNull(index + d), categories.getOrNull(index - d)) }
+        ImagePrefetcher.prefetch(requireContext(), categories[index].items.map { it.thumbnailUrl })
+        ImagePrefetcher.prefetch(requireContext(), categories.map { it.iconUrl })
+        ImagePrefetcher.prefetch(requireContext(), nearby.flatMap { c -> c.items.map { it.thumbnailUrl } })
+    }
+
+    /**
+     * Nút quà: ẩn khi không có Lucky Gift (Cosplay) hoặc đã mở hết part.
+     * Còn lượt quay (START, hoặc FREE xem quảng cáo lúc đang đếm ngược) thì có chấm đỏ (Figma 2:551 / 2:677);
+     * đã dùng lượt quảng cáo thì hiện đếm ngược bên dưới (Figma 2:805).
+     */
+    private fun renderLuckyGift(gift: LuckyGiftState?) {
+        val visible = gift != null && gift.hasLocked
+        binding.luckyGift.isVisible = visible
+        val left = gift?.remainingSeconds ?: 0
+        val waiting = left > 0 && gift?.adSpinUsed == true
+        binding.luckyGiftBadge.isVisible = visible && !waiting
+        binding.tvLuckyGiftTimer.isVisible = visible && waiting
+        if (waiting) {
+            binding.tvLuckyGiftTimer.text = getString(R.string.timer_format, left / SECONDS_PER_MINUTE, left % SECONDS_PER_MINUTE)
+        }
+    }
+
+    /** Thanh thời gian + thumbnail ảnh tham chiếu (chỉ COSPLAY). */
+    private fun renderCosplay(cosplay: CosplayState?) {
+        binding.timerBar.isVisible = cosplay != null
+        binding.referenceCard.isVisible = cosplay != null
+        cosplay ?: return
+        val left = cosplay.remainingSeconds
+        binding.tvTimer.text = getString(R.string.timer_format, left / SECONDS_PER_MINUTE, left % SECONDS_PER_MINUTE)
+        binding.progressTimer.max = cosplay.totalSeconds
+        binding.progressTimer.progress = left
+        if (referenceUrl != cosplay.referenceImageUrl) {
+            referenceUrl = cosplay.referenceImageUrl
+            binding.ivReference.loadImage(cosplay.referenceImageUrl, R.color.white)
+        }
+    }
+
+    /** Bấm ảnh mẫu: popup ảnh mẫu + % hoàn thành hiện tại, đóng thì chơi tiếp. */
+    private fun showReferenceDialog() {
+        val cosplay = viewModel.state.value.cosplay ?: return
+        if (cosplay.isFinished) return
+        val percent = viewModel.cosplayProgressPercent() ?: return
+        if (childFragmentManager.findFragmentByTag(CosplayReferenceDialogFragment.TAG) != null) return
+        CosplayReferenceDialogFragment.newInstance(percent, cosplay.referenceImageUrl)
+            .show(childFragmentManager, CosplayReferenceDialogFragment.TAG)
+    }
+
+    /** Đã nộp bài: chụp nhân vật cho popup → hiện popup điểm (một lần, sống qua xoay màn). */
+    /** Next đã qua kiểm tra mạng: layer vẫn phải lên đủ thì ảnh export mới đúng nhân vật hiện tại. */
+    private fun saveAndContinue() {
+        if (!viewModel.state.value.isReady || !binding.canvas.isSettled) return
+        viewModel.saveAndContinue(binding.canvas.exportBitmap())
+    }
+
+    /** Next chỉ bấm được khi đã có dữ liệu và mọi layer của nhân vật đã hiện xong. */
+    private fun updateNextEnabled(ready: Boolean = viewModel.state.value.isReady) {
+        val enabled = ready && binding.canvas.isSettled
+        binding.btnNext.isEnabled = enabled
+        binding.btnNext.alpha = if (enabled) 1f else DISABLED_ALPHA
+    }
+
+    private fun handleCosplayResult(cosplay: CosplayState) {
+        val percent = cosplay.scorePercent ?: return
+        // Hết giờ khi đang xem ảnh mẫu → đóng popup ảnh mẫu để nhường popup điểm
+        (childFragmentManager.findFragmentByTag(CosplayReferenceDialogFragment.TAG) as? DialogFragment)
+            ?.dismissAllowingStateLoss()
+        val path = cosplay.resultImagePath
+        if (path == null) {
+            if (viewModel.needsCosplayResultImage && binding.canvas.isSettled) {
+                viewModel.setCosplayResultImage(binding.canvas.exportBitmap())
+            }
+        } else if (childFragmentManager.findFragmentByTag(CosplayScoreDialogFragment.TAG) == null) {
+            CosplayScoreDialogFragment.newInstance(percent, path).show(childFragmentManager, CosplayScoreDialogFragment.TAG)
+        }
+    }
+
+    private fun RecyclerView.swapAdapter(target: RecyclerView.Adapter<*>) {
+        if (adapter !== target) adapter = target
+    }
+
+    companion object {
+        /** Id template nhân vật gốc (từ màn cata). */
+        const val ARG_TEMPLATE_ID = "templateId"
+
+        /** JSON [com.chibi.dream.cute.data.model.CharacterConfig] để Edit (Lucky roll / My creation). */
+        const val ARG_CONFIG_JSON = "configJson"
+
+        /** Id creation đang Edit (My creation): Next ghi đè bản đó thay vì lưu bản mới. */
+        const val ARG_CREATION_ID = "creationId"
+
+        /** [CustomizeMode] name, mặc định MAKER. */
+        const val ARG_MODE = "mode"
+
+        /** JSON [com.chibi.dream.cute.data.model.CosplayChallenge] (mode COSPLAY). */
+        const val ARG_CHALLENGE_JSON = "challengeJson"
+
+        private const val KEY_EXIT = "customize_exit"
+        private const val KEY_RESET = "customize_reset"
+        private const val KEY_RANDOM = "customize_random"
+        private const val KEY_NO_INTERNET = "customize_no_internet"
+        private const val KEY_UNLOCK_PART = "customize_unlock_part"
+        private const val SKELETON_PARTS = 18
+        private const val SKELETON_COLORS = 8
+        private const val SKELETON_TABS = 6
+        private const val DISABLED_ALPHA = 0.5f
+        private const val PREFETCH_NEIGHBORS = 2
+        private const val SECONDS_PER_MINUTE = 60
+    }
+}

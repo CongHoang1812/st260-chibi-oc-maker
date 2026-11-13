@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Maker – Customize (Figma 2:469) + Move (2:931). Cả màn nằm trong 1 ShimmerFrameLayout để
      mọi skeleton (canvas, màu, lưới, tab) quét đồng bộ; ô None / Xúc xắc là view thật nên không bị phủ. -->
-<com.conght.chibiocmaker.core.widget.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.chibi.dream.cute.core.widget.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/shimmer"
@@ -28,7 +28,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Canvas nhân vật rộng tối đa 352, từ dưới top bar tới trên hàng công cụ -->
-        <com.conght.chibiocmaker.core.widget.CharacterCanvasView
+        <com.chibi.dream.cute.core.widget.CharacterCanvasView
             android:id="@+id/canvas"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -54,7 +54,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.conght.chibiocmaker.core.widget.ErrorStateView
+        <com.chibi.dream.cute.core.widget.ErrorStateView
             android:id="@+id/error_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.conght.chibiocmaker.core.widget.WoodButton
+        <com.chibi.dream.cute.core.widget.WoodButton
             android:id="@+id/btn_next"
             style="@style/Widget.ST260ChibiOCMaker.WoodButton"
             android:layout_marginEnd="@dimen/screen_padding"
@@ -209,7 +209,7 @@
         </FrameLayout>
 
         <!-- Hàng công cụ (Figma 2:479 / 2:485 / 2:491): reset / flip / move nằm ngang, cách nhau 12 -->
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_reset"
             android:layout_width="@dimen/icon_button"
             android:layout_height="@dimen/icon_button"
@@ -219,7 +219,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/tools_row" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_flip"
             android:layout_width="@dimen/icon_button"
             android:layout_height="@dimen/icon_button"
@@ -229,7 +229,7 @@
             app:layout_constraintStart_toEndOf="@id/btn_reset"
             app:layout_constraintTop_toTopOf="@id/tools_row" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_move"
             android:layout_width="@dimen/icon_button"
             android:layout_height="@dimen/icon_button"
@@ -332,11 +332,11 @@
                     tools:listitem="@layout/item_category_tab" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.conght.chibiocmaker.feature.maker.move.MovePanelView
+            <com.chibi.dream.cute.feature.maker.move.MovePanelView
                 android:id="@+id/move_panel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone" />
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</com.conght.chibiocmaker.core.widget.ShimmerFrameLayout>
+</com.chibi.dream.cute.core.widget.ShimmerFrameLayout>

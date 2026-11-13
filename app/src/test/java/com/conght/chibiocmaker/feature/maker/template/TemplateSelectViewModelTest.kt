@@ -1,15 +1,15 @@
-package com.conght.chibiocmaker.feature.maker.template
+package com.chibi.dream.cute.feature.maker.template
 
 import app.cash.turbine.test
-import com.conght.chibiocmaker.core.common.NetworkMonitor
-import com.conght.chibiocmaker.core.common.Resource
-import com.conght.chibiocmaker.core.common.resourceFlow
-import com.conght.chibiocmaker.data.model.CharacterConfig
-import com.conght.chibiocmaker.data.model.CharacterTemplate
-import com.conght.chibiocmaker.data.model.PartSelection
-import com.conght.chibiocmaker.data.model.TemplateDetail
-import com.conght.chibiocmaker.data.repository.MakerRepository
-import com.conght.chibiocmaker.testutil.FakeSettingsRepository
+import com.chibi.dream.cute.core.common.NetworkMonitor
+import com.chibi.dream.cute.core.common.Resource
+import com.chibi.dream.cute.core.common.resourceFlow
+import com.chibi.dream.cute.data.model.CharacterConfig
+import com.chibi.dream.cute.data.model.CharacterTemplate
+import com.chibi.dream.cute.data.model.PartSelection
+import com.chibi.dream.cute.data.model.TemplateDetail
+import com.chibi.dream.cute.data.repository.MakerRepository
+import com.chibi.dream.cute.testutil.FakeSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

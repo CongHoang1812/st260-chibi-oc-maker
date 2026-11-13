@@ -1,6 +1,6 @@
-package com.conght.chibiocmaker.feature.setting
+package com.chibi.dream.cute.feature.setting
 
-import com.conght.chibiocmaker.testutil.FakeSettingsRepository
+import com.chibi.dream.cute.testutil.FakeSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

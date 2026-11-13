@@ -47,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_share"
             android:layout_width="@dimen/icon_button_large"
             android:layout_height="@dimen/icon_button_large"
@@ -58,7 +58,7 @@
             app:layout_constraintEnd_toStartOf="@id/btn_download"
             app:layout_constraintTop_toTopOf="@id/btn_download" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_delete"
             android:layout_width="@dimen/icon_button_large"
             android:layout_height="@dimen/icon_button_large"
@@ -70,7 +70,7 @@
             app:layout_constraintTop_toTopOf="@id/btn_download" />
 
         <!-- Tab Character / Design: nút viên 124×34 canh giữa, chọn = cam, không chọn = xám (Figma 2:1555) -->
-        <com.conght.chibiocmaker.core.widget.WoodButton
+        <com.chibi.dream.cute.core.widget.WoodButton
             android:id="@+id/tab_character"
             style="@style/Widget.ST260ChibiOCMaker.TabButton"
             android:layout_marginTop="@dimen/creation_tabs_top"
@@ -80,7 +80,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/body" />
 
-        <com.conght.chibiocmaker.core.widget.WoodButton
+        <com.chibi.dream.cute.core.widget.WoodButton
             android:id="@+id/tab_design"
             style="@style/Widget.ST260ChibiOCMaker.TabButton"
             android:layout_marginStart="@dimen/dialog_button_gap"
@@ -148,13 +148,13 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:visibility="visible">
 
-            <com.conght.chibiocmaker.core.widget.WoodButton
+            <com.chibi.dream.cute.core.widget.WoodButton
                 android:id="@+id/btn_telegram"
                 style="@style/Widget.ST260ChibiOCMaker.StickerButton"
                 android:text="@string/add_to_telegram"
                 app:variant="telegram" />
 
-            <com.conght.chibiocmaker.core.widget.WoodButton
+            <com.chibi.dream.cute.core.widget.WoodButton
                 android:id="@+id/btn_whatsapp"
                 style="@style/Widget.ST260ChibiOCMaker.StickerButton"
                 android:layout_marginStart="@dimen/grid_gap"

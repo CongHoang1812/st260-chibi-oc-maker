@@ -1,0 +1,45 @@
+package com.chibi.dream.cute.feature.language
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.chibi.dream.cute.core.common.AppLanguage
+import com.chibi.dream.cute.core.ui.setOnSingleClickListener
+import com.chibi.dream.cute.databinding.ItemLanguageBinding
+
+class LanguageAdapter(
+    initialSelected: AppLanguage?,
+    private val onClick: (AppLanguage) -> Unit,
+) : RecyclerView.Adapter<LanguageAdapter.ViewHolder>() {
+
+    private val items = AppLanguage.entries
+
+    /** null = chưa chọn item nào (lần đầu mở app). */
+    var selected: AppLanguage? = initialSelected
+        set(value) {
+            if (field == value) return
+            val old = field
+            field = value
+            old?.let { notifyItemChanged(items.indexOf(it)) }
+            value?.let { notifyItemChanged(items.indexOf(it)) }
+        }
+
+    override fun getItemCount(): Int = items.size
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemLanguageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(items[position])
+
+    inner class ViewHolder(private val binding: ItemLanguageBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(language: AppLanguage) {
+            binding.ivFlag.setImageResource(language.flagRes)
+            binding.tvName.setText(language.nameRes)
+            binding.root.isSelected = language == selected
+            binding.root.setOnSingleClickListener { onClick(language) }
+        }
+    }
+}

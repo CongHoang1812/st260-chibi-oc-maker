@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Decor editor (Figma: nền ảnh 2:1182, nền màu 2:1240, sticker 2:1296, speech 2:1358, text 2:1452).
      Cả màn trong 1 ShimmerFrameLayout: pack (API) là skeleton, ô None / Color / Image / font / màu là view thật. -->
-<com.conght.chibiocmaker.core.widget.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.chibi.dream.cute.core.widget.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/shimmer"
@@ -37,7 +37,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Vùng thiết kế vuông rộng hết màn (Figma 2:1188), co lại khi màn thấp -->
-        <com.conght.chibiocmaker.feature.decor.editor.DecorCanvasView
+        <com.chibi.dream.cute.feature.decor.editor.DecorCanvasView
             android:id="@+id/canvas"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -215,4 +215,4 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</com.conght.chibiocmaker.core.widget.ShimmerFrameLayout>
+</com.chibi.dream.cute.core.widget.ShimmerFrameLayout>

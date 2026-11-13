@@ -1,7 +1,7 @@
-package com.conght.chibiocmaker.feature.home
+package com.chibi.dream.cute.feature.home
 
-import com.conght.chibiocmaker.core.common.NetworkMonitor
-import com.conght.chibiocmaker.testutil.FakeSettingsRepository
+import com.chibi.dream.cute.core.common.NetworkMonitor
+import com.chibi.dream.cute.testutil.FakeSettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals

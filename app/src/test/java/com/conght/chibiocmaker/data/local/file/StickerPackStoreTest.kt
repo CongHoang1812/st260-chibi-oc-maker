@@ -1,4 +1,4 @@
-package com.conght.chibiocmaker.data.local.file
+package com.chibi.dream.cute.data.local.file
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals

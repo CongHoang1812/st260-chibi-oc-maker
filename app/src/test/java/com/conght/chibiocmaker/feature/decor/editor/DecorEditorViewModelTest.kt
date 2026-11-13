@@ -1,17 +1,17 @@
-package com.conght.chibiocmaker.feature.decor.editor
+package com.chibi.dream.cute.feature.decor.editor
 
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
-import com.conght.chibiocmaker.core.common.NetworkMonitor
-import com.conght.chibiocmaker.core.common.Resource
-import com.conght.chibiocmaker.data.model.CharacterConfig
-import com.conght.chibiocmaker.data.model.Creation
-import com.conght.chibiocmaker.data.model.CreationType
-import com.conght.chibiocmaker.data.model.DecorPack
-import com.conght.chibiocmaker.data.model.DecorType
-import com.conght.chibiocmaker.data.repository.CreationRepository
-import com.conght.chibiocmaker.data.repository.DecorRepository
+import com.chibi.dream.cute.core.common.NetworkMonitor
+import com.chibi.dream.cute.core.common.Resource
+import com.chibi.dream.cute.data.model.CharacterConfig
+import com.chibi.dream.cute.data.model.Creation
+import com.chibi.dream.cute.data.model.CreationType
+import com.chibi.dream.cute.data.model.DecorPack
+import com.chibi.dream.cute.data.model.DecorType
+import com.chibi.dream.cute.data.repository.CreationRepository
+import com.chibi.dream.cute.data.repository.DecorRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

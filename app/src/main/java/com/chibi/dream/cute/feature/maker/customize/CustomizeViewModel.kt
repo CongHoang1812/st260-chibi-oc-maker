@@ -1,0 +1,790 @@
+package com.chibi.dream.cute.feature.maker.customize
+
+import android.graphics.Bitmap
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.chibi.dream.cute.core.common.CosplayScorer
+import com.chibi.dream.cute.core.common.NetworkMonitor
+import com.chibi.dream.cute.core.common.PartLocks
+import com.chibi.dream.cute.data.repository.LuckyGiftRepository
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
+import com.chibi.dream.cute.core.common.retryWhenBackOnline
+import com.chibi.dream.cute.core.common.Resource
+import com.chibi.dream.cute.core.common.StarRating
+import com.chibi.dream.cute.data.model.CharacterConfig
+import com.chibi.dream.cute.data.model.CharacterTransform
+import com.chibi.dream.cute.data.model.CosplayChallenge
+import com.chibi.dream.cute.data.model.CreationType
+import com.chibi.dream.cute.data.model.PartCategory
+import com.chibi.dream.cute.data.model.PartItem
+import com.chibi.dream.cute.data.model.PartSelection
+import com.chibi.dream.cute.data.model.TemplateDetail
+import com.chibi.dream.cute.data.model.layerUrlFor
+import com.chibi.dream.cute.data.repository.CreationRepository
+import com.chibi.dream.cute.data.repository.MakerRepository
+import com.chibi.dream.cute.feature.maker.move.MoveLimits
+import com.google.gson.Gson
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+private const val MIN_SCALE = 0.5f
+private const val MAX_SCALE = 2f
+private const val MAX_OFFSET_DP = 200f
+
+enum class CustomizeMode { MAKER, COSPLAY }
+
+enum class PanelMode { EDIT, MOVE }
+
+data class CustomizeUiState(
+    val detail: Resource<TemplateDetail> = Resource.Loading,
+    /** null khi chưa có cả config ban đầu lẫn detail (đang chờ API). */
+    val config: CharacterConfig? = null,
+    val selectedCategoryId: String? = null,
+    val panel: PanelMode = PanelMode.EDIT,
+    val isDirty: Boolean = false,
+    /** Chỉ có ở mode COSPLAY. */
+    val cosplay: CosplayState? = null,
+    /** Key [PartLocks.key] các part đang khoá của template; rỗng khi không khoá (Cosplay). */
+    val lockedParts: Set<String> = emptySet(),
+    /** null = mode không có Lucky Gift (Cosplay) hoặc chưa tải xong template. */
+    val luckyGift: LuckyGiftState? = null,
+) {
+    fun isLocked(categoryId: String, itemId: String): Boolean = PartLocks.key(categoryId, itemId) in lockedParts
+
+    val templateDetail: TemplateDetail? get() = (detail as? Resource.Success)?.data
+    val selectedCategory: PartCategory? get() = templateDetail?.categories?.firstOrNull { it.id == selectedCategoryId }
+    val selection: PartSelection? get() = selectedCategoryId?.let { config?.selections?.get(it) }
+    val selectedItem: PartItem? get() = selectedCategory?.items?.firstOrNull { it.id == selection?.itemId }
+    val isReady: Boolean get() = templateDetail != null && config != null
+
+    /** Đang focus ô None thì không có bộ phận nào để di chuyển. */
+    val canMovePart: Boolean get() = selection?.itemId != null
+
+    /** Trạng thái các nút ở panel Move theo bộ phận đang chọn. */
+    val moveLimits: MoveLimits
+        get() {
+            val categoryId = selectedCategoryId ?: return MoveLimits()
+            val current = config ?: return MoveLimits()
+            val part = current.partTransform(categoryId)
+            // Cả nhân vật đang lật thì đi sang trái trên màn hình là tăng offsetX
+            val canIncreaseX = part.offsetX < MAX_OFFSET_DP
+            val canDecreaseX = part.offsetX > -MAX_OFFSET_DP
+            val flipped = current.transform.flipped
+            return MoveLimits(
+                canMoveLeft = if (flipped) canIncreaseX else canDecreaseX,
+                canMoveRight = if (flipped) canDecreaseX else canIncreaseX,
+                canMoveUp = part.offsetY > -MAX_OFFSET_DP,
+                canMoveDown = part.offsetY < MAX_OFFSET_DP,
+                canZoomIn = part.scale < MAX_SCALE,
+                canZoomOut = part.scale > MIN_SCALE,
+            )
+        }
+}
+
+/** Trạng thái màn chơi Cosplay (đồng hồ 10 phút, điểm khi nộp bài). */
+data class CosplayState(
+    val referenceImageUrl: String,
+    val remainingSeconds: Int,
+    val totalSeconds: Int,
+    /** % giống đáp án, có sau khi đạt 100% / hết giờ. */
+    val scorePercent: Int? = null,
+    /** Ảnh nhân vật người chơi (cacheDir) để hiện ở popup điểm. */
+    val resultImagePath: String? = null,
+) {
+    val isFinished: Boolean get() = scorePercent != null
+}
+
+/** Một ô trong vòng quay Lucky Gift. */
+data class GiftCell(val key: String, val thumbnailUrl: String)
+
+/** Trạng thái nút quà + overlay Lucky Gift. */
+data class LuckyGiftState(
+    /** Giây còn lại tới lượt quay kế tiếp; 0 = quay được. */
+    val remainingSeconds: Int,
+    val hasLocked: Boolean,
+    /** Các ô của vòng quay (giữ nguyên tới khi Collect). */
+    val grid: List<GiftCell> = emptyList(),
+    /** Part vừa trúng; khác null = đang hiện Congratulations. */
+    val result: List<GiftCell>? = null,
+    /** Lượt đếm ngược hiện tại đã dùng lượt quay bằng quảng cáo. */
+    val adSpinUsed: Boolean = false,
+) {
+    val canSpin: Boolean get() = remainingSeconds == 0 && hasLocked && result == null
+
+    /** Đang đếm ngược: xem hết quảng cáo để quay thêm một lượt ngay, mỗi lượt đếm ngược chỉ 1 lần. */
+    val canSpinWithAd: Boolean get() = remainingSeconds > 0 && !adSpinUsed && hasLocked && result == null
+}
+
+sealed interface CustomizeEvent {
+    data class OpenEditor(val characterPath: String, val configJson: String) : CustomizeEvent
+    data class OpenCosplaySuccess(val imagePath: String, val stars: Int) : CustomizeEvent
+    data object SaveFailed : CustomizeEvent
+    data object NoInternet : CustomizeEvent
+
+    /** Có mạng: Fragment chụp ảnh nhân vật rồi gọi [CustomizeViewModel.saveAndContinue]. */
+    data object SaveAndContinue : CustomizeEvent
+
+    /** Có mạng: hiện dialog xác nhận Random cả nhân vật. */
+    data object ConfirmRandomAll : CustomizeEvent
+
+    /** Bấm part đang khoá: hỏi xem quảng cáo để mở khoá (part chờ lưu ở SavedStateHandle). */
+    data object ConfirmUnlockPart : CustomizeEvent
+
+    /** Mở Lucky Gift: lần vào Customize (Maker) đầu tiên của phiên app hoặc bấm nút quà khi có mạng. */
+    data object ShowLuckyGift : CustomizeEvent
+
+    /** Vừa random: cuộn lưới item và thanh màu tới lựa chọn mới của category đang mở. */
+    data class ScrollToSelection(val selection: PartSelection) : CustomizeEvent
+}
+
+/**
+ * Customize nhân vật (Maker / Cosplay / Edit). Mọi lựa chọn lưu trong [SavedStateHandle]
+ * (config dạng JSON) để không mất khi xoay / recreate / process death.
+ */
+@HiltViewModel
+class CustomizeViewModel @Inject constructor(
+    private val makerRepository: MakerRepository,
+    private val creationRepository: CreationRepository,
+    private val gson: Gson,
+    private val savedStateHandle: SavedStateHandle,
+    private val networkMonitor: NetworkMonitor,
+    private val luckyGiftRepository: LuckyGiftRepository = LuckyGiftRepository.Disabled,
+) : ViewModel() {
+
+    private val mode: CustomizeMode =
+        savedStateHandle.get<String>(CustomizeFragment.ARG_MODE)?.let(CustomizeMode::valueOf) ?: CustomizeMode.MAKER
+
+    /** JSON → config gần nhất: mỗi lần kéo / zoom state phát lại, khỏi parse lại chuỗi vừa serialize. */
+    private var parsedJson: String? = null
+    private var parsedConfig: CharacterConfig? = null
+
+    private val initialConfig: CharacterConfig? =
+        savedStateHandle.get<String>(CustomizeFragment.ARG_CONFIG_JSON)?.let(::parseConfig)
+
+    /** Đề bài Cosplay (ảnh tham chiếu + đáp án), chỉ có ở mode COSPLAY. */
+    private val challenge: CosplayChallenge? =
+        savedStateHandle.get<String>(CustomizeFragment.ARG_CHALLENGE_JSON)
+            ?.let { runCatching { gson.fromJson(it, CosplayChallenge::class.java) }.getOrNull() }
+
+    private val templateId: String? = savedStateHandle.get<String>(CustomizeFragment.ARG_TEMPLATE_ID)
+        ?: initialConfig?.templateId
+        ?: challenge?.templateId
+
+    /**
+     * Creation đang được sửa: lấy từ [CustomizeFragment.ARG_CREATION_ID] (Edit ở My creation) hoặc id vừa lưu
+     * ở lần Next trước → Next lần nữa ghi đè đúng bản đó thay vì tạo bản mới.
+     */
+    private val creationId: Long?
+        get() = savedStateHandle.get<Long>(KEY_CREATION_ID)
+            ?: savedStateHandle.get<Long>(CustomizeFragment.ARG_CREATION_ID)?.takeIf { it >= 0 }
+
+    private val reloadKey = MutableStateFlow(0)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val detail: Flow<Resource<TemplateDetail>> = reloadKey.flatMapLatest {
+        val id = templateId
+        // Không có template (args thiếu) → giữ Loading
+        if (id == null) flow { emit(Resource.Loading); awaitCancellation() }
+        else makerRepository.templateDetail(id)
+    }.onEach { resource ->
+        if (resource is Resource.Success) onDetailLoaded(resource.data)
+    }
+
+    private val configJson = savedStateHandle.getStateFlow(KEY_CONFIG, initialConfig?.let(gson::toJson))
+    private val selectedCategory = savedStateHandle.getStateFlow<String?>(KEY_CATEGORY, null)
+    private val panel = savedStateHandle.getStateFlow(KEY_PANEL, PanelMode.EDIT.name)
+    private val dirty = savedStateHandle.getStateFlow(KEY_DIRTY, false)
+
+    private val remaining = savedStateHandle.getStateFlow(KEY_REMAINING, COSPLAY_SECONDS)
+    private val countdownPaused = MutableStateFlow(false)
+    private val score = savedStateHandle.getStateFlow<Int?>(KEY_SCORE, null)
+    private val resultPath = savedStateHandle.getStateFlow<String?>(KEY_RESULT_PATH, null)
+
+    private val cosplayState: Flow<CosplayState?> = combine(remaining, score, resultPath) { left, score, path ->
+        challenge?.let { CosplayState(it.referenceImageUrl, left, COSPLAY_SECONDS, score, path) }
+    }
+
+    /** Khoá part chỉ áp dụng khi tự tạo nhân vật (MAKER), Cosplay luôn mở hết. */
+    private val locksEnabled = mode == CustomizeMode.MAKER && luckyGiftRepository.locksEnabled
+
+    private val giftGrid = savedStateHandle.getStateFlow(KEY_GIFT_GRID, arrayListOf<String>())
+    private val giftResult = savedStateHandle.getStateFlow<ArrayList<String>?>(KEY_GIFT_RESULT, null)
+
+    /** Giây còn lại tới lượt quay kế tiếp, đếm từ mốc giờ đã lưu nên vẫn đúng sau khi thoát app. */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val giftRemaining: Flow<Int> = luckyGiftRepository.nextSpinAtMs.flatMapLatest { nextSpinAt ->
+        flow {
+            while (true) {
+                val left = secondsUntil(nextSpinAt)
+                emit(left)
+                if (left == 0) break
+                delay(TICK_MS)
+            }
+        }
+    }.distinctUntilChanged()
+
+    private data class GiftInputs(
+        val unlocked: Set<String>,
+        val remaining: Int,
+        val grid: List<String>,
+        val result: List<String>?,
+        val adSpinUsed: Boolean,
+    )
+
+    /** Mốc lưu khi xem quảng cáo trùng mốc đếm ngược hiện tại → lượt đếm ngược này đã dùng. */
+    private val adSpinUsed: Flow<Boolean> = combine(
+        luckyGiftRepository.nextSpinAtMs,
+        luckyGiftRepository.adSpinUsedForMs,
+    ) { nextSpinAt, usedFor -> nextSpinAt != 0L && usedFor == nextSpinAt }
+
+    private val giftInputs: Flow<GiftInputs?> = if (!locksEnabled || templateId == null) {
+        flowOf(null)
+    } else {
+        combine(
+            luckyGiftRepository.unlockedParts(templateId),
+            giftRemaining,
+            giftGrid,
+            giftResult,
+            adSpinUsed,
+            ::GiftInputs,
+        )
+    }
+
+    val state: StateFlow<CustomizeUiState> = combine(
+        combine(detail, configJson, selectedCategory, panel, dirty) { detail, json, category, panel, dirty ->
+            CustomizeUiState(
+                detail = detail,
+                config = json?.let(::parseConfig),
+                selectedCategoryId = category,
+                panel = PanelMode.valueOf(panel),
+                isDirty = dirty,
+            )
+        },
+        cosplayState,
+        giftInputs,
+    ) { ui, cosplay, gift -> withLuckyGift(ui.copy(cosplay = cosplay), gift) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), CustomizeUiState())
+
+    private fun withLuckyGift(ui: CustomizeUiState, gift: GiftInputs?): CustomizeUiState {
+        val detail = ui.templateDetail ?: return ui
+        gift ?: return ui
+        val locked = PartLocks.lockedKeys(detail, gift.unlocked)
+        val thumbnails = detail.categories
+            .flatMap { c -> c.items.map { PartLocks.key(c.id, it.id) to it.thumbnailUrl } }
+            .toMap()
+        fun cells(keys: List<String>) = keys.mapNotNull { key -> thumbnails[key]?.let { GiftCell(key, it) } }
+        return ui.copy(
+            lockedParts = locked,
+            luckyGift = LuckyGiftState(
+                remainingSeconds = gift.remaining,
+                hasLocked = locked.isNotEmpty(),
+                grid = cells(gift.grid),
+                result = gift.result?.let(::cells),
+                adSpinUsed = gift.adSpinUsed,
+            ),
+        )
+    }
+
+    private fun secondsUntil(epochMs: Long): Int {
+        val leftMs = epochMs - luckyGiftRepository.nowMs()
+        if (leftMs <= 0) return 0
+        return ((leftMs + MS_PER_SECOND - 1) / MS_PER_SECOND).toInt().coerceAtMost(PartLocks.COOLDOWN_SECONDS)
+    }
+
+    private val _events = Channel<CustomizeEvent>(Channel.BUFFERED)
+    val events: Flow<CustomizeEvent> = _events.receiveAsFlow()
+
+    /**
+     * Kết quả random đã tính sẵn (random cả nhân vật / xúc xắc của 1 category): ảnh layer của nó được
+     * tải trước qua [prefetchUrls] → bấm random thì layer lấy từ disk cache, nhân vật hiện ngay.
+     */
+    private var nextRandomAll: CharacterConfig? = null
+    private var nextRandomCategory: Pair<String, PartSelection>? = null
+
+    private val _prefetchUrls = Channel<List<String>>(Channel.BUFFERED)
+
+    /** Link ảnh layer cần tải trước vào disk cache (Fragment gọi ImagePrefetcher). */
+    val prefetchUrls: Flow<List<String>> = _prefetchUrls.receiveAsFlow()
+
+    private val current get() = state.value
+
+    init {
+        if (mode == CustomizeMode.COSPLAY && challenge != null) {
+            startCountdown()
+            finishWhenComplete()
+        }
+        if (locksEnabled) showLuckyGiftOnFirstVisit()
+        retryWhenBackOnline(networkMonitor, isError = { current.detail is Resource.Error }, retry = ::retry)
+    }
+
+    /**
+     * Đếm ngược trong ViewModel (sống qua xoay màn); bắt đầu khi nhân vật đã sẵn sàng.
+     * Dừng khi [setCountdownPaused] true, chạy tiếp từ số giây còn lại khi false.
+     */
+    private fun startCountdown() {
+        viewModelScope.launch {
+            state.first { it.isReady }
+            countdownPaused.collectLatest { paused ->
+                if (paused) return@collectLatest
+                while (remaining.value > 0 && score.value == null) {
+                    delay(TICK_MS)
+                    if (score.value != null) break
+                    savedStateHandle[KEY_REMAINING] = (remaining.value - 1).coerceAtLeast(0)
+                }
+                if (score.value == null) finishCosplay()
+            }
+        }
+    }
+
+    /**
+     * Lần vào Customize đầu tiên của phiên app: chờ template tải xong rồi mở Lucky Gift, trừ khi đang đếm ngược
+     * (lượt đó vẫn tính là đã dùng). Cờ trong SavedStateHandle: màn khôi phục sau process death không mở lại.
+     */
+    private fun showLuckyGiftOnFirstVisit() {
+        if (savedStateHandle.get<Boolean>(KEY_GIFT_AUTO_CHECKED) == true) return
+        savedStateHandle[KEY_GIFT_AUTO_CHECKED] = true
+        viewModelScope.launch {
+            val gift = state.first { it.luckyGift != null }.luckyGift ?: return@launch
+            if (luckyGiftRepository.consumeSessionAutoShow() && gift.canSpin) {
+                _events.send(CustomizeEvent.ShowLuckyGift)
+            }
+        }
+    }
+
+    /** App vào nền (Home, tắt màn hình...) thì dừng đồng hồ Cosplay, quay lại thì chạy tiếp. */
+    fun setCountdownPaused(paused: Boolean) {
+        countdownPaused.value = paused
+    }
+
+    /**
+     * Người chơi đổi đồ khớp 100% đáp án → nộp bài ngay, không chờ hết giờ. Theo dõi qua [state] để khi
+     * điểm được chốt thì state đã mang config mới (Fragment không chụp nhầm nhân vật cũ).
+     */
+    private fun finishWhenComplete() {
+        val answer = challenge?.answer ?: return
+        viewModelScope.launch {
+            state.first { ui ->
+                ui.cosplay?.isFinished == true ||
+                    (ui.isDirty && ui.config?.let { CosplayScorer.score(answer, it) } == COMPLETE_PERCENT)
+            }
+            finishCosplay()
+        }
+    }
+
+    /** % hoàn thành hiện tại so với đáp án (popup ảnh mẫu); null khi chưa có đề bài / nhân vật. */
+    fun cosplayProgressPercent(): Int? {
+        val answer = challenge?.answer ?: return null
+        val config = current.config ?: return null
+        return CosplayScorer.score(answer, config)
+    }
+
+    /** Đạt 100% hoặc hết giờ: chốt điểm bằng [CosplayScorer] (một lần). */
+    fun finishCosplay() {
+        if (score.value != null) return
+        savedStateHandle[KEY_SCORE] = cosplayProgressPercent() ?: return
+    }
+
+    /** false khi đã có / đang lưu ảnh kết quả → Fragment khỏi chụp thêm bitmap. */
+    val needsCosplayResultImage: Boolean get() = resultPath.value == null && !savingResultImage
+
+    /** Lưu ảnh nhân vật người chơi (cacheDir) để hiện ở popup điểm. */
+    fun setCosplayResultImage(bitmap: Bitmap) {
+        if (resultPath.value != null || savingResultImage) return
+        savingResultImage = true
+        viewModelScope.launch {
+            try {
+                savedStateHandle[KEY_RESULT_PATH] = creationRepository.saveTemp(bitmap, TEMP_COSPLAY_FILE)
+            } finally {
+                savingResultImage = false
+            }
+        }
+    }
+
+    private var savingResultImage = false
+
+    private val _saving = MutableStateFlow(false)
+
+    /** Đang lưu (Next / kết quả cosplay) → hiện LoadingDialog. */
+    val saving: StateFlow<Boolean> = _saving.asStateFlow()
+
+    /**
+     * Đóng popup điểm: mở Successful với ảnh kết quả (cacheDir). Kết quả Cosplay không lưu vào
+     * My creation; Download ở Successful mới ghi ra Gallery.
+     */
+    fun saveCosplayResult() {
+        val percent = score.value ?: return
+        val path = resultPath.value ?: return
+        savedStateHandle[KEY_DIRTY] = false
+        viewModelScope.launch { _events.send(CustomizeEvent.OpenCosplaySuccess(path, StarRating.fromPercent(percent))) }
+    }
+
+    private fun onDetailLoaded(detail: TemplateDetail) {
+        if (configJson.value == null) savedStateHandle[KEY_CONFIG] = gson.toJson(detail.defaultConfig)
+        val category = selectedCategory.value
+        if (category == null || detail.categories.none { it.id == category }) {
+            savedStateHandle[KEY_CATEGORY] = detail.categories.firstOrNull()?.id
+        }
+        // Nút random cả nhân vật chỉ có ở MAKER
+        if (mode == CustomizeMode.MAKER && nextRandomAll == null) prepareRandomAll(detail)
+        selectedCategory.value?.let { prepareRandomCategory(it, detail) }
+    }
+
+    /** Tính trước lần random cả nhân vật kế tiếp + tải trước mọi layer của nó. */
+    private fun prepareRandomAll(detail: TemplateDetail) {
+        val id = detail.templateId
+        viewModelScope.launch {
+            val random = randomOrNull { makerRepository.randomizeCharacter(id) } ?: return@launch
+            nextRandomAll = random
+            _prefetchUrls.send(detail.categories.mapNotNull { it.layerUrlFor(random.selections[it.id]) })
+        }
+    }
+
+    /** Tính trước lần bấm xúc xắc kế tiếp của [categoryId] + tải trước layer của nó. */
+    private fun prepareRandomCategory(categoryId: String, detail: TemplateDetail? = current.templateDetail) {
+        val id = templateId ?: return
+        val category = detail?.categories?.firstOrNull { it.id == categoryId } ?: return
+        if (nextRandomCategory?.first == categoryId) return
+        viewModelScope.launch {
+            val selection = randomOrNull { makerRepository.randomizeCategory(id, categoryId) } ?: return@launch
+            nextRandomCategory = categoryId to selection
+            category.layerUrlFor(selection)?.let { _prefetchUrls.send(listOf(it)) }
+        }
+    }
+
+    fun retry() {
+        reloadKey.value++
+    }
+
+    /** Thao tác vừa bấm lúc mất mạng: Try again có mạng thì làm tiếp (sống qua xoay màn). */
+    private var pendingOnlineAction: (CustomizeViewModel.() -> Unit)? = null
+
+    /** Có mạng → chạy [action]; không → giữ lại [action] và phát [CustomizeEvent.NoInternet]. */
+    fun runWhenOnline(action: CustomizeViewModel.() -> Unit) {
+        viewModelScope.launch {
+            if (networkMonitor.isOnline.first()) {
+                action()
+            } else {
+                pendingOnlineAction = action
+                _events.send(CustomizeEvent.NoInternet)
+            }
+        }
+    }
+
+    /** Nút quà (gọi qua [runWhenOnline]: mất mạng thì hiện No Internet thay vì mở Lucky Gift). */
+    fun requestLuckyGift() {
+        if (current.luckyGift == null) return
+        viewModelScope.launch { _events.send(CustomizeEvent.ShowLuckyGift) }
+    }
+
+    /** Try again trên dialog No Internet. */
+    fun retryPendingAction() {
+        val action = pendingOnlineAction ?: return
+        pendingOnlineAction = null
+        runWhenOnline(action)
+    }
+
+    fun selectCategory(id: String) {
+        savedStateHandle[KEY_CATEGORY] = id
+        if (current.isReady) prepareRandomCategory(id)
+    }
+
+    /** [itemId] null = None. Category bắt buộc chọn: None = trả về lựa chọn mặc định. */
+    fun selectItem(itemId: String?) {
+        val category = current.selectedCategory ?: return
+        val detail = current.templateDetail ?: return
+        val newSelection = if (itemId == null) {
+            if (category.isRequired) {
+                detail.defaultConfig.selections[category.id] ?: PartSelection(null, null)
+            } else {
+                PartSelection(null, null)
+            }
+        } else {
+            val item = category.items.firstOrNull { it.id == itemId } ?: return
+            // Part khoá: hỏi xem quảng cáo để mở khoá; riêng part đang mặc sẵn (Edit nhân vật cũ) thì giữ
+            if (current.isLocked(category.id, itemId) && current.selection?.itemId != itemId) {
+                savedStateHandle[KEY_PENDING_UNLOCK] = arrayListOf(category.id, itemId)
+                viewModelScope.launch { _events.send(CustomizeEvent.ConfirmUnlockPart) }
+                return
+            }
+            val keepColor = current.selection?.colorId?.takeIf { c -> item.colors.any { it.id == c } }
+            PartSelection(itemId, keepColor ?: item.colors.firstOrNull()?.id)
+        }
+        updateConfig { it.copy(selections = it.selections + (category.id to newSelection)) }
+    }
+
+    /**
+     * Kết quả dialog Unlock Item. Chưa gắn quảng cáo nên Watch Ad chỉ đóng dialog, part vẫn khoá
+     * (người dùng chốt 2026-11-12). [confirmed] = false (Cancel): bỏ part đang chờ.
+     */
+    fun onUnlockPartResult(confirmed: Boolean) {
+        val pending = savedStateHandle.remove<ArrayList<String>>(KEY_PENDING_UNLOCK)
+        if (pending == null || !confirmed) return
+        // TODO(ADS): chỉ tới đây khi đã xem hết quảng cáo. Mở khoá: luckyGiftRepository.unlockParts(templateId,
+        //  setOf(PartLocks.key(categoryId, itemId))), chờ state hết khoá part đó rồi selectItem(itemId) nếu vẫn
+        //  đang ở category đó ([pending] = [categoryId, itemId]).
+    }
+
+    fun selectColor(colorId: String) {
+        val categoryId = current.selectedCategoryId ?: return
+        val selection = current.selection
+        if (selection?.itemId == null) {
+            // Đang None: chọn màu = chọn item đã mở đầu tiên có màu đó
+            val item = current.selectedCategory?.items?.firstOrNull { i ->
+                !current.isLocked(categoryId, i.id) && i.colors.any { it.id == colorId }
+            } ?: return
+            updateConfig { it.copy(selections = it.selections + (categoryId to PartSelection(item.id, colorId))) }
+            return
+        }
+        updateConfig { it.copy(selections = it.selections + (categoryId to selection.copy(colorId = colorId))) }
+    }
+
+    /** Sau khi Reset dialog xác nhận. */
+    fun reset() {
+        val default = current.templateDetail?.defaultConfig ?: return
+        savedStateHandle[KEY_CONFIG] = gson.toJson(default)
+        savedStateHandle[KEY_DIRTY] = false
+    }
+
+    /** Lật cả nhân vật. */
+    fun flip() = updateConfig { it.copy(transform = it.transform.copy(flipped = !it.transform.flipped)) }
+
+    /** Dịch bộ phận đang chọn theo dp. */
+    fun move(dxDp: Float, dyDp: Float) = updatePartTransform {
+        it.copy(
+            offsetX = (it.offsetX + dxDp * flipSign).coerceIn(-MAX_OFFSET_DP, MAX_OFFSET_DP),
+            offsetY = (it.offsetY + dyDp).coerceIn(-MAX_OFFSET_DP, MAX_OFFSET_DP),
+        )
+    }
+
+    /** Xoay bộ phận đang chọn. */
+    fun rotate(degrees: Float) = updatePartTransform { it.copy(rotation = (it.rotation + degrees * flipSign) % FULL_TURN) }
+
+    /** Cộng [delta] vào scale bộ phận đang chọn (nút +/−), giới hạn [MIN_SCALE]..[MAX_SCALE]. */
+    fun zoom(delta: Float) = updatePartTransform { it.copy(scale = (it.scale + delta).coerceIn(MIN_SCALE, MAX_SCALE)) }
+
+    /** RESET ở panel Move: bỏ vị trí / góc xoay / cỡ riêng của bộ phận đang chọn (về mặc định). */
+    fun resetPartTransform() {
+        val categoryId = current.selectedCategoryId ?: return
+        updateConfig { config ->
+            val transforms = config.partTransforms ?: return@updateConfig config
+            config.copy(partTransforms = (transforms - categoryId).ifEmpty { null })
+        }
+    }
+
+    /** Nhân scale bộ phận đang chọn với [factor] (pinch). */
+    fun zoomBy(factor: Float) = updatePartTransform { it.copy(scale = (it.scale * factor).coerceIn(MIN_SCALE, MAX_SCALE)) }
+
+    fun setPanel(mode: PanelMode) {
+        savedStateHandle[KEY_PANEL] = mode.name
+    }
+
+    /** Xúc xắc trong lưới: random item + màu của category đang chọn. */
+    fun randomCategory() {
+        val id = templateId ?: return
+        val categoryId = current.selectedCategoryId ?: return
+        if (!current.isReady) return
+        val prepared = nextRandomCategory?.takeIf { it.first == categoryId }?.second
+        nextRandomCategory = null
+        viewModelScope.launch {
+            val random = prepared ?: randomOrNull { makerRepository.randomizeCategory(id, categoryId) } ?: return@launch
+            val category = current.templateDetail?.categories?.firstOrNull { it.id == categoryId } ?: return@launch
+            val selection = PartLocks.openSelection(category, random, current.lockedParts)
+            updateConfig { it.copy(selections = it.selections + (categoryId to selection)) }
+            _events.send(CustomizeEvent.ScrollToSelection(selection))
+            prepareRandomCategory(categoryId)
+        }
+    }
+
+    /** Bấm Next (đã qua [runWhenOnline]: mất mạng thì hiện No Internet thay vì lưu). */
+    fun requestNext() {
+        viewModelScope.launch { _events.send(CustomizeEvent.SaveAndContinue) }
+    }
+
+    /** Bấm nút Random cả nhân vật (đã qua [runWhenOnline]) → Fragment hiện dialog xác nhận. */
+    fun requestRandomAll() {
+        viewModelScope.launch { _events.send(CustomizeEvent.ConfirmRandomAll) }
+    }
+
+    /** Gọi sau khi Random dialog (Watch Ad) xác nhận: random cả nhân vật, giữ transform. */
+    fun randomAll() {
+        val id = templateId ?: return
+        if (!current.isReady) return
+        val prepared = nextRandomAll?.takeIf { it.templateId == id }
+        nextRandomAll = null
+        viewModelScope.launch {
+            val random = prepared ?: randomOrNull { makerRepository.randomizeCharacter(id) } ?: return@launch
+            val categories = current.templateDetail?.categories.orEmpty().associateBy { it.id }
+            val locked = current.lockedParts
+            val selections = random.selections.mapValues { (categoryId, selection) ->
+                categories[categoryId]?.let { PartLocks.openSelection(it, selection, locked) } ?: selection
+            }
+            updateConfig { it.copy(selections = selections) }
+            selections[current.selectedCategoryId]?.let { _events.send(CustomizeEvent.ScrollToSelection(it)) }
+            current.templateDetail?.let(::prepareRandomAll)
+        }
+    }
+
+    /** Mở overlay Lucky Gift: lần đầu (hoặc sau Collect) chọn sẵn các ô của vòng quay từ part đang khoá. */
+    fun prepareLuckyGift() {
+        val gift = current.luckyGift ?: return
+        if (gift.grid.isNotEmpty() || !gift.hasLocked) return
+        savedStateHandle[KEY_GIFT_GRID] = ArrayList(current.lockedParts.shuffled().take(PartLocks.GRID_SIZE))
+    }
+
+    private var spinning = false
+
+    /**
+     * START: trúng [PartLocks.UNLOCK_PER_SPIN] part khoá (ưu tiên ô đang hiện), lưu cùng mốc đếm ngược 30 phút.
+     * [withAd] = lượt thêm sau khi xem quảng cáo lúc đang đếm ngược: đồng hồ chạy tiếp, không đặt lại.
+     */
+    fun spinLuckyGift(withAd: Boolean = false) {
+        val id = templateId ?: return
+        val gift = current.luckyGift ?: return
+        val allowed = if (withAd) gift.canSpinWithAd else gift.canSpin
+        if (!allowed || spinning) return
+        val locked = current.lockedParts
+        val onGrid = gift.grid.map { it.key }.filter { it in locked }
+        val won = onGrid.shuffled().take(PartLocks.UNLOCK_PER_SPIN).ifEmpty {
+            locked.shuffled().take(PartLocks.UNLOCK_PER_SPIN)
+        }
+        if (won.isEmpty()) return
+        spinning = true
+        savedStateHandle[KEY_GIFT_RESULT] = ArrayList(won)
+        viewModelScope.launch {
+            try {
+                if (withAd) {
+                    luckyGiftRepository.recordAdSpin(id, won.toSet(), luckyGiftRepository.nextSpinAtMs.first())
+                } else {
+                    val next = luckyGiftRepository.nowMs() + PartLocks.COOLDOWN_SECONDS * MS_PER_SECOND
+                    luckyGiftRepository.recordSpin(id, won.toSet(), next)
+                }
+            } finally {
+                spinning = false
+            }
+        }
+    }
+
+    /** Collect: đóng Congratulations, lần mở sau vòng quay chọn ô mới. */
+    fun collectLuckyGift() {
+        savedStateHandle[KEY_GIFT_RESULT] = null
+        savedStateHandle[KEY_GIFT_GRID] = arrayListOf<String>()
+    }
+
+    private suspend fun <T> randomOrNull(block: suspend () -> T?): T? = try {
+        block()
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        Log.e(TAG, "Random lỗi", e)
+        null
+    }
+
+    /**
+     * Next: lưu bản Character vào My creation (internal storage) + ảnh tạm cho editor,
+     * rồi phát [CustomizeEvent.OpenEditor].
+     */
+    fun saveAndContinue(bitmap: Bitmap) {
+        val config = current.config ?: return
+        if (_saving.value) return
+        _saving.value = true
+        viewModelScope.launch {
+            try {
+                val editing = creationId
+                savedStateHandle[KEY_CREATION_ID] = if (editing != null) {
+                    creationRepository.update(editing, CreationType.CHARACTER, bitmap, config)
+                } else {
+                    creationRepository.save(CreationType.CHARACTER, bitmap, config)
+                }
+                val path = creationRepository.saveTemp(bitmap, TEMP_CHARACTER_FILE)
+                savedStateHandle[KEY_DIRTY] = false
+                _events.send(CustomizeEvent.OpenEditor(path, gson.toJson(config)))
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Lưu nhân vật lỗi", e)
+                _events.send(CustomizeEvent.SaveFailed)
+            } finally {
+                _saving.value = false
+            }
+        }
+    }
+
+    /** Cả nhân vật đang lật thì layer cũng bị lật: đảo chiều ngang để bộ phận đi đúng hướng tay kéo. */
+    private val flipSign: Float get() = if (current.config?.transform?.flipped == true) -1f else 1f
+
+    /** Đổi transform của bộ phận đang chọn; đang là None (không có gì để di chuyển) thì bỏ qua. */
+    private fun updatePartTransform(block: (CharacterTransform) -> CharacterTransform) {
+        val categoryId = current.selectedCategoryId ?: return
+        if (current.selection?.itemId == null) return
+        updateConfig { config ->
+            val updated = block(config.partTransform(categoryId))
+            config.copy(partTransforms = config.partTransforms.orEmpty() + (categoryId to updated))
+        }
+    }
+
+    private fun updateConfig(block: (CharacterConfig) -> CharacterConfig) {
+        if (score.value != null) return // đã nộp bài: không đổi được nữa
+        val config = current.config ?: return
+        val updated = block(config)
+        if (updated == config) return
+        val json = gson.toJson(updated)
+        parsedJson = json
+        parsedConfig = updated
+        savedStateHandle[KEY_CONFIG] = json
+        savedStateHandle[KEY_DIRTY] = true
+    }
+
+    private fun parseConfig(json: String): CharacterConfig? {
+        if (json == parsedJson) return parsedConfig
+        return runCatching { gson.fromJson(json, CharacterConfig::class.java) }.getOrNull().also {
+            parsedJson = json
+            parsedConfig = it
+        }
+    }
+
+    private companion object {
+        const val TAG = "CustomizeViewModel"
+        const val KEY_CONFIG = "config_json"
+        const val KEY_CATEGORY = "selected_category"
+        const val KEY_PANEL = "panel"
+        const val KEY_DIRTY = "dirty"
+        const val KEY_CREATION_ID = "saved_creation_id"
+        const val TEMP_CHARACTER_FILE = "character_tmp.png"
+        const val TEMP_COSPLAY_FILE = "cosplay_result.png"
+        const val KEY_REMAINING = "cosplay_remaining"
+        const val KEY_SCORE = "cosplay_score"
+        const val KEY_RESULT_PATH = "cosplay_result_path"
+        const val KEY_GIFT_GRID = "lucky_gift_grid"
+        const val KEY_GIFT_RESULT = "lucky_gift_result"
+        const val KEY_PENDING_UNLOCK = "pending_unlock_part"
+        const val KEY_GIFT_AUTO_CHECKED = "lucky_gift_auto_checked"
+        const val MS_PER_SECOND = 1_000L
+        const val COSPLAY_SECONDS = 1 * 60
+        const val COMPLETE_PERCENT = 100
+        const val TICK_MS = 1_000L
+        const val STOP_TIMEOUT_MS = 5_000L
+        const val FULL_TURN = 360f
+    }
+}

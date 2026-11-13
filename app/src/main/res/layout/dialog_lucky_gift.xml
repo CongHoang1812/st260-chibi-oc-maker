@@ -165,7 +165,7 @@
             android:text="@string/lucky_gift_unlocked_message"
             android:textAppearance="@style/Text.LuckyGiftMessage" />
 
-        <com.conght.chibiocmaker.core.widget.WoodButton
+        <com.chibi.dream.cute.core.widget.WoodButton
             android:id="@+id/btn_collect"
             style="@style/Widget.ST260ChibiOCMaker.WoodButton"
             android:layout_marginTop="@dimen/lucky_gift_message_top"

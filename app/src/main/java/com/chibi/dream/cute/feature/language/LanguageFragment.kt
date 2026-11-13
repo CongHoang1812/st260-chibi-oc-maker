@@ -1,0 +1,63 @@
+package com.chibi.dream.cute.feature.language
+
+import android.os.Bundle
+import android.view.View
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.chibi.dream.cute.R
+import com.chibi.dream.cute.core.common.AppLanguage
+import com.chibi.dream.cute.core.ui.applyStatusBarPadding
+import com.chibi.dream.cute.core.ui.base.BaseFragment
+import com.chibi.dream.cute.core.ui.collectWhenStarted
+import com.chibi.dream.cute.core.ui.setLightStatusBar
+import com.chibi.dream.cute.core.ui.setOnSingleClickListener
+import com.chibi.dream.cute.databinding.FragmentLanguageBinding
+import dagger.hilt.android.AndroidEntryPoint
+
+/**
+ * Chọn ngôn ngữ. [ARG_FROM_SETTING] = false: lần đầu (→ intro), true: từ setting (→ quay lại).
+ */
+@AndroidEntryPoint
+class LanguageFragment : BaseFragment<FragmentLanguageBinding>(FragmentLanguageBinding::inflate) {
+
+    private val viewModel: LanguageViewModel by viewModels()
+    private val fromSetting by lazy { arguments?.getBoolean(ARG_FROM_SETTING, false) ?: false }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.content.applyStatusBarPadding()
+        setLightStatusBar(true)
+
+        binding.ivBackground.isVisible = fromSetting
+        binding.vOverlay.isVisible = fromSetting
+        binding.btnBack.isVisible = fromSetting
+        binding.tvTitle.isVisible = !fromSetting
+
+        val adapter = LanguageAdapter(viewModel.selected.value) { viewModel.select(it) }
+        binding.rvLanguages.adapter = adapter
+        binding.btnBack.setOnSingleClickListener { findNavController().popBackStack() }
+        binding.btnCheck.setOnSingleClickListener { viewModel.confirm() }
+
+        collectWhenStarted(viewModel.selected) {
+            adapter.selected = it
+            binding.btnCheck.isVisible = it != null
+        }
+        collectWhenStarted(viewModel.confirmed) { onConfirmed(it) }
+    }
+
+    private fun onConfirmed(language: AppLanguage) {
+        val nav = findNavController()
+        if (fromSetting) {
+            nav.popBackStack()
+        } else {
+            nav.navigate(R.id.action_language_to_intro)
+        }
+        // Đổi locale sau khi điều hướng: MainActivity inflate lại màn đích theo ngôn ngữ mới (không recreate)
+        AppLanguage.apply(language)
+    }
+
+    companion object {
+        const val ARG_FROM_SETTING = "fromSetting"
+    }
+}

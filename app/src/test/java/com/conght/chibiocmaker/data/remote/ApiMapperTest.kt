@@ -1,11 +1,11 @@
-package com.conght.chibiocmaker.data.remote
+package com.chibi.dream.cute.data.remote
 
-import com.conght.chibiocmaker.data.model.DecorType
-import com.conght.chibiocmaker.data.model.PartSelection
-import com.conght.chibiocmaker.data.model.layerUrlFor
-import com.conght.chibiocmaker.data.remote.dto.DecorCategoryDto
-import com.conght.chibiocmaker.data.remote.dto.DecorConfigDto
-import com.conght.chibiocmaker.data.remote.dto.PartDto
+import com.chibi.dream.cute.data.model.DecorType
+import com.chibi.dream.cute.data.model.PartSelection
+import com.chibi.dream.cute.data.model.layerUrlFor
+import com.chibi.dream.cute.data.remote.dto.DecorCategoryDto
+import com.chibi.dream.cute.data.remote.dto.DecorConfigDto
+import com.chibi.dream.cute.data.remote.dto.PartDto
 import com.google.gson.Gson
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

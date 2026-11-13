@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Tab con editor: WoodButton viên 124×34 (Figma 2:1223); chọn = cam, không chọn = xám -->
-<com.conght.chibiocmaker.core.widget.WoodButton xmlns:android="http://schemas.android.com/apk/res/android"
+<com.chibi.dream.cute.core.widget.WoodButton xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.ST260ChibiOCMaker.TabButton"
     tools:text="@string/tab_pack" />

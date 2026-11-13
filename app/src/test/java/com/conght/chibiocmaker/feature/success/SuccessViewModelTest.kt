@@ -1,14 +1,14 @@
-package com.conght.chibiocmaker.feature.success
+package com.chibi.dream.cute.feature.success
 
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
-import com.conght.chibiocmaker.core.common.NetworkMonitor
-import com.conght.chibiocmaker.data.model.CharacterConfig
-import com.conght.chibiocmaker.data.model.Creation
-import com.conght.chibiocmaker.data.model.CreationType
-import com.conght.chibiocmaker.data.repository.CreationRepository
+import com.chibi.dream.cute.core.common.NetworkMonitor
+import com.chibi.dream.cute.data.model.CharacterConfig
+import com.chibi.dream.cute.data.model.Creation
+import com.chibi.dream.cute.data.model.CreationType
+import com.chibi.dream.cute.data.repository.CreationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

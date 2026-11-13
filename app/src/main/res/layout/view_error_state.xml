@@ -23,7 +23,7 @@
         android:text="@string/error_generic"
         android:textAppearance="@style/Text.Body.White" />
 
-    <com.conght.chibiocmaker.core.widget.WoodButton
+    <com.chibi.dream.cute.core.widget.WoodButton
         android:id="@+id/btn_retry"
         style="@style/Widget.ST260ChibiOCMaker.WoodButton"
         android:layout_marginTop="@dimen/screen_padding"

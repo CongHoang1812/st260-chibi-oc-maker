@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Choose color (Figma 258:106): Yes (trái) chọn màu, No (phải) đóng -->
-<com.conght.chibiocmaker.core.widget.PaperDialogContainer  xmlns:android="http://schemas.android.com/apk/res/android"
+<com.chibi.dream.cute.core.widget.PaperDialogContainer  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="@dimen/dialog_width"
@@ -14,15 +14,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.conght.chibiocmaker.core.widget.SaturationValueView
+        <com.chibi.dream.cute.core.widget.SaturationValueView
             android:id="@+id/sv_picker"
             android:layout_width="@dimen/color_picker_sv_w"
             android:layout_height="@dimen/color_picker_sv_h" />
 
-        <com.conght.chibiocmaker.core.widget.HueBarView
+        <com.chibi.dream.cute.core.widget.HueBarView
             android:id="@+id/hue_bar"
             android:layout_width="@dimen/color_picker_sv_w"
             android:layout_height="@dimen/color_picker_hue_h"
             android:layout_marginTop="@dimen/color_picker_hue_top" />
     </LinearLayout>
-</com.conght.chibiocmaker.core.widget.PaperDialogContainer>
+</com.chibi.dream.cute.core.widget.PaperDialogContainer>

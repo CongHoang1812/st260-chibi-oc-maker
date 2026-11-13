@@ -1,4 +1,4 @@
-package com.conght.chibiocmaker.core.common
+package com.chibi.dream.cute.core.common
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi

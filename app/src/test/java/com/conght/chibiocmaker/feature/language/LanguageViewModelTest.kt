@@ -1,8 +1,8 @@
-package com.conght.chibiocmaker.feature.language
+package com.chibi.dream.cute.feature.language
 
 import androidx.lifecycle.SavedStateHandle
-import com.conght.chibiocmaker.core.common.AppLanguage
-import com.conght.chibiocmaker.testutil.FakeSettingsRepository
+import com.chibi.dream.cute.core.common.AppLanguage
+import com.chibi.dream.cute.testutil.FakeSettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

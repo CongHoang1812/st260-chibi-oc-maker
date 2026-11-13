@@ -1,4 +1,4 @@
-# App brief: ST260_Chibi OC Maker
+# App brief: Chibi Dream: Doll Dress Up
 
 Nguồn sự thật của app này. Skill `maker-reskin` đọc file này trước khi làm bất cứ việc gì. Mục nào chưa có thì để trống, điền dần khi có (Figma, tính năng mới có thể đến sau).
 
@@ -6,9 +6,9 @@ Nguồn sự thật của app này. Skill `maker-reskin` đọc file này trư�
 
 | Mục | Giá trị |
 |---|---|
-| Tên app | ST260_Chibi OC Maker |
+| Tên app | Chibi Dream: Doll Dress Up |
 | Mã dự án | ST260 |
-| Package / applicationId | `com.conght.chibiocmaker` |
+| Package / applicationId | `com.chibi.dream.cute` |
 | Tiền tố class / theme | `ST260ChibiOCMaker` |
 | APP_KEY trên server (đuôi API) | `ST279_AnimeOCMaker` |
 | Máy chủ chính | (giữ như app nguồn) |

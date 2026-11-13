@@ -44,12 +44,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.conght.chibiocmaker.core.widget.WoodButton
+            <com.chibi.dream.cute.core.widget.WoodButton
                 android:id="@+id/btn_start"
                 style="@style/Widget.ST260ChibiOCMaker.TabButton"
                 android:text="@string/yes" />
 
-            <com.conght.chibiocmaker.core.widget.WoodButton
+            <com.chibi.dream.cute.core.widget.WoodButton
                 android:id="@+id/btn_end"
                 style="@style/Widget.ST260ChibiOCMaker.TabButton"
                 android:layout_marginStart="@dimen/dialog_button_gap"

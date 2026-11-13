@@ -1,10 +1,10 @@
-package com.conght.chibiocmaker.data.remote
+package com.chibi.dream.cute.data.remote
 
-import com.conght.chibiocmaker.core.common.AppConfig
-import com.conght.chibiocmaker.data.model.DecorType
-import com.conght.chibiocmaker.data.remote.dto.DecorCategoryDto
-import com.conght.chibiocmaker.data.remote.dto.DecorConfigDto
-import com.conght.chibiocmaker.data.remote.dto.PartDto
+import com.chibi.dream.cute.core.common.AppConfig
+import com.chibi.dream.cute.data.model.DecorType
+import com.chibi.dream.cute.data.remote.dto.DecorCategoryDto
+import com.chibi.dream.cute.data.remote.dto.DecorConfigDto
+import com.chibi.dream.cute.data.remote.dto.PartDto
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

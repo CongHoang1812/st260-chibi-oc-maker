@@ -1,11 +1,11 @@
-package com.conght.chibiocmaker.core.common
+package com.chibi.dream.cute.core.common
 
-import com.conght.chibiocmaker.data.model.CharacterConfig
-import com.conght.chibiocmaker.data.model.PartCategory
-import com.conght.chibiocmaker.data.model.PartColor
-import com.conght.chibiocmaker.data.model.PartItem
-import com.conght.chibiocmaker.data.model.PartSelection
-import com.conght.chibiocmaker.data.model.TemplateDetail
+import com.chibi.dream.cute.data.model.CharacterConfig
+import com.chibi.dream.cute.data.model.PartCategory
+import com.chibi.dream.cute.data.model.PartColor
+import com.chibi.dream.cute.data.model.PartItem
+import com.chibi.dream.cute.data.model.PartSelection
+import com.chibi.dream.cute.data.model.TemplateDetail
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

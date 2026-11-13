@@ -1,7 +1,7 @@
-package com.conght.chibiocmaker.core.common
+package com.chibi.dream.cute.core.common
 
-import com.conght.chibiocmaker.data.model.CharacterConfig
-import com.conght.chibiocmaker.data.model.PartSelection
+import com.chibi.dream.cute.data.model.CharacterConfig
+import com.chibi.dream.cute.data.model.PartSelection
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

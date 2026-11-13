@@ -34,7 +34,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_share"
             android:layout_width="@dimen/icon_button_large"
             android:layout_height="@dimen/icon_button_large"
@@ -44,7 +44,7 @@
             app:layout_constraintEnd_toStartOf="@id/btn_download"
             app:layout_constraintTop_toTopOf="@id/btn_download" />
 
-        <com.conght.chibiocmaker.core.widget.RoundIconButton
+        <com.chibi.dream.cute.core.widget.RoundIconButton
             android:id="@+id/btn_delete"
             android:layout_width="@dimen/icon_button_large"
             android:layout_height="@dimen/icon_button_large"
@@ -87,7 +87,7 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintWidth_max="@dimen/success_image_max" />
 
-        <com.conght.chibiocmaker.core.widget.WoodButton
+        <com.chibi.dream.cute.core.widget.WoodButton
             android:id="@+id/btn_edit"
             style="@style/Widget.ST260ChibiOCMaker.WoodButton"
             android:layout_marginTop="@dimen/success_download_top"

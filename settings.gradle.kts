@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ST260_Chibi OC Maker"
+rootProject.name = "Chibi Dream Doll Dress Up"
 include(":app")
  

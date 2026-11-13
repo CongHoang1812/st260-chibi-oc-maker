@@ -1,6 +1,6 @@
-package com.conght.chibiocmaker.testutil
+package com.chibi.dream.cute.testutil
 
-import com.conght.chibiocmaker.data.repository.SettingsRepository
+import com.chibi.dream.cute.data.repository.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /** SettingsRepository trong bộ nhớ cho unit test. */

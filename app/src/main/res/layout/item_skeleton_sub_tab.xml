@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Skeleton tab con (pack chờ API) 124×34 bo 16 -->
-<com.conght.chibiocmaker.core.widget.SkeletonView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.chibi.dream.cute.core.widget.SkeletonView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/wood_button_tab_width"
     android:layout_height="@dimen/wood_button_tab_height"
