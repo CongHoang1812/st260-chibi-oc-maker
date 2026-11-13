@@ -359,15 +359,19 @@ class CustomizeViewModel @Inject constructor(
     }
 
     /**
-     * Lần vào Customize đầu tiên của phiên app: chờ template tải xong rồi mở Lucky Gift, trừ khi đang đếm ngược
-     * (lượt đó vẫn tính là đã dùng). Cờ trong SavedStateHandle: màn khôi phục sau process death không mở lại.
+     * Chờ template tải xong rồi tự mở Lucky Gift khi đang được quay (không đếm ngược), trong hai trường hợp:
+     * - lần vào Customize đầu tiên của phiên app;
+     * - đã từng quay và đếm ngược đã hết: mỗi lần vào Customize (chọn lại template...) đều mở, tới khi quay.
+     * Cờ trong SavedStateHandle: màn khôi phục sau process death không mở lại.
      */
     private fun showLuckyGiftOnFirstVisit() {
         if (savedStateHandle.get<Boolean>(KEY_GIFT_AUTO_CHECKED) == true) return
         savedStateHandle[KEY_GIFT_AUTO_CHECKED] = true
         viewModelScope.launch {
             val gift = state.first { it.luckyGift != null }.luckyGift ?: return@launch
-            if (luckyGiftRepository.consumeSessionAutoShow() && gift.canSpin) {
+            val firstOfSession = luckyGiftRepository.consumeSessionAutoShow()
+            val cooldownEnded = luckyGiftRepository.nextSpinAtMs.first() > 0L
+            if (gift.canSpin && (firstOfSession || cooldownEnded)) {
                 _events.send(CustomizeEvent.ShowLuckyGift)
             }
         }

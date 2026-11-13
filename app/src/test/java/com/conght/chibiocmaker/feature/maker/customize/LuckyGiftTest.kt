@@ -161,6 +161,22 @@ class LuckyGiftTest {
     }
 
     @Test
+    fun maker_cooldownEnded_showsOnEveryVisitInSession() = runTest {
+        val repository = repository().apply { nextSpinAtMs.value = 10 * 60 * 1000L }
+        // Đang đếm ngược: không mở
+        viewModel(repository).events.test { expectNoEvents() }
+
+        // Hết đếm ngược, thoát ra chọn lại template: mở, và mở tiếp ở lần vào sau tới khi quay
+        testScheduler.advanceTimeBy(10 * 60 * 1000L + 1)
+        viewModel(repository).events.test {
+            assertEquals(CustomizeEvent.ShowLuckyGift, awaitItem())
+        }
+        viewModel(repository).events.test {
+            assertEquals(CustomizeEvent.ShowLuckyGift, awaitItem())
+        }
+    }
+
+    @Test
     fun maker_firstVisitOfSession_countingDown_doesNotShow() = runTest {
         val repository = repository().apply {
             sessionAutoShow = true
