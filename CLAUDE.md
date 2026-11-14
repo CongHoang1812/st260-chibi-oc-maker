@@ -10,6 +10,7 @@ App Android tạo nhân vật theo lớp ảnh: chọn bộ phận, trang trí, 
 | Thêm màn / tính năng | `.claude/skills/maker-reskin/references/new-feature.md` |
 | Áp Figma | `.claude/skills/maker-reskin/references/ui-reskin.md`, ảnh ↔ node ở `docs/assets.md` |
 | Đổi API, DTO, mapper | `.claude/skills/maker-reskin/references/api-adaptation.md` |
+| Gắn ads (inter, native, reward, open resume) | `docs/ADS_HANDOFF.md` |
 
 `docs/prompts/` là lịch sử dựng app mẫu lần đầu, có chỗ đã cũ. Không dùng làm quy ước.
 
