@@ -16,7 +16,7 @@ object PartLocks {
     /** Số ô trong lưới vòng quay. */
     const val GRID_SIZE = 15
 
-    const val COOLDOWN_SECONDS = 1 * 60
+    const val COOLDOWN_SECONDS = 30 * 60
 
     private const val FREE_DIVISOR = 3
 
