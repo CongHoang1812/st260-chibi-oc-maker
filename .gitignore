@@ -20,3 +20,5 @@ local.properties
 *.aab
 *.jks
 *.keystore
+# Ngoại lệ: keystore release do Jenkins CI tạo và push vào repo
+!app/key/release.jks
