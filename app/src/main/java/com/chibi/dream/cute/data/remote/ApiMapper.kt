@@ -22,8 +22,8 @@ import java.net.URLEncoder
  * - icon tab `{position}/{parts}/nav.png`, thumbnail `{position}/{parts}/thumb_{i}.png`
  * - layer `{position}/{parts}/{màu}/{i}.png` (có màu) hoặc `{position}/{parts}/{i}.png`
  * - decor `bg/background[/{category}]/{i}.png`, `bg/stickers[/{category}]/{i}.png`,
- *   `bg/speech_bubble/{category}/{i}.png`; thư mục sticker / speech theo đúng khoá có trong JSON
- *   (`sticker`, `speech bubble` ở một số server)
+ *   `bg/speech_bubble/{category}/{i}.png`; thư mục theo đúng khoá có trong JSON
+ *   (`sticker`, `speech bubble`, `backgrounds`, `speechBubbles` ở một số server)
  *
  * `parts` = `X-Y`: X = zIndex (lớp vẽ), Y = thứ tự tab. Item id = số thứ tự `i` (1..quantity).
  * Color id = mã trong `colorArray`, giữ nguyên vì đó cũng là tên thư mục ảnh (phân biệt hoa thường,
@@ -59,9 +59,13 @@ object ApiMapper {
 
     fun toDecorPacks(config: DecorConfigDto, type: DecorType, assetBase: String): List<DecorPack> {
         val (groups, folder) = when (type) {
-            DecorType.BACKGROUND -> config.background to "bg/background"
-            DecorType.STICKER -> pick(config.sticker, "bg/stickers", config.stickerSingular, "bg/sticker")
-            DecorType.SPEECH -> pick(config.speechBubble, "bg/speech_bubble", config.speechBubbleSpaced, "bg/speech bubble")
+            DecorType.BACKGROUND -> pick(config.background to "bg/background", config.backgroundPlural to "bg/backgrounds")
+            DecorType.STICKER -> pick(config.sticker to "bg/stickers", config.stickerSingular to "bg/sticker")
+            DecorType.SPEECH -> pick(
+                config.speechBubble to "bg/speech_bubble",
+                config.speechBubbleSpaced to "bg/speech bubble",
+                config.speechBubbleCamel to "bg/speechBubbles",
+            )
         }
         val prefix = type.name.lowercase()
         return groups.orEmpty()
@@ -69,14 +73,11 @@ object ApiMapper {
             .mapIndexed { index, group -> toDecorPack(group, type, "${prefix}_$index", "$assetBase${folder.encodePath()}") }
     }
 
-    /** Nhóm của khoá có dữ liệu kèm thư mục ảnh tương ứng; ưu tiên kiểu tên của app mẫu. */
+    /** Nhóm của khoá đầu tiên có dữ liệu kèm thư mục ảnh tương ứng; kiểu tên của app mẫu đặt đầu. */
     private fun pick(
-        groups: List<DecorCategoryDto>?,
-        folder: String,
-        altGroups: List<DecorCategoryDto>?,
-        altFolder: String,
+        vararg candidates: Pair<List<DecorCategoryDto>?, String>,
     ): Pair<List<DecorCategoryDto>?, String> =
-        if (groups.isNullOrEmpty() && !altGroups.isNullOrEmpty()) altGroups to altFolder else groups to folder
+        candidates.firstOrNull { (groups, _) -> !groups.isNullOrEmpty() } ?: candidates.first()
 
     private fun toDecorPack(group: DecorCategoryDto, type: DecorType, packId: String, folderUrl: String): DecorPack {
         val category = group.category.orEmpty().trim()

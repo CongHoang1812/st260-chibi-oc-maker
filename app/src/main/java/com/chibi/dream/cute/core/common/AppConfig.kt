@@ -14,9 +14,9 @@ object AppConfig {
 
     /**
      * Mã app trên server (endpoint dữ liệu nhân vật + thư mục ảnh).
-     * TODO(RELEASE): đang mượn dữ liệu ST247 để test vì chưa có mã của ST237; đổi sang mã thật trước khi phát hành.
+     * API thật của app (2026-11-14). Server chưa có `bg/bg.json` (decor).
      */
-    const val APP_KEY: String = "ST279_AnimeOCMaker"
+    const val APP_KEY: String = "ST260_ChibiOCMaker"
 
     /** Thư mục ảnh tính từ base URL. */
     const val ASSET_PATH: String = "public/app/$APP_KEY/"

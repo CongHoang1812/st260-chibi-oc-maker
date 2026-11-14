@@ -10,7 +10,7 @@ Nguồn sự thật của app này. Skill `maker-reskin` đọc file này trư�
 | Mã dự án | ST260 |
 | Package / applicationId | `com.chibi.dream.cute` |
 | Tiền tố class / theme | `ST260ChibiOCMaker` |
-| APP_KEY trên server (đuôi API) | `ST279_AnimeOCMaker` |
+| APP_KEY trên server (đuôi API) | `ST260_ChibiOCMaker` (máy chủ `https://lvtglobal.site/`) |
 | Máy chủ chính | (giữ như app nguồn) |
 | Máy chủ dự phòng | (giữ như app nguồn) |
 
@@ -165,4 +165,4 @@ Ghi lại quyết định không suy ra được từ code, để phiên làm vi
 - Thanh điều hướng hệ thống ẩn ở mọi màn, mọi thiết bị (bỏ `R.bool.hide_navigation_bar`), kể cả dialog, sau khi đóng bàn phím, khi quay lại app. Vuốt từ đáy hiện tạm rồi tự ẩn; lúc splash mở có thể thấy thanh một chút.
 - Lucky Gift quay thêm bằng quảng cáo (2026-11-10): đang đếm ngược, nút ở vòng quay thành 🎬 FREE (Figma `2:677`, giờ chỉ hiện ở nút quà ngoài Customize); bấm thì hiện dialog "Watch an ad" (Cancel | Watch Ad). Xem xong được quay ngay một lượt, đồng hồ chạy tiếp, không đặt lại 30:00. Mỗi lượt đếm ngược chỉ được 1 lần quảng cáo; dùng rồi thì nút hiện giờ còn lại (Figma `2:888`), hết giờ mới quay START, lượt đếm ngược mới lại có FREE. Lưu mốc đã dùng ở DataStore (`lucky_gift_ad_used_for`) nên thoát app vẫn giữ. Chưa có Ads SDK nên Watch Ad cho quay luôn. Hiệu ứng quay: 5 cột cuộn kiểu máy slot, dừng lần lượt trái → phải; part trúng luôn dừng ở hàng giữa. Trong nút FREE có ⏱ giờ còn lại ngay dưới chữ (Figma `2:760` / `282:38`). Nút quà ngoài Customize: còn lượt (START / FREE) thì chấm đỏ, đã dùng quảng cáo thì hiện giờ. Lớp tối sau overlay 70% (Figma `2:759`), các dialog khác vẫn 50%.
 - Intro: nền dưới ảnh vẽ riêng `#ADD5E5 → #95CBE5` để nối liền với lớp mờ trên mọi chiều cao màn.
-- `APP_KEY` `ST279_AnimeOCMaker` chỉ là API mượn tạm vì app chưa có API thật. Chưa cần chạy `probe_api.py`; phải đổi sang API thật và kiểm tra lại trước khi phát hành. (2026-11-09)
+- API thật (2026-11-14): `https://lvtglobal.site/api/app/ST260_ChibiOCMaker`, thay API mượn `ST279_AnimeOCMaker` ở `lvtglobal.tech`. `probe_api.py`: 5 template (data1–data5), đúng quy ước, ảnh đều 200. Decor `bg/bg.json` dùng khoá `backgrounds` / `stickers` / `speechBubbles`, thư mục ảnh cùng tên (`bg/backgrounds/graffiti/1.png`…); `DecorConfigDto` + `ApiMapper` đọc thêm kiểu này. Máy chủ dự phòng `lvt-api-tech.io.vn` chưa có app này.

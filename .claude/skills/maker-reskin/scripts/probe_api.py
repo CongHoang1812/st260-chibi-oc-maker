@@ -121,12 +121,19 @@ def check_server(base: str, key: str) -> list[str]:
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
         problems.append(f"Không đọc được bg/bg.json: {error}")
         return problems
-    folders = {"background": "bg/background", "stickers": "bg/stickers", "speech_bubble": "bg/speech_bubble"}
-    for group, folder in folders.items():
-        items = decor.get(group)
-        if not isinstance(items, list):
-            problems.append(f"bg.json thiếu nhóm `{group}`")
+    # Các kiểu tên khoá mà ApiMapper đọc được (khoá = tên thư mục trong bg/), giữ cùng thứ tự ưu tiên.
+    variants = {
+        "background": ["background", "backgrounds"],
+        "sticker": ["stickers", "sticker"],
+        "speech": ["speech_bubble", "speech bubble", "speechBubbles"],
+    }
+    for kind, keys in variants.items():
+        group = next((key for key in keys if isinstance(decor.get(key), list) and decor[key]), None)
+        if group is None:
+            problems.append(f"bg.json thiếu nhóm {kind} (khoá {' / '.join(f'`{k}`' for k in keys)})")
             continue
+        items = decor[group]
+        folder = f"bg/{group}"
         usable = [item for item in items if (item.get("quantity") or 0) > 0]
         print(f"Decor {group}: {len(usable)} nhóm")
         if usable:

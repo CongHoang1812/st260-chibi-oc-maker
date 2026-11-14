@@ -21,7 +21,7 @@ android {
             versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Máy chủ chính + dự phòng (chỉ gọi khi máy chủ chính lỗi)
-        buildConfigField("String", "BASE_URL", "\"https://lvtglobal.tech/\"")
+        buildConfigField("String", "BASE_URL", "\"https://lvtglobal.site/\"")
         buildConfigField("String", "BACKUP_BASE_URL", "\"https://lvt-api-tech.io.vn/\"")
         buildConfigField("boolean", "USE_MOCK_DATA", "false")
     }

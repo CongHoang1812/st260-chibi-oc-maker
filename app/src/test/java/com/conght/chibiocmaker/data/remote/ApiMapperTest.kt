@@ -94,6 +94,22 @@ class ApiMapperTest {
     }
 
     @Test
+    fun decorPacks_pluralAndCamelKeys_useMatchingFolders() {
+        // Dạng bg.json của server ST260: khoá "backgrounds" / "speechBubbles" / "stickers", thư mục ảnh cùng tên
+        val json = """{"backgrounds":[{"category":"graffiti","quantity":19},{"category":"love","quantity":16}],"speechBubbles":[{"category":"1","quantity":20}],"stickers":[{"category":"Activity","quantity":78}]}"""
+        val config = Gson().fromJson(json, DecorConfigDto::class.java)
+
+        val bg = ApiMapper.toDecorPacks(config, DecorType.BACKGROUND, base)
+        assertEquals(listOf("graffiti", "love"), bg.map { it.name })
+        assertEquals("${base}bg/backgrounds/graffiti/19.png", bg[0].items.last().imageUrl)
+
+        val speech = ApiMapper.toDecorPacks(config, DecorType.SPEECH, base)
+        assertEquals("${base}bg/speechBubbles/1/1.png", speech.single().items.first().imageUrl)
+
+        assertEquals("${base}bg/stickers/Activity/78.png", ApiMapper.toDecorPacks(config, DecorType.STICKER, base).single().items.last().imageUrl)
+    }
+
+    @Test
     fun detail_plainItem_usesPlainLayer() {
         val category = ApiMapper.toTemplateDetail("11", parts, base).categories.first { it.id == "1-1" }
         assertTrue(category.items.all { it.colors.isEmpty() })

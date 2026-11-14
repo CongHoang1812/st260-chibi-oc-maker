@@ -20,8 +20,9 @@ data class PartDto(
 
 /**
  * Cấu hình nền / sticker / speech bubble (`bg/bg.json`).
- * Server có 2 kiểu tên khoá, tên khoá cũng là tên thư mục ảnh: `stickers` / `speech_bubble` (app mẫu)
- * hoặc `sticker` / `speech bubble` (vd. ST279). Mỗi kiểu một field để mapper biết thư mục nào cần ghép.
+ * Server có 3 kiểu tên khoá, tên khoá cũng là tên thư mục ảnh: `background` / `stickers` / `speech_bubble`
+ * (app mẫu), `sticker` / `speech bubble` (vd. ST279) hoặc `backgrounds` / `speechBubbles` (ST260).
+ * Mỗi kiểu một field để mapper biết thư mục nào cần ghép.
  */
 data class DecorConfigDto(
     @SerializedName("background") val background: List<DecorCategoryDto>?,
@@ -29,6 +30,8 @@ data class DecorConfigDto(
     @SerializedName("speech_bubble") val speechBubble: List<DecorCategoryDto>?,
     @SerializedName("sticker") val stickerSingular: List<DecorCategoryDto>? = null,
     @SerializedName("speech bubble") val speechBubbleSpaced: List<DecorCategoryDto>? = null,
+    @SerializedName("backgrounds") val backgroundPlural: List<DecorCategoryDto>? = null,
+    @SerializedName("speechBubbles") val speechBubbleCamel: List<DecorCategoryDto>? = null,
 )
 
 /** [category] = tên thư mục con (có thể rỗng), [quantity] = số ảnh đánh số từ 1. */
