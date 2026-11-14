@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.repeatOnLifecycle
 import com.chibi.dream.cute.R
 import com.chibi.dream.cute.core.ui.applyStatusBarPadding
 import com.chibi.dream.cute.core.ui.base.BaseFragment
+import com.chibi.dream.cute.core.ui.navigateSafe
 import com.chibi.dream.cute.core.ui.setLightStatusBar
 import com.chibi.dream.cute.databinding.FragmentSplashBinding
 import com.chibi.dream.cute.feature.intro.IntroFragment
@@ -31,20 +33,24 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
         setLightStatusBar(true)
 
         startSpinner()
+        // Chỉ đếm và chuyển màn khi đang hiện: nếu app xuống nền giữa chừng, FragmentManager đã lưu
+        // state nên navigate() bị bỏ qua lặng lẽ → quay lại thấy splash xoay mãi. repeatOnLifecycle
+        // huỷ lượt đếm khi STOPPED và đếm lại khi người dùng quay về.
         viewLifecycleOwner.lifecycleScope.launch {
-            delay(SPLASH_MS)
-            val nav = findNavController()
-            // Intro hiện mỗi lần mở app; Language + Permission chỉ ở lần đầu
-            if (viewModel.isOnboardingDone()) {
-                nav.navigate(
-                    R.id.action_splash_to_intro,
-                    Bundle().apply { putBoolean(IntroFragment.ARG_ONBOARDING_DONE, true) },
-                )
-            } else {
-                nav.navigate(
-                    R.id.action_splash_to_language,
-                    Bundle().apply { putBoolean(LanguageFragment.ARG_FROM_SETTING, false) },
-                )
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                delay(SPLASH_MS)
+                // Intro hiện mỗi lần mở app; Language + Permission chỉ ở lần đầu
+                if (viewModel.isOnboardingDone()) {
+                    navigateSafe(
+                        R.id.action_splash_to_intro,
+                        Bundle().apply { putBoolean(IntroFragment.ARG_ONBOARDING_DONE, true) },
+                    )
+                } else {
+                    navigateSafe(
+                        R.id.action_splash_to_language,
+                        Bundle().apply { putBoolean(LanguageFragment.ARG_FROM_SETTING, false) },
+                    )
+                }
             }
         }
     }
