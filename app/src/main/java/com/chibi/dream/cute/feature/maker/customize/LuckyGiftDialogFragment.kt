@@ -146,6 +146,7 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
         val result = gift.result
         if (result == null) {
             sawNoResult = true
+            if (spinAnimation == null) gridCells.forEach { it.animate().cancel(); it.alpha = 1f }
             showResult(null)
         } else if (spinAnimation == null && binding.resultGroup.isGone()) {
             if (sawNoResult) playSpin(gift.grid, result) else showResult(result)
@@ -196,6 +197,10 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
             delay(longest)
             resetReels()
             winners.forEach { gridCells[it].isSelected = true }
+            // Làm mờ các ô không trúng để hàng trúng nổi lên
+            gridCells.forEachIndexed { index, cell ->
+                if (index !in winners) cell.animate().alpha(LOSER_ALPHA).setDuration(LOSER_FADE_MS).start()
+            }
             delay(WINNER_HOLD_MS)
             spinAnimation = null
             showResult(result)
@@ -222,6 +227,8 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
         slots.zip(others).forEach { (cell, item) -> arrangement[cell] = item }
         gridCells.forEachIndexed { index, cell ->
             cell.isSelected = false
+            cell.animate().cancel()
+            cell.alpha = 1f
             val item = arrangement[index]
             if (item == null) cell.setImageDrawable(null) else cell.loadImage(item.thumbnailUrl, R.color.white)
         }
@@ -278,6 +285,7 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
     override fun onDestroyView() {
         reelStrips.forEach { it.animate().cancel() }
         reelStrips.clear()
+        gridCells.forEach { it.animate().cancel() }
         spinAnimation = null
         super.onDestroyView()
     }
@@ -296,6 +304,8 @@ class LuckyGiftDialogFragment : BaseDialogFragment<DialogLuckyGiftBinding>(Dialo
         private const val SECONDS_PER_MINUTE = 60
         private const val WINNER_HOLD_MS = 700L
         private const val DISABLED_ALPHA = 0.6f
+        private const val LOSER_ALPHA = 0.35f
+        private const val LOSER_FADE_MS = 250L
 
         fun showOnce(manager: FragmentManager) {
             if (manager.findFragmentByTag(TAG) != null) return
